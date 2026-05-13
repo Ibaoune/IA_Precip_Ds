@@ -1,0 +1,8 @@
+metric:
+  corr_strategy: per_year
+  name: bias
+  plot_seasons:
+  - Annual
+  - JJA
+  - MAM
+  strategy: mean_first

@@ -27,9 +27,7 @@ data:
     levels: [1000, 850, 700, 500]
     extent: [-10, 0, 29, 36]
     data_path:
-      # input: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/shared/TEAM/data/era5/all_Mor/merged_levels/*.nc"
-      # target: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/shared/TEAM/data/mswep/all_Mor/mswep_1979_2020.nc"
-      input: "data/era5_*_levels.nc"
+      input: "data/*_levels.nc"
       target: "data/mswep_1979_2020.nc"
     input_ds_name: "ERA5"
     target_ds_name: "MSWP"

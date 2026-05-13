@@ -1,5 +1,5 @@
 vit/results/
-lit_version/data
+*/data
 lit_version/logs
 lit_version/data_stats
 lit_version/results
@@ -8,4 +8,9 @@ lit_version/figures/
 lit_version/merge.py
 lit_version/slurm
 */*.log
-
+lit_version/job*.sh
+plot.py
+postproc/results/
+*.nc
+postproc/*.csv
+inference/results/

@@ -1,0 +1,22 @@
+experiment: "exploration_unet_era5"
+parameters:
+  start_date: "2000-01-01"
+  end_date: "2004-12-31"
+  region: "allmorr"
+  mask_land: true
+  only_morocco: true
+  predictand: "pr"
+reference:
+  name: "mswep"
+  file_path: "datasets/mswep_1979_2020.nc"
+  variable_name: "precipitation"
+datasets:
+  - name: "era5"
+    file_path: "datasets/era5_2000_2004.nc"
+    variable_name: "precipitation"
+  - name: "lmdz_250"
+    file_path: "datasets/lmdz_250_present_2000_2004.nc"
+    variable_name: "precipitation"
+  - name: "lmdz_35"
+    file_path: "datasets/lmdz_35_present_2000_2004.nc"
+    variable_name: "precipitation"
