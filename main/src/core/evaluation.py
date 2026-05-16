@@ -27,7 +27,7 @@ from src.core.utils import vprint, load_model
 def _build_model(cfg, x_test, y_test):
     if cfg.loss_type == "bernoulli_gamma":
         out_channels = 3
-    elif cfg.loss_type == "gaussian":
+    elif cfg.loss_type in ["gaussian", "hurdle_loss"]:
         out_channels = 2
     else:
         out_channels = 1
@@ -47,13 +47,15 @@ def _build_model(cfg, x_test, y_test):
         )
     elif cfg.model_type == "unet":
         from src.models.unet_arch import UNet
-        import torch.nn as nn
-        import torch.nn.functional as F
         class WrappedUNet(nn.Module):
             def __init__(self):
                 super().__init__()
-                out_channels = 3 if cfg.loss_type == "bernoulli_gamma" else 1
-                self.unet = UNet(in_channels=x_test.shape[1], out_channels=out_channels)
+                out_channels = 3 if cfg.loss_type == "bernoulli_gamma" else (2 if cfg.loss_type in ["gaussian", "hurdle_loss"] else 1)
+                self.unet = UNet(
+                    in_channels=x_test.shape[1], out_channels=out_channels,
+                    group_norm_enable=getattr(cfg, "group_norm_enable", False),
+                    num_groups=getattr(cfg, "group_norm_num_groups", 32)
+                )
                 self.out_shape = (y_test.shape[-2], y_test.shape[-1])
             def forward(self, x):
                 out = self.unet(x)
@@ -61,6 +63,47 @@ def _build_model(cfg, x_test, y_test):
                     out = F.interpolate(out, size=self.out_shape, mode='nearest')
                 return out
         return WrappedUNet()
+    elif cfg.model_type in ["unet_v2", "unet_coordconv", "attention_unet", "doury_unet"]:
+        from src.models.unet_arch import UNet_V2, UNet_CoordConv, Attention_UNet, Doury_UNet
+        import torch.nn as nn
+        import torch.nn.functional as F
+        
+        class WrappedUNetAdvanced(nn.Module):
+            def __init__(self):
+                super().__init__()
+                out_channels = 3 if cfg.loss_type == "bernoulli_gamma" else (2 if cfg.loss_type in ["gaussian", "hurdle_loss"] else 1)
+                dropout_p = getattr(cfg, "training_dropout_value", getattr(cfg, "dropout", 0.0))
+                gn_enable = getattr(cfg, "group_norm_enable", False)
+                num_groups = getattr(cfg, "group_norm_num_groups", 32)
+                
+                if cfg.model_type == "unet_v2":
+                    self.unet = UNet_V2(
+                        in_channels=x_test.shape[1], out_channels=out_channels,
+                        group_norm_enable=gn_enable, num_groups=num_groups, dropout_p=dropout_p
+                    )
+                elif cfg.model_type == "unet_coordconv":
+                    self.unet = UNet_CoordConv(
+                        in_channels=x_test.shape[1], out_channels=out_channels,
+                        group_norm_enable=gn_enable, num_groups=num_groups, dropout_p=dropout_p
+                    )
+                elif cfg.model_type == "attention_unet":
+                    self.unet = Attention_UNet(
+                        in_channels=x_test.shape[1], out_channels=out_channels,
+                        group_norm_enable=gn_enable, num_groups=num_groups, dropout_p=dropout_p
+                    )
+                elif cfg.model_type == "doury_unet":
+                    self.unet = Doury_UNet(
+                        in_channels=x_test.shape[1], out_channels=out_channels,
+                        group_norm_enable=gn_enable, num_groups=num_groups, dropout_p=dropout_p
+                    )
+                self.out_shape = (y_test.shape[-2], y_test.shape[-1])
+            
+            def forward(self, x):
+                out = self.unet(x)
+                if out.shape[-2:] != self.out_shape:
+                    out = F.interpolate(out, size=self.out_shape, mode='bilinear', align_corners=True)
+                return out
+        return WrappedUNetAdvanced()
     elif cfg.model_type == "unet1":
         from src.models.unet_arch1 import UNet as UNet1
         import torch.nn as nn

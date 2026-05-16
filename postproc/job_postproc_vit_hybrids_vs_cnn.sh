@@ -19,7 +19,7 @@ echo "Start time: $(date)"
 echo "Post-processing ViT Hybrids vs CNN (LMDZ 250)"
 echo "======================================"
 
-python3 -u postproc.py config_vit_hybrids_vs_cnn.yaml
+python3 -u postproc.py tests/config_vit_hybrids_vs_cnn.yaml >> logs/postproc_vit_hybrids_vs_cnn_%j.log 2>&1
 
 echo "======================================"
 echo "Job completed."
