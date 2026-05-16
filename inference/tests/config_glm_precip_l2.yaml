@@ -88,12 +88,14 @@ prediction:
   output_dir: results/output/glm_precip_l2
   scenarios:
   - name: era5_present
+    enable: false
     src: era5
     start: '2006-01-01'
     end: '2014-12-31'
     bias_correction: false
     folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data
   - name: lmdz_35_present
+    enable: false
     src: lmdz
     start: '2006-01-01'
     end: '2014-12-31'
@@ -101,6 +103,7 @@ prediction:
     folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35
     bc_reference_folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35
   - name: lmdz_250_present
+    enable: true
     src: lmdz
     start: '2006-01-01'
     end: '2014-12-31'

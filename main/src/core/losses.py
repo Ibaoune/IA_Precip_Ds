@@ -16,8 +16,8 @@ class BernoulliGammaLoss(nn.Module):
             true = true.squeeze(1)
             
         occurrence = torch.sigmoid(pred[:, 0, :, :]).clamp(eps, 1 - eps)
-        shape_parameter = torch.exp(pred[:, 1, :, :].clamp(-5, 5)).clamp(eps, 1e3)
-        scale_parameter = torch.exp(pred[:, 2, :, :].clamp(-5, 5)).clamp(eps, 1e3)
+        shape_parameter = torch.exp(pred[:, 1, :, :].clamp(-10, 7)).clamp(eps, 1e3)
+        scale_parameter = torch.exp(pred[:, 2, :, :].clamp(-10, 7)).clamp(eps, 1e3)
         
         bool_rain = (true > 0).float()
         epsilon = 1e-6

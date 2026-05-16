@@ -40,6 +40,12 @@ def interpolate_to_target_resolution(ds, resolution=2.0, lon_name="lon", lat_nam
     new_lon = np.arange(np.floor(min_lon), np.ceil(max_lon) + (resolution / 10.0), resolution)
     new_lat = np.arange(np.floor(min_lat), np.ceil(max_lat) + (resolution / 10.0), resolution)
 
+    # Map common interpolation names to scipy/xarray supported names
+    if method == "bilinear":
+        method = "linear"
+    elif method == "bicubic":
+        method = "cubic"
+
     # Interpolate using xarray select/interp
     if method == "nearest":
         ds_interpolated = ds.sel({lon_name: new_lon, lat_name: new_lat}, method="nearest")

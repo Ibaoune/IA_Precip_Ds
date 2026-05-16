@@ -12,10 +12,14 @@
 """
 
 import os
+import sys
 import torch
 import torch.nn as nn
 import numpy as np
 import xarray as xr
+
+# Add main directory to sys.path so pickle can resolve 'src' modules
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../main")))
 
 
 # Verbose Printing Utility

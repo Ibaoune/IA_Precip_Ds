@@ -39,7 +39,7 @@ def load_config(config_path):
     # If it's a local metric config (contains 'metric' but missing shared fields like 'experiment')
     # then merge it with the global one.
     if local_cfg and 'metric' in local_cfg and 'experiment' not in local_cfg:
-        global_path = os.path.join(PROJECT_ROOT, "config.yaml")
+        global_path = os.environ.get("POSTPROC_MASTER_CONFIG", os.path.join(PROJECT_ROOT, "config.yaml"))
         if os.path.exists(global_path):
             with open(global_path, 'r') as f:
                 global_cfg = yaml.safe_load(f)
@@ -54,7 +54,7 @@ def load_config(config_path):
     return local_cfg
 
 def get_title_metadata(metric_name, period=""):
-    config_path = os.path.join(PROJECT_ROOT, "config.yaml")
+    config_path = os.environ.get("POSTPROC_MASTER_CONFIG", os.path.join(PROJECT_ROOT, "config.yaml"))
     show_metadata = False
     start_date = "Unknown"
     end_date = "Unknown"
@@ -110,7 +110,7 @@ def get_title_metadata(metric_name, period=""):
     return f"\n[ Period: {period_str} ]"
 
 def use_robust_limits():
-    config_path = os.path.join(PROJECT_ROOT, "config.yaml")
+    config_path = os.environ.get("POSTPROC_MASTER_CONFIG", os.path.join(PROJECT_ROOT, "config.yaml"))
     if os.path.exists(config_path):
         import yaml
         with open(config_path, 'r') as f:
@@ -120,11 +120,14 @@ def use_robust_limits():
     return True
 
 def get_custom_limits(metric_name, plot_type):
-    config_path = os.path.join(PROJECT_ROOT, "config.yaml")
+    config_path = os.environ.get("POSTPROC_MASTER_CONFIG", os.path.join(PROJECT_ROOT, "config.yaml"))
     if os.path.exists(config_path):
         import yaml
         with open(config_path, 'r') as f:
             global_cfg = yaml.safe_load(f)
+            if global_cfg and 'parameters' in global_cfg:
+                if not global_cfg['parameters'].get('impose_robust_limits', True):
+                    return None
             custom = global_cfg.get('custom_limits', {})
             base_name = str(metric_name).lower()
             match = None
@@ -189,10 +192,16 @@ BIAS_EXTREME_LEVELS = [-50, -30, -20, -10, -5, -2, 0, 2, 5, 10, 20, 30, 50]
 
 GLOBAL_MODEL_COLORS = {
     'MSWEP': '#000000', # Black
-    'VIT': '#E63946',   # Red
-    'CNN': '#457B9D',   # Light Blue
-    'UNET': '#1D3557',  # Dark Blue
-    'GLM': '#2A9D8F',   # Green
+    'CNN_EXP3': '#A8DADC', # Very Light Blue
+    'CNN_EXP5': '#457B9D', # Light Blue
+    'VIT_EXP21_BEST': '#E63946', # Red
+    'VIT_PRECIP_EXP22_HYBRID_DEEP_REG': '#9B2226', # Dark Red
+    'GLM_LMDZ250': '#2A9D8F', # Green
+    'GLM_ERA5': '#264653', # Dark Teal
+    'VIT': '#E63946',
+    'CNN': '#457B9D',
+    'UNET': '#1D3557',
+    'GLM': '#2A9D8F',
 }
 
 VIRIDIS_PALETTE = [
@@ -725,7 +734,7 @@ def plot_spatial_bias(data_dict, label='Bias (mm/day)', bounds=None, shapefile=N
     else:
         plt.show()
 
-def compute_generic_metrics(dataset, ref, metric_func, model_name, suffix, output_dir, strategy, corr_strategy, return_by_year, **kwargs):
+def compute_generic_metrics(dataset, ref, metric_func, model_name, suffix, output_dir, strategy, corr_strategy, return_by_year, compute_periods=None, **kwargs):
     """
     An orchestration engine that computes a metric across all standard seasons.
     
@@ -739,6 +748,7 @@ def compute_generic_metrics(dataset, ref, metric_func, model_name, suffix, outpu
         strategy (str): Calculation strategy to pass to metric_func.
         corr_strategy (str): Correlation strategy identifier.
         return_by_year (bool): Whether results stay in (year, lat, lon) format.
+        compute_periods (list): Specific periods to calculate (e.g. ['Annual']).
         **kwargs: Extra parameters passed directly to metric_func.
         
     Outputs:
@@ -772,7 +782,20 @@ def compute_generic_metrics(dataset, ref, metric_func, model_name, suffix, outpu
     seasonal_maps = {}
     domain_averages = {}
 
+    if compute_periods is None:
+        config_path = os.environ.get("POSTPROC_MASTER_CONFIG", os.path.join(PROJECT_ROOT, "config.yaml"))
+        if os.path.exists(config_path):
+            import yaml
+            with open(config_path, 'r') as f:
+                global_cfg = yaml.safe_load(f)
+                if global_cfg and 'parameters' in global_cfg:
+                    compute_periods = global_cfg['parameters'].get('compute_periods', global_cfg['parameters'].get('plot_periods', list(SEASONS.keys())))
+    if compute_periods is None:
+        compute_periods = list(SEASONS.keys())
+
     for season, season_months in SEASONS.items():
+        if season not in compute_periods:
+            continue
         idx = np.isin(months, season_months)
         data_s = dataset.isel(time=idx)
         ref_s = ref.isel(time=idx) if ref is not None else None

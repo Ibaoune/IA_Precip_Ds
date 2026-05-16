@@ -346,7 +346,11 @@ def load_datasets(cfg):
                         (v for v in ds.data_vars if v.lower() == lmdz_var.lower()),
                         next((v for v in ds.data_vars if curr_lev_dim in ds[v].dims), list(ds.data_vars)[0])
                     )
-                    arr = ds[actual_var].sel({curr_lev_dim: lev}, method="nearest").squeeze()
+                    target_lev = float(lev)
+                    if ds[curr_lev_dim].values.max() > 2000:
+                        target_lev = target_lev * 100.0
+
+                    arr = ds[actual_var].sel({curr_lev_dim: target_lev}, method="nearest").squeeze()
 
                     # --- Geopotential / Geopotential Height (m -> m2/s2) ---
                     if lmdz_var.lower() in ["geop", "zg"] or var.lower() == "z":
@@ -359,7 +363,7 @@ def load_datasets(cfg):
                     # Convert LMDZ relative humidity (fraction) → specific humidity (kg/kg)
                     if cfg.src == "lmdz" and var.lower() == "q" and not q_is_specific_humidity and temp_ds_masked is not None:
                         t_arr = temp_ds_masked[temp_actual_var].sel(
-                            {curr_lev_dim: lev}, method="nearest"
+                            {curr_lev_dim: target_lev}, method="nearest"
                         ).squeeze()
                         arr = _rh_to_specific_humidity(arr, t_arr, float(lev))
                         vprint(f"  → Converted rhum → specific humidity at {lev} hPa")

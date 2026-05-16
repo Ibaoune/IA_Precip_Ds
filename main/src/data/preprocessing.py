@@ -153,10 +153,11 @@ def preprocess_data(cfg, X, y_train, y_test):
 
         # DeepESD (Bano et al. 2022) methodology for precipitation:
         # Subtract 0.99 and clamp to 0 to better fit Bernoulli-Gamma and handle trace rain.
-        if cfg.target.lower() == "mswep" and cfg.loss_type == "bernoulli_gamma":
-            vprint("DeepESD Methodology: Subtracting 0.99 threshold from MSWEP precipitation")
-            y_train_np = np.maximum(y_train_np - 0.99, 0)
-            y_test_np  = np.maximum(y_test_np  - 0.99, 0)
+        # [DISABLED] Commented out to prevent systematic underestimation of expected precipitation.
+        # if cfg.target.lower() == "mswep" and cfg.loss_type == "bernoulli_gamma":
+        #     vprint("DeepESD Methodology: Subtracting 0.99 threshold from MSWEP precipitation")
+        #     y_train_np = np.maximum(y_train_np - 0.99, 0)
+        #     y_test_np  = np.maximum(y_test_np  - 0.99, 0)
 
         # Ensure y has channel dimension (N, 1, H, W) for models (CNN, UNet, GLM)
         y_train_tensor = torch.tensor(y_train_np[:, None, :, :], dtype=torch.float32)

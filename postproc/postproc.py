@@ -21,6 +21,8 @@ def main():
         print(f"Error: {config_path} not found.")
         sys.exit(1)
         
+    os.environ["POSTPROC_MASTER_CONFIG"] = os.path.abspath(config_path)
+    
     with open(config_path, "r") as f:
         config = yaml.safe_load(f)
     

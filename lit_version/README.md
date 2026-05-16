@@ -1,33 +1,40 @@
-# Organisation of the repository
-This repository is organized as follows:
+# PyTorch Lightning Downscaling Framework (`lit_version`)
 
-#### Organisation of the repository
-This repository is organized as follows:
-- `train.py`: Main training script, uses `lit_module`, `models`, and `BernoulliGammaLoss`.
-- `lit_module.py`: Defines the PyTorch Lightning module for training and validation, contains two classes:
-  - `LitDataModule`: Data loaders setup, calls `dataset.DownscalingDataset`.
-  - `LitModule`: Model training and validation logic.
-- `models/`: Directory containing model architectures: U-Net, ViT, also contains `losses.py` for loss functions.
-- `dataset.py`: Defines `DownscalingDataset` class for loading and preprocessing data.
+This directory contains a legacy or alternative version of the precipitation downscaling models implemented using the **PyTorch Lightning** framework. It was designed to reduce boilerplate training code and easily scale across multiple GPUs.
 
-#### Usage, training:
-To train a model, run the `train.py` script with the desired configuration and model type. For example:
+## 📁 Directory Structure
+
+- `train.py`: The main training script. It utilizes the `lit_module`, model architectures, and custom loss functions.
+- `lit_module.py`: Defines the PyTorch Lightning classes:
+  - `LitDataModule`: Handles data loading and connects to `dataset.DownscalingDataset`.
+  - `LitModule`: Encapsulates the core training, validation logic, and optimizer stepping.
+- `models/`: Contains the neural network architectures (U-Net, ViT) and loss functions (`losses.py`).
+- `dataset.py` / `dataset1.py`: Custom PyTorch `Dataset` classes for loading NetCDF climate data.
+- `plot_truthVSpred.py`: Utility script to visualize the truth versus predictions after inference.
+
+## 🚀 Usage
+
+### 1. Training a Model
+To train a model, run the `train.py` script specifying the configuration and model type:
 ```bash
-python train.py --config config_mse.yaml --model unet
+python train.py --config configs/config_mse.yaml --model unet
 ``` 
-This will train a U-Net model using the MSE loss function as specified in `config_mse.yaml`. Weights and logs will be saved in the `lit_version/weights` and `lit_version/logs` directories, respectively.
+Weights and TensorBoard logs will be automatically saved into the `weights/` and `logs/` directories, respectively.
 
-Make sure `TensorBoard` is installed to monitor training progress:
-```bash
-pip install tensorboard
-```
-To launch TensorBoard, run:
+### 2. Monitoring Progress
+This framework heavily relies on TensorBoard. Launch it to monitor validation loss and metrics:
 ```bash
 tensorboard --logdir=logs
 ```
 
-#### Usage, inference:
-After training, the model can be used for inference. The predictions and ground truth will be saved in a directory as specified in the configuration file in NetCDF files for later analysis.
+### 3. Inference
+After a model is trained, you can run inference to generate `.nc` prediction files:
 ```bash
-python train.py --config config_mse.yaml --model unet --inference
+python train.py --config configs/config_mse.yaml --model unet --inference
 ```
+
+### 4. Running on SLURM
+Pre-configured scripts are available to launch jobs on a computing cluster:
+- CPU Job: `sbatch job_cpu.sh`
+- GPU Job: `sbatch job_gpu.sh`
+- Inference Job: `sbatch job_cpu_inference.sh`

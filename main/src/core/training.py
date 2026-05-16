@@ -121,8 +121,12 @@ def train_model(cfg, x_train, y_train):
     if cfg.loss_type == "mse":
         criterion = nn.MSELoss()
     elif cfg.loss_type == "bernoulli_gamma":
-        from src.core.losses import BernoulliGammaLoss
-        criterion = BernoulliGammaLoss()
+        if cfg.model_type == "vit":
+            from src.models.vit_arch import BernoulliGammaLoss
+            criterion = BernoulliGammaLoss()
+        else:
+            from src.core.losses import BernoulliGammaLoss
+            criterion = BernoulliGammaLoss()
     elif cfg.loss_type == "gaussian":
         from src.core.losses import GaussianLoss
         criterion = GaussianLoss()

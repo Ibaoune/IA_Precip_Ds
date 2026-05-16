@@ -1,0 +1,174 @@
+======================================
+Job ID: 7039143
+Start time: ج ماي 15 23:43:03 +01 2026
+Post-processing ViT Hybrids vs CNN (LMDZ 250)
+======================================
+====================================================
+   Post-Processing Master Runner (postproc.py)
+====================================================
+
+====================================================
+🌍 Running for region: ALLMORR
+====================================================
+
+⏩ Skipping MEAN metrics (disabled in config).
+
+🚀 Starting EXTREME metrics suite for ALLMORR...
+
+🔹 Processing: CDD (ALLMORR)
+--- Executing: python3 precip/extreme/cdd/cdd.py
+[DEBUG] Processing reference data for CDD: mswep...
+
+Processing dataset: mswep
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/cdd/results/mswep_pr_allmorr_calcul_land_strategy_per_year_corr_per_year_Annual.nc
+Results saved: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/cdd/results/seasonal_metrics_mswep_pr_allmorr_calcul_land_per_year.csv
+
+Processing dataset: unet
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/cdd/results/unet_pr_allmorr_calcul_land_strategy_per_year_corr_per_year_Annual.nc
+Results saved: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/cdd/results/seasonal_metrics_unet_pr_allmorr_calcul_land_per_year.csv
+
+Processing dataset: cnn
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/cdd/results/cnn_pr_allmorr_calcul_land_strategy_per_year_corr_per_year_Annual.nc
+Results saved: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/cdd/results/seasonal_metrics_cnn_pr_allmorr_calcul_land_per_year.csv
+
+Processing dataset: glm
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/cdd/results/glm_pr_allmorr_calcul_land_strategy_per_year_corr_per_year_Annual.nc
+Results saved: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/cdd/results/seasonal_metrics_glm_pr_allmorr_calcul_land_per_year.csv
+
+Processing dataset: ViT_Exp21_Best
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/cdd/results/ViT_Exp21_Best_pr_allmorr_calcul_land_strategy_per_year_corr_per_year_Annual.nc
+Results saved: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/cdd/results/seasonal_metrics_ViT_Exp21_Best_pr_allmorr_calcul_land_per_year.csv
+
+Processing dataset: vit_precip_exp22_hybrid_deep_reg
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/cdd/results/vit_precip_exp22_hybrid_deep_reg_pr_allmorr_calcul_land_strategy_per_year_corr_per_year_Annual.nc
+Results saved: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/cdd/results/seasonal_metrics_vit_precip_exp22_hybrid_deep_reg_pr_allmorr_calcul_land_per_year.csv
+
+Generating plots for period: Annual...
+Saved scientific spatial map: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/cdd/figures/all/spatial_cdd_comparison_Annual.png
+Saved scientific spatial map: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/cdd/figures/all/spatial_cdd_error_Annual.png
+
+Pipeline tests passed! ✅
+--- Executing: python3 precip/extreme/cdd/plot_cdd.py
+
+Processing plots for period: Annual
+Generating spatial map for Annual...
+Saved scientific spatial map: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/cdd/figures/all/cdd_spatial_map_Annual.png
+Generating temporal evolution plot for Annual...
+Saved evolution plot: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/cdd/figures/all/cdd_evolution_Annual.png
+Generating distribution boxplots for Annual...
+Saved boxplot distribution: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/cdd/figures/all/cdd_boxplot_Annual.png
+
+Plotting completed successfully! ✅
+
+🔹 Processing: QQPLOT (ALLMORR)
+--- Executing: python3 precip/extreme/qqplot/qqplot.py
+[DEBUG] Loading reference: mswep...
+[DEBUG] Loading dataset: unet...
+[DEBUG] Loading dataset: cnn...
+[DEBUG] Loading dataset: glm...
+[DEBUG] Loading dataset: ViT_Exp21_Best...
+[DEBUG] Loading dataset: vit_precip_exp22_hybrid_deep_reg...
+
+Processing season: Annual
+Saved QQ-plot data for Annual to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/qqplot/results/qqplot_data_pr_allmorr_land_Annual.csv
+
+Processing season: DJF
+Saved QQ-plot data for DJF to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/qqplot/results/qqplot_data_pr_allmorr_land_DJF.csv
+
+Processing season: MAM
+Saved QQ-plot data for MAM to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/qqplot/results/qqplot_data_pr_allmorr_land_MAM.csv
+
+Processing season: JJA
+Saved QQ-plot data for JJA to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/qqplot/results/qqplot_data_pr_allmorr_land_JJA.csv
+
+Processing season: SON
+Saved QQ-plot data for SON to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/qqplot/results/qqplot_data_pr_allmorr_land_SON.csv
+--- Executing: python3 precip/extreme/qqplot/plot_qqplot.py
+
+Generating QQ-plot for period: Annual...
+Saved QQ-plot: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/qqplot/figures/all/qqplot_pr_allmorr_Annual.png
+
+🔹 Processing: R95 (ALLMORR)
+--- Executing: python3 precip/extreme/r95/r95.py
+[DEBUG] Processing reference data for R95: mswep...
+
+Processing dataset: mswep
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95/results/mswep_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Processing dataset: unet
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95/results/unet_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Processing dataset: cnn
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95/results/cnn_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Processing dataset: glm
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95/results/glm_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Processing dataset: ViT_Exp21_Best
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95/results/ViT_Exp21_Best_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Processing dataset: vit_precip_exp22_hybrid_deep_reg
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95/results/vit_precip_exp22_hybrid_deep_reg_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Generating plots for period: Annual...
+Saved scientific spatial map: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95/figures/all/spatial_r95_comparison_Annual.png
+Saved scientific spatial map: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95/figures/all/spatial_r95_error_Annual.png
+
+Pipeline tests passed! ✅
+--- Executing: python3 precip/extreme/r95/plot_r95.py
+
+Processing plots for period: Annual
+Generating spatial map for Annual...
+Saved scientific spatial map: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95/figures/all/r95_spatial_map_Annual.png
+Generating temporal evolution plot for Annual...
+Saved evolution plot: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95/figures/all/r95_evolution_Annual.png
+Generating distribution boxplots for Annual...
+Saved boxplot distribution: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95/figures/all/r95_boxplot_Annual.png
+
+Plotting completed successfully! ✅
+
+🔹 Processing: R95_FREQ (ALLMORR)
+--- Executing: python3 precip/extreme/r95_freq/r95_nbEvents_freq.py
+[DEBUG] Processing reference data for R95p: mswep...
+
+Processing dataset: mswep
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95_nbEvents_freq/results/mswep_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Processing dataset: unet
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95_nbEvents_freq/results/unet_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Processing dataset: cnn
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95_nbEvents_freq/results/cnn_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Processing dataset: glm
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95_nbEvents_freq/results/glm_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Processing dataset: ViT_Exp21_Best
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95_nbEvents_freq/results/ViT_Exp21_Best_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Processing dataset: vit_precip_exp22_hybrid_deep_reg
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95_nbEvents_freq/results/vit_precip_exp22_hybrid_deep_reg_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Generating plots for period: Annual...
+Saved scientific spatial map: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95_nbEvents_freq/figures/all/spatial_frequency_comparison_Annual.png
+Saved scientific spatial map: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95_nbEvents_freq/figures/all/spatial_frequency_error_Annual.png
+
+Pipeline tests passed! ✅
+--- Executing: python3 precip/extreme/r95_freq/plot_r95_nbEvents_freq.py
+
+Processing plots for period: Annual
+Generating spatial map for Annual...
+Saved scientific spatial map: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95_nbEvents_freq/figures/all/r95_nbEvents_freq_spatial_map_Annual.png
+Generating temporal evolution plot for Annual...
+Saved evolution plot: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95_nbEvents_freq/figures/all/r95_nbEvents_freq_evolution_Annual.png
+Generating distribution boxplots for Annual...
+Saved boxplot distribution: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/vits_glm_vs_cnn_lmdz250/1979-01-01_2014-12-31/allmorr/test/r95_nbEvents_freq/figures/all/r95_nbEvents_freq_boxplot_Annual.png
+
+Plotting completed successfully! ✅
+
+====================================================
+   Post-Processing Finished for all regions!
+====================================================
+======================================
+Job completed.
+======================================

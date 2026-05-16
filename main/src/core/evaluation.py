@@ -132,7 +132,7 @@ def evaluate_and_save(cfg, x_test, y_test, lon, lat, time):
     else:
         # Inference (chunked for memory safety)
         preds = []
-        chunk_size_val = 512
+        chunk_size_val = 16
 
         vprint("Running inference...")
         with torch.no_grad():
@@ -143,10 +143,14 @@ def evaluate_and_save(cfg, x_test, y_test, lon, lat, time):
                 out = model(xb)
                 
                 if cfg.loss_type == "bernoulli_gamma":
-                    # Compute expected value: E[X] = P(X>0) * shape * scale
-                    occurrence = torch.sigmoid(out[:, 0, :, :])
-                    shape = torch.exp(out[:, 1, :, :].clamp(-5, 5))
-                    scale = torch.exp(out[:, 2, :, :].clamp(-5, 5))
+                    if cfg.model_type == "vit":
+                        occurrence = out[:, 0, :, :]
+                        shape = out[:, 1, :, :]
+                        scale = out[:, 2, :, :]
+                    else:
+                        occurrence = torch.sigmoid(out[:, 0, :, :])
+                        shape = torch.exp(out[:, 1, :, :].clamp(-10, 7))
+                        scale = torch.exp(out[:, 2, :, :].clamp(-10, 7))
                     precip = occurrence * shape * scale
                 else:
                     precip = out[:, 0, :, :]

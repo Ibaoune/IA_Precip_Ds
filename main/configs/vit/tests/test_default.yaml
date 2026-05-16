@@ -22,7 +22,7 @@ training:
   epochs: 2
   batch_size: 4
   loss_type: "bernoulli_gamma" 
-  norm_mode: "gridbox"         
+  norm_mode: "channel"         
   early_stopping:
     enable: true
     max: 15
@@ -68,10 +68,10 @@ region:
 dates:
   train:
     start: "1979-01-01"
-    end: "1979-12-31"
+    end: "2005-12-31"
   test:
-    start: "1980-01-01"
-    end: "1980-12-31"
+    start: "2006-01-01"
+    end: "2020-12-31"
 
 paths:
   root_dir: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data"

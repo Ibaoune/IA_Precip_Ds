@@ -110,7 +110,6 @@ def perform_single_prediction(cfg, scenario=None, abs_results_dir=None):
     if abs_results_dir:
         cfg.results_dir    = abs_results_dir
         cfg.exp_dir        = os.path.join(abs_results_dir, cfg.experiment)
-        cfg.model_save_dir = os.path.join(cfg.exp_dir, "models")
 
     if not hasattr(perform_single_prediction, "cached_model"):
         vprint("Flow Step 5: Preparing Model...")
@@ -144,9 +143,14 @@ def perform_single_prediction(cfg, scenario=None, abs_results_dir=None):
                 xb    = torch.tensor(xb_np, dtype=torch.float32).to(cfg.device)
                 out   = model(xb)
                 if cfg.loss_type == "bernoulli_gamma":
-                    occurrence = torch.sigmoid(out[:, 0, :, :])
-                    shape      = torch.exp(out[:, 1, :, :].clamp(-5, 5))
-                    scale      = torch.exp(out[:, 2, :, :].clamp(-5, 5))
+                    if cfg.model_type == "vit":
+                        occurrence = out[:, 0, :, :]
+                        shape      = out[:, 1, :, :]
+                        scale      = out[:, 2, :, :]
+                    else:
+                        occurrence = torch.sigmoid(out[:, 0, :, :])
+                        shape      = torch.exp(out[:, 1, :, :].clamp(-10, 7))
+                        scale      = torch.exp(out[:, 2, :, :].clamp(-10, 7))
                     precip     = occurrence * (shape * scale)
                 else:
                     precip = out[:, 0, :, :]
@@ -209,7 +213,7 @@ def main():
                 "training_dropout_enable", "training_dropout_value",
                 "emb_size", "patch_size", "num_layers", "num_heads", "dropout",
                 "model_save_dir", "variables", "levels", "resolution", "interpolation_type",
-                "variable", "target"
+                "variable", "target", "lon_min", "lon_max", "lat_min", "lat_max"
             ]
             for k in keys_to_update:
                 if k in train_cfg_dict:
@@ -273,6 +277,9 @@ def main():
 
     if hasattr(cfg, "scenarios") and cfg.scenarios:
         for scenario in cfg.scenarios:
+            if not scenario.get("enable", True):
+                vprint(f"--> [SKIPPED] Scenario '{scenario['name']}' is disabled (enable: false).")
+                continue
             try:
                 perform_single_prediction(cfg, scenario=scenario, abs_results_dir=abs_results_dir)
                 vprint(f"--> [SUCCESS] Scenario '{scenario['name']}' completed.")
