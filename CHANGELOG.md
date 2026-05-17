@@ -4,6 +4,20 @@ All notable changes to this project are documented in this file, which is update
 
 ---
 
+## [2def42d] - 2026-05-17
+### Added
+- **Regional Split Evaluation Setup (North vs. South)**: Implemented a robust comparative framework to evaluate spatial training domain impacts on downscaling performance (comparing a single unified Morocco model against regionally specialized ones).
+- **Auto-Generation Pipeline**: Created [generate_regional_setups.py](file:///srv/data/mohammad.elaabaribao/work/papers/downscaling/main/generate_regional_setups.py) to dynamically construct regional divided coordinates:
+  - **North**: $28^\circ\text{N} \to 36^\circ/37^\circ\text{N}$ (covering mountainous Atlas and Mediterranean storms).
+  - **South**: $21^\circ\text{N} \to 28^\circ\text{N}$ (covering hyper-arid Saharan provinces).
+- **Regional Configurations**: Automatically generated divided YAML files under model-specific subdirectories:
+  - `main/configs/cnn/regional/` (`cnn_exp3_north`, `cnn_exp3_south`, `cnn_exp5_north`, `cnn_exp5_south`)
+  - `main/configs/vit/regional/` (`north`, `south`)
+  - `main/configs/glm/regional/` (`north`, `south`)
+- **Regional SLURM Scripts**: Automatically generated 8 optimized SLURM script entries under `main/scripts/regional/` for both standard GPU partitions and compute CPU partitions. All 8 regional training/validation jobs have been successfully submitted to the cluster queue.
+
+---
+
 ## [3dc7154] - 2026-05-17
 ### Added
 - **Production SLURM Submission Scripts**: Added 4 optimized SLURM job scripts inside `main/scripts/` to train and evaluate production models with the new land-mask loss configurations on the GPU and CPU partitions:
