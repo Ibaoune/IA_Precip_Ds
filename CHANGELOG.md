@@ -6,6 +6,11 @@ All notable changes to this project are documented in this file, which is update
 
 ## [3dc7154] - 2026-05-17
 ### Added
+- **Production SLURM Submission Scripts**: Added 4 optimized SLURM job scripts inside `main/scripts/` to train and evaluate production models with the new land-mask loss configurations on the GPU and CPU partitions:
+  - `job_gpu_cnn_exp3.sh`: Runs CNN Exp 3 on GPU.
+  - `job_gpu_cnn_exp5.sh`: Runs CNN Exp 5 on GPU.
+  - `job_gpu_vit.sh`: Runs ViT Best Hybrid on GPU.
+  - `job_cpu_glm.sh`: Runs GLM L2 on CPU with optimized 32 parallel task cores.
 - **Land-Sea Masking during Training & Validation**: Integrated spatial land-sea masking into loss calculations for CNN, ViT, and GLM models, optimizing the training purely for land-surface downscaling.
 - **`regionmask` Integration**: Used Natural Earth 1:110m land polygons on target coordinate grids `lon_out` and `lat_out` inside [train.py](file:///srv/data/mohammad.elaabaribao/work/papers/downscaling/main/train.py) to automatically build the spatial mask tensor.
 - **Masked Custom PyTorch Loss Functions**: Updated all major loss functions in [losses.py](file:///srv/data/mohammad.elaabaribao/work/papers/downscaling/main/src/core/losses.py) and [vit_arch.py](file:///srv/data/mohammad.elaabaribao/work/papers/downscaling/main/src/models/vit_arch.py) (including `BernoulliGammaLoss`, `GaussianLoss`, `AsymmetricMSELoss`, `IntensityWeightedMSELoss`, and `HurdleLoss`) to accept an optional `mask` parameter.
