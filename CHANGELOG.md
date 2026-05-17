@@ -4,6 +4,17 @@ All notable changes to this project are documented in this file, which is update
 
 ---
 
+## [7cda1b3] - 2026-05-17
+### Added
+- **Regional Prediction Gluing Tool**: Created [glue_regional_predictions.py](file:///srv/data/mohammad.elaabaribao/work/papers/downscaling/main/glue_regional_predictions.py) to automatically load and concatenate `North` ($28^\circ\text{N} \to 37^\circ\text{N}$) and `South` ($21^\circ\text{N} \to 28^\circ\text{N}$) NetCDF predictions along the latitude dimension for deep learning models (CNN Exp3, CNN Exp5, and ViT). This dynamically constructs a seamless, unified Moroccan-domain prediction NetCDF compatible with the main post-processing and metric plotting pipelines.
+- **GLM Regional Split Redundancy Verification**: Formally verified that spatial regional splitting is redundant for Generalized Linear Models (`PixelWiseGLM`). Since the model fits each pixel $(i,j)$ completely independently without spatial weight sharing:
+  $$\text{Model}_{(i, j)} = \text{GLM}(\text{Predictors}_{(i, j)}, \text{Precipitation}_{(i, j)})$$
+  the fitted coefficients in regional runs are mathematically identical to those in the unified run.
+### Changed
+- **Regional Evaluation Strategy**: Excluded GLM regional runs from the spatial slicing comparison to focus purely on the deep learning models (CNN and ViT) where global spatial weights (convolutions and self-attention heads) are shared and heavily impacted by regional training domains.
+
+---
+
 ## [2def42d] - 2026-05-17
 ### Added
 - **Regional Split Evaluation Setup (North vs. South)**: Implemented a robust comparative framework to evaluate spatial training domain impacts on downscaling performance (comparing a single unified Morocco model against regionally specialized ones).
