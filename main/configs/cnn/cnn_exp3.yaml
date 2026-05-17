@@ -1,26 +1,26 @@
 general:
   verbose: true
-  experiment: "vit_precip_exp21_best_hybrid"
+  experiment: "cnn_exp3"
   variable: "precip"  
   target: "mswep"    
   src: "era5"        
-  model_type: "vit" 
+  model_type: "cnn" 
   interpolation_type: "linear" 
   variables: ["z", "q", "t", "u", "v"]
-  levels: [500, 700, 850]
+  levels: [500, 700, 850, 1000]
   resolution: 2.0
 
 training:
   learning_rate: 1e-3
-  epochs: 25              # Entraînement long pour convergence totale
-  batch_size: 4
+  epochs: 200
+  batch_size: 512
   loss_type: "bernoulli_gamma" 
-  norm_mode: "global"     # Thermodynamique préservée (exp11)
+  norm_mode: "gridbox"         
   early_stopping:
     enable: true
     max: 15
   LR_scheduler:
-    enable: true
+    enable: false
     patience: 5
     factor: 0.5
     min_lr: 1e-6
@@ -29,11 +29,11 @@ training:
     value: 1.0
   weight_decay:
     enable: true
-    value: 1e-3           # Forte régularisation L2 (exp15)
+    value: 1e-4
   optimizer: "adamw"
   dropout:
     enable: true
-    value: 0.2            # Prévention du surapprentissage (exp15)
+    value: 0.3
   scheduler: 
     enable: true
     type: "cosine"
@@ -46,16 +46,17 @@ training:
 
 model:
   vit:
-    emb_size: 64          # Capacité idéale (exp11, exp14, exp15)
+    emb_size: 128
     patch_size: 4
-    num_layers: 8         # Extraction profonde (exp14)
+    num_layers: 4
     num_heads: 4
+    dropout: 0.0
 
 region:
   lon_min: -18
   lon_max: 0
   lat_min: 21
-  lat_max: 36
+  lat_max: 37
 
 dates:
   train:
@@ -65,8 +66,12 @@ dates:
     start: "2006-01-01"
     end: "2020-12-31"
 
+plots:
+  eval:
+    show_suffix_components_in_title: true
+
 paths:
-  root_dir: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data"
+  root_dir: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data//era5ztquv/1979_2020/all_data"
   results_dir: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/"
   shapefile_path: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/shapefiles/Morocco_shpfile/DA_REGIONS_12R.shp"
   era5_predictor_pattern: "{var}_1979-2020_levels.nc"

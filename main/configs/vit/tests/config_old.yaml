@@ -1,15 +1,17 @@
 ###########################################################
 # Script: training.py / train.py
-# Description: GLM test with L2 regularization (Ridge).
+# Description: Main configuration for deep learning downscaling.
+# Input: ERA5 or LMDZ datasets (predictors), Precipitation or Temperature (targets).
+# Output: Trained models (.pth) and losses saved in results/exp_name/.
 ###########################################################
 
 general:
   verbose: true
-  experiment: "glm_precip_l2"
+  experiment: "vit_T02"
   variable: "precip"  
   target: "mswep"    
   src: "era5"        
-  model_type: "glm" 
+  model_type: "vit" 
   interpolation_type: "linear" 
   variables: ["z", "q", "t", "u", "v"]
   levels: [500, 700, 850, 1000]
@@ -17,7 +19,7 @@ general:
 
 training:
   learning_rate: 1e-3
-  epochs: 10
+  epochs: 60
   batch_size: 64
   loss_type: "bernoulli_gamma" 
   norm_mode: "gridbox"         
@@ -33,9 +35,8 @@ training:
     enable: false
     value: 1.0
   weight_decay:
-    enable: true
-    value: 0.01  # This will act as the L2 alpha
-    type: "l2"   
+    enable: false
+    value: 1e-4
   optimizer: "adamw"
   dropout:
     enable: false
@@ -47,14 +48,22 @@ training:
     enable: false
     num_groups: 32
   validation:
-    enable: true
+    enable: false
     pecentage: 0.2
+
+
+model:
+  vit:
+    emb_size: 128
+    patch_size: 4
+    num_layers: 4
+    num_heads: 4
 
 region:
   lon_min: -18
   lon_max: 0
   lat_min: 21
-  lat_max: 36
+  lat_max: 37
 
 dates:
   train:
@@ -64,9 +73,21 @@ dates:
     start: "2006-01-01"
     end: "2020-12-31"
 
+plots:
+  eval:
+    show_suffix_components_in_title: true
+
 paths:
-  root_dir: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data"
+  # Paths for Mohammad's environment
+  root_dir: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data//era5ztquv/1979_2020/all_data"
   results_dir: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/"
   shapefile_path: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/shapefiles/Morocco_shpfile/DA_REGIONS_12R.shp"
+  
+  # Paths for Hassan's environment
+  #root_dir: "/home/hassan/All data/Internship/Code/DS_intern/Dataset/"
+  #results_dir: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/"
+  #shapefile_path: "ma_shp/ma.shp"
+
+  # Common file naming conventions 
   era5_predictor_pattern: "{var}_1979-2020_levels.nc"
   mswep_path: "mswep_1979_2020.nc"
