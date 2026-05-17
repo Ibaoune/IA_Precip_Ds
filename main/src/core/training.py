@@ -143,12 +143,12 @@ def _build_model(cfg, x_train, y_train):
         raise NotImplementedError(f"Model type {cfg.model_type} not supported yet")
 
 
-def train_model(cfg, x_train, y_train):
+def train_model(cfg, x_train, y_train, land_mask=None):
     vprint("Initializing model for training...")
 
     if cfg.model_type == "glm":
         from src.models.glm import train_glm
-        return train_glm(cfg, x_train, y_train)
+        return train_glm(cfg, x_train, y_train, land_mask=land_mask)
 
     # GPU ADAPTATION: Send the newly built model weights to the target device.
     model = _build_model(cfg, x_train, y_train).to(cfg.device)
@@ -283,10 +283,14 @@ def train_model(cfg, x_train, y_train):
             outputs = model(xb)
             
             if cfg.loss_type == "mse":
-                loss = criterion(outputs[:, 0, :, :], yb.squeeze(1))
+                loss_elementwise = (outputs[:, 0, :, :] - yb.squeeze(1)) ** 2
+                if land_mask is not None:
+                    loss = (loss_elementwise * land_mask).sum() / (land_mask.sum() * outputs.size(0))
+                else:
+                    loss = loss_elementwise.mean()
             else:
                 # BernoulliGammaLoss / GaussianLoss expect (B, C, H, W) and (B, 1, H, W)
-                loss = criterion(outputs, yb)
+                loss = criterion(outputs, yb, mask=land_mask)
                 
             loss.backward()
 
@@ -312,9 +316,13 @@ def train_model(cfg, x_train, y_train):
                     yb = yb.to(cfg.device, non_blocking=True)
                     outputs = model(xb)
                     if cfg.loss_type == "mse":
-                        v_loss = criterion(outputs[:, 0, :, :], yb.squeeze(1))
+                        v_loss_elementwise = (outputs[:, 0, :, :] - yb.squeeze(1)) ** 2
+                        if land_mask is not None:
+                            v_loss = (v_loss_elementwise * land_mask).sum() / (land_mask.sum() * outputs.size(0))
+                        else:
+                            v_loss = v_loss_elementwise.mean()
                     else:
-                        v_loss = criterion(outputs, yb)
+                        v_loss = criterion(outputs, yb, mask=land_mask)
                     total_val_loss += v_loss.item()
             epoch_val_loss = total_val_loss / len(val_loader)
             val_losses.append(epoch_val_loss)

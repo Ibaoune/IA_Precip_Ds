@@ -43,6 +43,7 @@ def main():
     # Load datasets returns: X, y_train, y_test, lon_in, lat_in, lon_out, lat_out, time_train, time_test
     datasets = load_datasets(cfg)
     X, y_train, y_test = datasets[0], datasets[1], datasets[2]
+    lon_out, lat_out = datasets[5], datasets[6]
 
     # Preprocess data returns: x_train_tensor, x_test_tensor, y_train_tensor, y_test_tensor
     x_train_tensor, _, y_train_tensor, _ = preprocess_data(
@@ -56,10 +57,26 @@ def main():
     y_train_tensor = y_train_tensor.to(cfg.device)
 
     # ----------------
+    # Compute Land/Sea Mask
+    # ----------------
+    import regionmask
+    import xarray as xr
+    import numpy as np
+
+    da = xr.DataArray(
+        np.zeros((len(lat_out), len(lon_out))),
+        coords=[("lat", lat_out), ("lon", lon_out)]
+    )
+    region = regionmask.defined_regions.natural_earth_v5_0_0.land_110
+    mask = region.mask(da)
+    land_mask_np = mask.notnull().values.astype("float32") # 1.0 for land, 0.0 for ocean
+    land_mask_tensor = torch.tensor(land_mask_np, dtype=torch.float32).to(cfg.device)
+
+    # ----------------
     # Train model
     # ----------------
     model, train_losses, val_losses = train_model(
-        cfg, x_train_tensor, y_train_tensor
+        cfg, x_train_tensor, y_train_tensor, land_mask=land_mask_tensor
     )
 
     # ----------------

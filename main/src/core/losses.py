@@ -1,14 +1,17 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
+import math
 
 class BernoulliGammaLoss(nn.Module):
     def __init__(self):
         super(BernoulliGammaLoss, self).__init__()
 
-    def forward(self, pred, true):
+    def forward(self, pred, true, mask=None):
         """
         pred: (B, 3, H, W) - [occurrence, shape, scale]
         true: (B, 1, H, W) - target precipitation
+        mask: (H, W) or (B, H, W) - optional spatial loss mask
         """
         eps = 1e-5
         
@@ -22,25 +25,27 @@ class BernoulliGammaLoss(nn.Module):
         bool_rain = (true > 0).float()
         epsilon = 1e-6
 
-        loss = (-torch.mean((1 - bool_rain) * torch.log(1 - occurrence + epsilon) + 
-                             bool_rain * (torch.log(occurrence + epsilon) + 
-                                          (shape_parameter - 1) * torch.log(true + epsilon) -
-                                          shape_parameter * torch.log(scale_parameter + epsilon) -
-                                          torch.lgamma(shape_parameter + epsilon) -
-                                          true / (scale_parameter + epsilon))))
+        loss_elementwise = (- ((1 - bool_rain) * torch.log(1 - occurrence + epsilon) + 
+                              bool_rain * (torch.log(occurrence + epsilon) + 
+                                           (shape_parameter - 1) * torch.log(true + epsilon) -
+                                           shape_parameter * torch.log(scale_parameter + epsilon) -
+                                           torch.lgamma(shape_parameter + epsilon) -
+                                           true / (scale_parameter + epsilon))))
 
-        return loss
-
-import math
+        if mask is not None:
+            return (loss_elementwise * mask).sum() / (mask.sum() * pred.size(0))
+        else:
+            return torch.mean(loss_elementwise)
 
 class GaussianLoss(nn.Module):
     def __init__(self):
         super(GaussianLoss, self).__init__()
 
-    def forward(self, pred, true):
+    def forward(self, pred, true, mask=None):
         """
         pred: (B, 2, H, W) - [mean, log_var]
         true: (B, 1, H, W) - target temperature
+        mask: (H, W) or (B, H, W) - optional spatial loss mask
         """
         if true.dim() == 4 and true.size(1) == 1:
             true = true.squeeze(1)
@@ -48,10 +53,12 @@ class GaussianLoss(nn.Module):
         mean = pred[:, 0, :, :]
         log_var = pred[:, 1, :, :] # This is ln(sigma^2)
         
-        loss = 0.5 * torch.mean(math.log(2 * math.pi) + log_var + torch.exp(-log_var) * (true - mean)**2)
-        return loss
-
-import torch.nn.functional as F
+        loss_elementwise = 0.5 * (math.log(2 * math.pi) + log_var + torch.exp(-log_var) * (true - mean)**2)
+        
+        if mask is not None:
+            return (loss_elementwise * mask).sum() / (mask.sum() * pred.size(0))
+        else:
+            return torch.mean(loss_elementwise)
 
 class AsymmetricMSELoss(nn.Module):
     """
@@ -62,7 +69,7 @@ class AsymmetricMSELoss(nn.Module):
         super().__init__()
         self.alpha = alpha
 
-    def forward(self, pred, true):
+    def forward(self, pred, true, mask=None):
         if true.dim() == 4 and true.size(1) == 1:
             true = true.squeeze(1)
         if pred.dim() == 4 and pred.size(1) == 1:
@@ -70,8 +77,12 @@ class AsymmetricMSELoss(nn.Module):
             
         diff = true - pred
         # If true > pred (underestimation), multiply squared error by alpha
-        loss = torch.where(diff > 0, self.alpha * (diff ** 2), diff ** 2)
-        return torch.mean(loss)
+        loss_elementwise = torch.where(diff > 0, self.alpha * (diff ** 2), diff ** 2)
+        
+        if mask is not None:
+            return (loss_elementwise * mask).sum() / (mask.sum() * pred.size(0))
+        else:
+            return torch.mean(loss_elementwise)
 
 class IntensityWeightedMSELoss(nn.Module):
     """
@@ -81,7 +92,7 @@ class IntensityWeightedMSELoss(nn.Module):
         super().__init__()
         self.w = weight_factor
 
-    def forward(self, pred, true):
+    def forward(self, pred, true, mask=None):
         if true.dim() == 4 and true.size(1) == 1:
             true = true.squeeze(1)
         if pred.dim() == 4 and pred.size(1) == 1:
@@ -89,7 +100,12 @@ class IntensityWeightedMSELoss(nn.Module):
             
         mse = (true - pred) ** 2
         weights = 1.0 + self.w * true
-        return torch.mean(weights * mse)
+        loss_elementwise = weights * mse
+        
+        if mask is not None:
+            return (loss_elementwise * mask).sum() / (mask.sum() * pred.size(0))
+        else:
+            return torch.mean(loss_elementwise)
 
 class HurdleLoss(nn.Module):
     """
@@ -101,7 +117,7 @@ class HurdleLoss(nn.Module):
         super().__init__()
         self.alpha = alpha
 
-    def forward(self, pred, true):
+    def forward(self, pred, true, mask=None):
         if true.dim() == 4 and true.size(1) == 1:
             true = true.squeeze(1)
             
@@ -117,5 +133,9 @@ class HurdleLoss(nn.Module):
         diff = true - intensity_pred
         intensity_loss = torch.where(diff > 0, self.alpha * torch.abs(diff), torch.abs(diff))
         
-        total_loss = bce_loss + (bool_rain * intensity_loss)
-        return torch.mean(total_loss)
+        loss_elementwise = bce_loss + (bool_rain * intensity_loss)
+        
+        if mask is not None:
+            return (loss_elementwise * mask).sum() / (mask.sum() * pred.size(0))
+        else:
+            return torch.mean(loss_elementwise)

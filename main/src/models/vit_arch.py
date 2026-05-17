@@ -20,7 +20,7 @@ class BernoulliGammaLoss(nn.Module):
         self.reduction = reduction
         self.eps = eps
 
-    def forward(self, pred, y):
+    def forward(self, pred, y, mask=None):
         """
         pi:    (B, ...) Bernoulli probability, in (0,1)
         alpha: (B, ...) Gamma shape > 0
@@ -70,14 +70,18 @@ class BernoulliGammaLoss(nn.Module):
         )
 
         occurence_mask = (y > self.eps).float()
-        loss = (1 - occurence_mask) * loss_zero + occurence_mask * loss_pos
+        loss_elementwise = (1 - occurence_mask) * loss_zero + occurence_mask * loss_pos
+
+        if mask is not None:
+            return (loss_elementwise * mask).sum() / (mask.sum() * pred.size(0))
 
         if self.reduction == "mean":
-            return loss.mean()
+            return loss_elementwise.mean()
         elif self.reduction == "sum":
-            return loss.sum()
+            return loss_elementwise.sum()
         else:
-            return loss
+            return loss_elementwise
+
 
 # ==========================================
 # Transformer Components (From lit_version/models/vit.py)

@@ -120,7 +120,7 @@ def _train_pixel(i, j, x_feat, y_point, variable):
     except:
         return i, j, None
 
-def train_glm(cfg, x_train, y_train, n_jobs=-1):
+def train_glm(cfg, x_train, y_train, n_jobs=-1, land_mask=None):
     """
     Parallelized GLM trainer.
     """
@@ -144,8 +144,14 @@ def train_glm(cfg, x_train, y_train, n_jobs=-1):
     
     # Prepare tasks
     tasks = []
+    land_mask_np = None
+    if land_mask is not None:
+        land_mask_np = land_mask.cpu().numpy().astype(bool)
+
     for i in range(n_lat):
         for j in range(n_lon):
+            if land_mask_np is not None and not land_mask_np[i, j]:
+                continue
             tasks.append((i, j, x_train_np[:, :, i, j], y_train_np[:, i, j], cfg.variable))
     
     # Execute in parallel
