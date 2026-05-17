@@ -887,12 +887,22 @@ def get_regional_means(ds, shapefile=None):
 def plot_temporal_evolution(model_paths, metric_name, period="Annual", shapefile=None, save_path=None, unit="mm/day"):
     """
     Plots a multi-line graph showing regional average evolution over time.
+    Uses dynamic high-contrast colors, linestyles, and markers to distinguish many models.
     """
     current_region = get_current_region()
     if shapefile is None or shapefile == DEFAULT_SHAPEFILE:
         shapefile = get_shapefile(current_region)
-    plt.figure(figsize=(10, 6), dpi=300)
-    fallback_colors = ['#F4A261', '#8E44AD', '#E76F51']
+    plt.figure(figsize=(11, 6), dpi=300)
+    
+    num_models = len(model_paths)
+    if num_models > 6:
+        import matplotlib.cm as cm
+        colors = [cm.tab20(i) for i in np.linspace(0, 1, num_models)]
+    else:
+        colors = ['#E63946', '#457B9D', '#1D3557', '#2A9D8F', '#F4A261', '#8E44AD']
+        
+    linestyles = ['-', '--', '-.', ':']
+    markers = ['o', 's', '^', 'd', 'v', 'p', '*', 'h', 'x', '+', '<', '>']
     
     local_min, local_max = np.inf, -np.inf
     
@@ -910,9 +920,12 @@ def plot_temporal_evolution(model_paths, metric_name, period="Annual", shapefile
             local_min = min(local_min, np.nanmin(means))
             local_max = max(local_max, np.nanmax(means))
                 
-            color = GLOBAL_MODEL_COLORS.get(model_name.upper(), fallback_colors[i % len(fallback_colors)])
-            plt.plot(time_axis, means, label=model_name, marker='o', markersize=5, 
-                     linewidth=2, color=color, alpha=0.85)
+            color = GLOBAL_MODEL_COLORS.get(model_name.upper(), colors[i % len(colors)])
+            linestyle = linestyles[i % len(linestyles)]
+            marker = markers[i % len(markers)]
+            
+            plt.plot(time_axis, means, label=model_name, marker=marker, markersize=5, 
+                     linestyle=linestyle, linewidth=2, color=color, alpha=0.85)
     
     custom_limits = get_custom_limits(metric_name, 'temporal')
     if custom_limits is not None:
@@ -922,14 +935,17 @@ def plot_temporal_evolution(model_paths, metric_name, period="Annual", shapefile
         if g_min is not None and g_max is not None:
             plt.ylim(min(local_min, g_min), max(local_max, g_max))
     
-    plt.xlabel("Year", fontsize=12)
-    plt.ylabel(f"{metric_name.upper()} ({unit})", fontsize=12)
+    plt.xlabel("Year", fontsize=11, fontweight='semibold')
+    plt.ylabel(f"{metric_name.upper()} ({unit})", fontsize=11, fontweight='semibold')
+    plt.xticks(fontsize=9)
+    plt.yticks(fontsize=9)
+    
     title_str = f"Temporal Evolution: {metric_name.upper()} ({period})"
     title_str += get_title_metadata(metric_name, period)
     plt.title(title_str, fontsize=11, fontweight='bold', pad=15)
     
     plt.grid(True, linestyle='--', alpha=0.5)
-    plt.legend(frameon=True, fontsize=10, loc='best')
+    plt.legend(bbox_to_anchor=(1.04, 1), loc='upper left', frameon=True, fontsize=8, ncol=1 if num_models <= 12 else 2)
     plt.tight_layout()
     
     if save_path:
@@ -942,22 +958,7 @@ def plot_temporal_evolution(model_paths, metric_name, period="Annual", shapefile
 def plot_metric_boxplot(model_paths, metric_name, period="Annual", shapefile=None, save_path=None):
     """
     Visualizes the statistical distribution (spread) of metric values across time and space.
-    
-    Inputs:
-        model_paths (dict): Paths to saved metric NetCDF files.
-        metric_name (str): Name of the metric for labeling.
-        period (str): The season to plot.
-        shapefile (str): Path to the regional shapefile.
-        save_path (str, optional): Target save location.
-        
-    Outputs:
-        None (Displays or saves a seaborn figure).
-        
-    How it works:
-        1. Loads the Morocco boundary from the shapefile.
-        2. For each model, extracts every single pixel that falls inside the boundary for all years.
-        3. Collects these thousands of values into a long-form DataFrame.
-        4. Uses seaborn.boxplot to show the median, spread (IQR), and full range of values.
+    Rotates x-axis ticks to prevent overlap when plotting many models.
     """
     import seaborn as sns
     all_data = []
@@ -997,11 +998,16 @@ def plot_metric_boxplot(model_paths, metric_name, period="Annual", shapefile=Non
         
     g_min, g_max = get_global_limits(local_min, local_max, get_current_region(), save_path, period)
     
-    plt.figure(figsize=(10, 6), dpi=300)
+    plt.figure(figsize=(11, 6), dpi=300)
     
-    # Consistent vibrant colors for models mapping to user requested colors
-    fallback_colors = ['#F4A261', '#8E44AD', '#E76F51']
-    palette = {name: GLOBAL_MODEL_COLORS.get(name.upper(), fallback_colors[i % len(fallback_colors)]) 
+    num_models = len(model_paths)
+    if num_models > 6:
+        import matplotlib.cm as cm
+        colors = [cm.tab20(i) for i in np.linspace(0, 1, num_models)]
+    else:
+        colors = ['#E63946', '#457B9D', '#1D3557', '#2A9D8F', '#F4A261', '#8E44AD']
+        
+    palette = {name: GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)]) 
                for i, name in enumerate(model_paths.keys())}
 
     sns.boxplot(data=df, x="Model", y=metric_name.upper(), palette=palette, 
@@ -1021,8 +1027,11 @@ def plot_metric_boxplot(model_paths, metric_name, period="Annual", shapefile=Non
     title_str = f"Distribution Analysis: {metric_name.upper()} ({period})"
     title_str += get_title_metadata(metric_name, period)
     plt.title(title_str, fontsize=11, fontweight='bold', pad=15)
-    plt.xlabel("Model Configuration", fontsize=11)
-    plt.ylabel(f"{metric_name.upper()} Range", fontsize=11)
+    plt.xlabel("Model Configuration", fontsize=11, fontweight='semibold')
+    plt.ylabel(f"{metric_name.upper()} Range", fontsize=11, fontweight='semibold')
+    
+    plt.xticks(rotation=45, ha='right', fontsize=8)
+    plt.yticks(fontsize=9)
     
     plt.grid(True, axis='y', linestyle='--', alpha=0.4)
     plt.tight_layout()
@@ -1037,20 +1046,23 @@ def plot_metric_boxplot(model_paths, metric_name, period="Annual", shapefile=Non
 def plot_monthly_cycle(datasets_dict, region=None, shapefile=None, save_path=None):
     """
     Plots the climatological annual cycle (monthly averages).
-    
-    Inputs:
-        datasets_dict (dict): Dictionary of datasets where keys are model names.
-        region (str, optional): Region identifier for potential filtering.
-        shapefile (str, optional): Path to region shapefile.
-        save_path (str, optional): Where to save the plot.
     """
     if region is None:
         region = get_current_region()
     if shapefile is None or shapefile == DEFAULT_SHAPEFILE:
         shapefile = get_shapefile(region)
         
-    plt.figure(figsize=(10, 6), dpi=300)
-    fallback_colors = ['#F4A261', '#8E44AD', '#E76F51']
+    plt.figure(figsize=(11, 6), dpi=300)
+    
+    num_models = len(datasets_dict)
+    if num_models > 6:
+        import matplotlib.cm as cm
+        colors = [cm.tab20(i) for i in np.linspace(0, 1, num_models)]
+    else:
+        colors = ['#E63946', '#457B9D', '#1D3557', '#2A9D8F', '#F4A261', '#8E44AD']
+        
+    linestyles = ['-', '--', '-.', ':']
+    markers = ['o', 's', '^', 'd', 'v', 'p', '*', 'h', 'x', '+', '<', '>']
     
     for i, (name, ds) in enumerate(datasets_dict.items()):
         # Calculate monthly means
@@ -1063,17 +1075,21 @@ def plot_monthly_cycle(datasets_dict, region=None, shapefile=None, save_path=Non
             m_mean, _ = get_regional_means(m_data, shapefile)
             means.append(m_mean)
         
-        color = GLOBAL_MODEL_COLORS.get(name.upper(), fallback_colors[i % len(fallback_colors)])
-        plt.plot(range(1, 13), means, label=name, marker='o', linewidth=2, color=color)
+        color = GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)])
+        linestyle = linestyles[i % len(linestyles)]
+        marker = markers[i % len(markers)]
+        plt.plot(range(1, 13), means, label=name, marker=marker, linestyle=linestyle, linewidth=2, color=color)
 
-    plt.xticks(range(1, 13), ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'])
-    plt.xlabel("Month", fontsize=12)
-    plt.ylabel("Precipitation (mm/day)", fontsize=12)
+    plt.xticks(range(1, 13), ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], fontsize=9)
+    plt.yticks(fontsize=9)
+    plt.xlabel("Month", fontsize=11, fontweight='semibold')
+    plt.ylabel("Precipitation (mm/day)", fontsize=11, fontweight='semibold')
+    
     title_str = f"Annual Cycle: Monthly Climatology ({region})"
     title_str += get_title_metadata("mean", "Monthly Climatology")
     plt.title(title_str, fontsize=11, fontweight='bold', pad=15)
     plt.grid(True, linestyle='--', alpha=0.5)
-    plt.legend(frameon=True, fontsize=10)
+    plt.legend(bbox_to_anchor=(1.04, 1), loc='upper left', frameon=True, fontsize=8, ncol=1 if num_models <= 12 else 2)
     plt.tight_layout()
     
     if save_path:
@@ -1093,8 +1109,16 @@ def plot_intensity_distribution_log(datasets_dict, region=None, shapefile=None, 
     if shapefile is None or shapefile == DEFAULT_SHAPEFILE:
         shapefile = get_shapefile(region)
         
-    plt.figure(figsize=(10, 6), dpi=300)
-    line_colors = ['#E63946', '#457B9D', '#1D3557', '#2A9D8F', '#F4A261', '#8E44AD']
+    plt.figure(figsize=(11, 6), dpi=300)
+    
+    num_models = len(datasets_dict)
+    if num_models > 6:
+        import matplotlib.cm as cm
+        colors = [cm.tab20(i) for i in np.linspace(0, 1, num_models)]
+    else:
+        colors = ['#E63946', '#457B9D', '#1D3557', '#2A9D8F', '#F4A261', '#8E44AD']
+        
+    linestyles = ['-', '--', '-.', ':']
     
     for i, (name, ds) in enumerate(datasets_dict.items()):
         lon2d, lat2d = np.meshgrid(ds["lon"], ds["lat"])
@@ -1106,20 +1130,24 @@ def plot_intensity_distribution_log(datasets_dict, region=None, shapefile=None, 
         vals = vals[~np.isnan(vals)]
         vals = vals[vals >= threshold]
         
-        color = GLOBAL_MODEL_COLORS.get(name.upper(), line_colors[i % len(line_colors)])
+        color = GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)])
+        linestyle = linestyles[i % len(linestyles)]
         if len(vals) > 1:
             bins = np.logspace(np.log10(threshold), np.log10(max(vals) if max(vals) > threshold else threshold+10), 50)
-            plt.hist(vals, bins=bins, histtype='step', label=name, color=color, linewidth=2, density=True)
+            plt.hist(vals, bins=bins, histtype='step', label=name, color=color, linestyle=linestyle, linewidth=2, density=True)
 
     plt.xscale('log')
     plt.yscale('log')
-    plt.xlabel("Daily Intensity (mm/day)", fontsize=12)
-    plt.ylabel("Probability Density", fontsize=12)
+    plt.xticks(fontsize=9)
+    plt.yticks(fontsize=9)
+    plt.xlabel("Daily Intensity (mm/day)", fontsize=11, fontweight='semibold')
+    plt.ylabel("Probability Density", fontsize=11, fontweight='semibold')
+    
     title_str = f"Intensity Distribution Log-Log ({region})"
     title_str += get_title_metadata("intensity", "All Days")
     plt.title(title_str, fontsize=11, fontweight='bold', pad=15)
     plt.grid(True, which="both", linestyle='--', alpha=0.3)
-    plt.legend(frameon=True, fontsize=10)
+    plt.legend(bbox_to_anchor=(1.04, 1), loc='upper left', frameon=True, fontsize=8, ncol=1 if num_models <= 12 else 2)
     plt.tight_layout()
     
     if save_path:
@@ -1140,8 +1168,16 @@ def plot_intensity_distribution_linear(datasets_dict, region=None, shapefile=Non
     if shapefile is None or shapefile == DEFAULT_SHAPEFILE:
         shapefile = get_shapefile(region)
         
-    plt.figure(figsize=(10, 6), dpi=300)
-    line_colors = ['#E63946', '#457B9D', '#1D3557', '#2A9D8F', '#F4A261', '#8E44AD']
+    plt.figure(figsize=(11, 6), dpi=300)
+    
+    num_models = len(datasets_dict)
+    if num_models > 6:
+        import matplotlib.cm as cm
+        colors = [cm.tab20(i) for i in np.linspace(0, 1, num_models)]
+    else:
+        colors = ['#E63946', '#457B9D', '#1D3557', '#2A9D8F', '#F4A261', '#8E44AD']
+        
+    linestyles = ['-', '--', '-.', ':']
     
     # Pre-load Morocco mask once
     morocco = gpd.read_file(shapefile).unary_union
@@ -1156,27 +1192,31 @@ def plot_intensity_distribution_linear(datasets_dict, region=None, shapefile=Non
         vals = vals[~np.isnan(vals)]
         vals = vals[vals >= threshold]
         
-        color = GLOBAL_MODEL_COLORS.get(name.upper(), line_colors[i % len(line_colors)])
+        color = GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)])
+        linestyle = linestyles[i % len(linestyles)]
         
         if len(vals) > 1:
             # KDE calculation
             kde = gaussian_kde(vals)
             pdf_vals = kde(x_range)
             
-            plt.plot(x_range, pdf_vals, color=color, label=name, linewidth=2)
+            plt.plot(x_range, pdf_vals, color=color, linestyle=linestyle, label=name, linewidth=2)
             
             # Vertical line for mean
             dist_mean = np.mean(vals)
             plt.axvline(dist_mean, color=color, linestyle='--', alpha=0.6, linewidth=1.5)
 
-    plt.xlabel("Daily Intensity (mm/day)", fontsize=12)
-    plt.ylabel("Probability Density", fontsize=12)
+    plt.xlabel("Daily Intensity (mm/day)", fontsize=11, fontweight='semibold')
+    plt.ylabel("Probability Density", fontsize=11, fontweight='semibold')
+    plt.xticks(fontsize=9)
+    plt.yticks(fontsize=9)
+    
     title_str = f"Intensity Distribution Linear KDE ({region})"
     title_str += get_title_metadata("intensity", "All Days")
     plt.title(title_str, fontsize=11, fontweight='bold', pad=15)
     plt.xlim(0, 30)
     plt.grid(True, linestyle=':', alpha=0.6)
-    plt.legend(frameon=True, fontsize=10)
+    plt.legend(bbox_to_anchor=(1.04, 1), loc='upper left', frameon=True, fontsize=8, ncol=1 if num_models <= 12 else 2)
     plt.tight_layout()
     
     if save_path:

@@ -58,7 +58,7 @@ for exp_num in range(1, 7):
         },
         "datasets": datasets_list,
         "postproc": {
-            "mean": {"enable": False, "bias": True, "rmse": True, "correlation": True},
+            "mean": {"enable": True, "bias": True, "rmse": True, "correlation": True},
             "extreme": {"enable": True, "cdd": True, "qqplot": True, "r01": False, "r99": False, "r95": True, "r99_freq": False, "r95_freq": True, "rocss": False}
         },
         "custom_limits": custom_limits
@@ -89,7 +89,7 @@ conda activate clean_env_Pytorch
 export PYTHONUNBUFFERED=1
 
 echo "======================================"
-echo "Job ID: \\$SLURM_JOB_ID"
+echo "Job ID: $SLURM_JOB_ID"
 echo "Post-processing UNet Experiment: {exp_num}"
 echo "======================================"
 
@@ -98,9 +98,9 @@ files=(
 {files_str}
 )
 
-for file in "\\${{files[@]}}"; do
-    while [ ! -f "\\$file" ]; do
-        echo "Waiting for \\$file..."
+for file in "${{files[@]}}"; do
+    while [ ! -f "$file" ]; do
+        echo "Waiting for $file..."
         sleep 600
     done
 done

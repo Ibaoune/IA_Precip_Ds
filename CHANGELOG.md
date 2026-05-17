@@ -4,6 +4,15 @@ All notable changes to this project are documented in this file, which is update
 
 ---
 
+## [d3e5b4a] - 2026-05-17
+### Changed
+- **Redefined Sweep Plot Aesthetics**: Overhauled `postproc/utils.py` visualization pipeline (`plot_temporal_evolution`, `plot_metric_boxplot`, `plot_monthly_cycle`, `plot_intensity_distribution_log`, `plot_intensity_distribution_linear`) to support high-contrast dynamic colors (cycling over colormap `tab20`), variable line styles, and custom marker configurations for complex multi-model comparison sweeps.
+- **Rotated Tick Labels and External Legend Layout**: Implemented automatic 45-degree rotation and shrunk font size (`fontsize=8`) for boxplot x-ticks, preventing severe overlaps when evaluating 12+ configurations. Moved all line plot legends to the right side of the plot using `bbox_to_anchor` layout to avoid data occlusion.
+- **Enabled Sweep Mean Metrics**: Modified `main/generate_postproc.py` to enable the `mean` metrics (bias, rmse, correlation) suite alongside extreme metrics for the UNet sweeps, and resolved a bash wait-loop variable escaping syntax bug in generated SLURM scripts.
+- **Resubmitted Post-Processing Jobs**: Resubmitted all 6 UNet sweep post-processing jobs to the compute partition, executing successfully in real-time.
+
+---
+
 ## [7cda1b3] - 2026-05-17
 ### Added
 - **Regional Prediction Gluing Tool**: Created [glue_regional_predictions.py](file:///srv/data/mohammad.elaabaribao/work/papers/downscaling/main/glue_regional_predictions.py) to automatically load and concatenate `North` ($28^\circ\text{N} \to 37^\circ\text{N}$) and `South` ($21^\circ\text{N} \to 28^\circ\text{N}$) NetCDF predictions along the latitude dimension for deep learning models (CNN Exp3, CNN Exp5, and ViT). This dynamically constructs a seamless, unified Moroccan-domain prediction NetCDF compatible with the main post-processing and metric plotting pipelines.
