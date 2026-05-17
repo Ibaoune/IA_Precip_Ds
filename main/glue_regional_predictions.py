@@ -39,10 +39,18 @@ def glue_predictions():
         },
         {
             "name": "vit_best",
-            "north_dir": "vit_north/region_lat_28.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.0001_bernoulli_gamma_25ep_wd_gc_dropout_cosine_gn",
-            "south_dir": "vit_south/region_lat_21.0_28.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.0001_bernoulli_gamma_25ep_wd_gc_dropout_cosine_gn",
-            "target_dir": "vit_regional_glued/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.0001_bernoulli_gamma_25ep_wd_gc_dropout_cosine_gn",
+            "north_dir": "vit_precip_exp21_best_hybrid_north/region_lat_28.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn",
+            "south_dir": "vit_precip_exp21_best_hybrid_south/region_lat_21.0_28.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn",
+            "target_dir": "vit_regional_glued/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn",
             "file_name": "vit_predictions_era5_to_mswep.nc",
+            "variable": "precipitation"
+        },
+        {
+            "name": "glm_precip_l2",
+            "north_dir": "glm_precip_l2_north/region_lat_28.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_10ep_wd",
+            "south_dir": "glm_precip_l2_south/region_lat_21.0_28.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_10ep_wd",
+            "target_dir": "glm_precip_l2_regional_glued/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_10ep_wd",
+            "file_name": "glm_predictions_era5_to_mswep.nc",
             "variable": "precipitation"
         }
     ]

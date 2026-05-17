@@ -4,6 +4,15 @@ All notable changes to this project are documented in this file, which is update
 
 ---
 
+## [f4a9b2c] - 2026-05-17
+### Added
+- **Regional vs Unified Post-Processing Framework**: Created a dedicated comparison configuration [config_regional_vs_unified.yaml](file:///srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/tests/config_regional_vs_unified.yaml) to evaluate the spatial training impact by directly comparing unified Moroccan models against their sliced regional counterparts (glued back from separate North and South training sessions) over testing period (2006–2020).
+- **Customized Seasonal and Extremes Suite**: Configured the pipeline to calculate the complete `mean` metrics suite (bias, rmse, correlation) and the exact subset of requested `extreme` indices (`cdd` and `r95_freq`) across all seasons (Annual, DJF, MAM, JJA, SON).
+- **Comprehensive Splicing and GLM Splicing**: Updated [glue_regional_predictions.py](file:///srv/data/mohammad.elaabaribao/work/papers/downscaling/main/glue_regional_predictions.py) to support splicing of Generalized Linear Models (`glm_precip_l2`) alongside the deep learning CNN and ViT models, and ran the script to assemble regional predictions for all four models.
+- **SLURM Automation**: Built and submitted [job_postproc_regional_vs_unified.sh](file:///srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/job_postproc_regional_vs_unified.sh) on the compute partition, currently running and compiling plots.
+
+---
+
 ## [d3e5b4a] - 2026-05-17
 ### Changed
 - **Redefined Sweep Plot Aesthetics**: Overhauled `postproc/utils.py` visualization pipeline (`plot_temporal_evolution`, `plot_metric_boxplot`, `plot_monthly_cycle`, `plot_intensity_distribution_log`, `plot_intensity_distribution_linear`) to support high-contrast dynamic colors (cycling over colormap `tab20`), variable line styles, and custom marker configurations for complex multi-model comparison sweeps.
