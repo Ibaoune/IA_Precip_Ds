@@ -7,11 +7,11 @@
 
 general:
   verbose: true
-  experiment: "unet_T01"
+  experiment: "unet_exp4_coordconv_mse"
   variable: "precip"  
   target: "mswep"    
   src: "era5"        
-  model_type: "unet" 
+  model_type: "unet_coordconv" 
   interpolation_type: "linear" 
   variables: ["z", "q", "t", "u", "v"]
   levels: [500, 700, 850, 1000]
@@ -19,16 +19,16 @@ general:
 
 training:
   learning_rate: 1e-3
-  epochs: 100
+  epochs: 150
   batch_size: 64
-  loss_type: "bernoulli_gamma" 
+  loss_type: "mse" 
   norm_mode: "gridbox"         
   early_stopping:
     enable: true
-    max: 15
+    max: 20
   LR_scheduler:
     enable: true
-    patience: 5
+    patience: 10
     factor: 0.5
     min_lr: 1e-6
   gradient_clipping:
@@ -42,7 +42,7 @@ training:
     enable: true
     value: 0.1
   scheduler: 
-    enable: true
+    enable: false
     type: "cosine"
   group_norm:
     enable: true

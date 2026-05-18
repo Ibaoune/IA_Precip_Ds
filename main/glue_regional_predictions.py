@@ -85,8 +85,8 @@ def glue_predictions():
         print("  Concatenating along 'lat' dimension...")
         ds_glued = xr.concat([ds_s, ds_n], dim="lat")
         
-        # Sort along lat to be absolutely clean
-        ds_glued = ds_glued.sortby("lat")
+        # Sort along lat descending to match unified predictions (North to South)
+        ds_glued = ds_glued.sortby("lat", ascending=False)
         
         # Create output directories
         os.makedirs(target_path_dir, exist_ok=True)

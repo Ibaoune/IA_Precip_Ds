@@ -1,7 +1,0 @@
-metric:
-  name: r95_nbEvents_freq
-  plot_seasons:
-  - Annual
-  - JJA
-  - MAM
-  strategy: daily_first

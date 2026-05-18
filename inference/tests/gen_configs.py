@@ -8,12 +8,12 @@ with open(base_yaml, "r") as f:
 tasks = [
     {
         "name": "cnn_exp3",
-        "train_config_path": "../../../interns/y2026/code/era5Tomswep/results/cnn_exp3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/config.txt",
+        "train_config_path": "../../../interns/y2026/code/era5Tomswep/results/tests/cnn/cnn_exp3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/config.txt",
         "output_dir": "results/output/cnn_exp3"
     },
     {
         "name": "cnn_exp5",
-        "train_config_path": "../../../interns/y2026/code/era5Tomswep/results/cnn_exp5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/config.txt",
+        "train_config_path": "../../../interns/y2026/code/era5Tomswep/results/tests/cnn/cnn_exp5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/config.txt",
         "output_dir": "results/output/cnn_exp5"
     },
     {
@@ -23,7 +23,7 @@ tasks = [
     },
     {
         "name": "glm_precip_l2",
-        "train_config_path": "../main/results/glm_precip_l2/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_10ep_wd/config.txt",
+        "train_config_path": "../main/results/tests/glm/glm_precip_l2/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_10ep_wd/config.txt",
         "output_dir": "results/output/glm_precip_l2"
     }
 ]

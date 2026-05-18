@@ -29,7 +29,7 @@ Le fichier `config.yaml` sert de modèle maître pour tous vos tests. La section
 ```yaml
 prediction:
   # 1. Pointez vers la configuration d'entraînement du modèle cible
-  train_config_path: ../main/results/glm_precip_l2/.../config.txt
+  train_config_path: ../main/results/tests/glm/glm_precip_l2/.../config.txt
   
   # 2. Dossier de sortie pour ce modèle
   output_dir: results/output/glm_precip_l2

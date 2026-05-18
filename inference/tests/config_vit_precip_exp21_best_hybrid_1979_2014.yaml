@@ -39,7 +39,7 @@ mappings:
 paths:
   era5_predictor_pattern: '{var}_1979-2020_levels.nc'
   lmdz_predictor_pattern: '{folder}/{lmdz_var}-hist.nc'
-  model_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/vit_precip_exp21_best_hybrid/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn/models/vit_precip.pth
+  model_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/tests/vit/vit_precip_exp21_best_hybrid/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn/models/vit_precip.pth
   mswep_path: mswep_1979_2020.nc
   results_dir: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/
   root_dir: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data
@@ -72,7 +72,7 @@ prediction:
     name: lmdz_250_present
     src: lmdz
     start: '1979-01-01'
-  train_config_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/vit_precip_exp21_best_hybrid/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn/config.txt
+  train_config_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/tests/vit/vit_precip_exp21_best_hybrid/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn/config.txt
 region:
   lat_max: 36
   lat_min: 21

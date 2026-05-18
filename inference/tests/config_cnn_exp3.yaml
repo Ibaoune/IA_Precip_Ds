@@ -83,7 +83,7 @@ paths:
   results_dir: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/
   model_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/datasets/cnn/cnn_precip.pth
 prediction:
-  train_config_path: ../../../interns/y2026/code/era5Tomswep/results/cnn_exp3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/config.txt
+  train_config_path: ../../../interns/y2026/code/era5Tomswep/results/tests/cnn/cnn_exp3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/config.txt
   bc_reference_folder: /home/hassan/All data/Internship/Code/LMDZ 250/present/
   models_dir: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/
   output_dir: results/output/cnn_exp3

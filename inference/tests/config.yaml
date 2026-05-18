@@ -69,7 +69,7 @@ paths:
 
 prediction:
   # Master path to the training config.txt — predict.py will automatically load model architecture and region from here
-  train_config_path: ../main/results/glm_precip_l2/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_10ep_wd/config.txt
+  train_config_path: ../main/results/tests/glm/glm_precip_l2/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_10ep_wd/config.txt
   bc_reference_folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250
   models_dir: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/
   output_dir: results/output/glm_precip_l2

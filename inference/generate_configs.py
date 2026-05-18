@@ -8,19 +8,19 @@ with open(template_file, "r") as f:
 models = [
     {
         "name": "vit_precip_exp21_best_hybrid",
-        "path": "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/vit_precip_exp21_best_hybrid/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn"
+        "path": "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/tests/vit/vit_precip_exp21_best_hybrid/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn"
     },
     {
         "name": "vit_precip_exp21_hybrid_base",
-        "path": "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/vit_precip_exp21_hybrid_base/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn"
+        "path": "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/tests/vit/vit_precip_exp21_hybrid_base/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn"
     },
     {
         "name": "vit_precip_exp22_hybrid_deep_reg",
-        "path": "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/vit_precip_exp22_hybrid_deep_reg/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.0005_bernoulli_gamma_30ep_lr_sched_wd_gc_dropout_cosine_gn"
+        "path": "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/tests/vit/vit_precip_exp22_hybrid_deep_reg/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.0005_bernoulli_gamma_30ep_lr_sched_wd_gc_dropout_cosine_gn"
     },
     {
         "name": "vit_precip_exp23_hybrid_bilinear_channel",
-        "path": "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/vit_precip_exp23_hybrid_bilinear_channel/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/channel_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn"
+        "path": "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/tests/vit/vit_precip_exp23_hybrid_bilinear_channel/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/channel_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn"
     }
 ]
 

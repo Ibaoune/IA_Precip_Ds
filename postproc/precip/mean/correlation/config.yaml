@@ -1,8 +1,0 @@
-metric:
-  corr_strategy: per_year
-  name: correlation
-  plot_seasons:
-  - Annual
-  - JJA
-  - MAM
-  strategy: per_year
