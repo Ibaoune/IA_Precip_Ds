@@ -1,0 +1,192 @@
+# ==============================================================================
+# Post-Processing Configuration Reference (Annual Evaluation Reference)
+# ==============================================================================
+# This configuration file controls the metrics computation, spatial mapping, 
+# seasonal aggregations, and visual styling for downscaled precipitation products.
+
+# Name of the active experiment / evaluation run.
+# This name is used to label the main output directories under the results/ path.
+experiment: "retained_models_evaluation_2006_2020"
+
+# Main execution parameters for post-processing
+parameters:
+  # The starting date of the evaluation period (YYYY-MM-DD)
+  start_date: "2006-01-01"
+  
+  # The ending date of the evaluation period (YYYY-MM-DD)
+  end_date: "2020-12-31"
+  
+  # The target evaluation region name. Maps to a specific spatial shapefile mask.
+  region: "allmorr"
+  
+  # The list of regions to process in a loop during master runner execution.
+  regions:
+    - "allmorr"
+    
+  # Whether to mask out ocean/sea gridboxes and keep only land points.
+  mask_land: true
+  
+  # Whether to restrict evaluation data strictly to Moroccan national borders.
+  only_morocco: true
+  
+  # The physical target variable name (e.g., 'pr' for precipitation).
+  predictand: "pr"
+  
+  # If true, skips metric calculations and only regenerates the figures from saved netCDF results.
+  plot_only: false
+  
+  # If true, enforces robust statistical limits (2nd to 98th percentile) for visual map colorbars.
+  impose_robust_limits: true
+  
+  # If true, appends standard scientific metadata (e.g. thresholds, date ranges) in the figure titles.
+  show_title_metadata: true
+  
+  # If true, uses the customized model colors and colormaps defined in the 'visualisation' section below.
+  customize_colorbars: true
+  
+  # The specific climatological periods or seasons to process and plot.
+  # For Annual evaluation, this contains exactly 'Annual'.
+  plot_periods:
+    - Annual
+
+# Reference dataset configuration (e.g., MSWEP observation)
+reference:
+  # Unique short identifier/label for the reference observation dataset
+  name: "mswep"
+  
+  # Absolute file path to the reference NetCDF dataset on the file system
+  file_path: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/mswep_1979_2020.nc"
+  
+  # The variable name inside the reference NetCDF file (e.g., 'precipitation')
+  variable_name: "precipitation"
+
+# List of downscaling datasets / models to evaluate against the reference
+datasets:
+  - name: "GLM"
+    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/glm/glm_precip_l2/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_10ep_wd/output_data/glm_predictions_era5_to_mswep.nc"
+    variable_name: "precipitation"
+    
+  - name: "UNET"
+    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/cnn/cnn_exp3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/cnn_predictions_era5_to_mswep.nc"
+    variable_name: "precipitation"
+    
+  - name: "ViT"
+    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/vit/vit_precip_exp21_best_hybrid/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/vit_predictions_era5_to_mswep.nc"
+    variable_name: "precipitation"
+    
+  - name: "CNN"
+    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/cnn/cnn_exp5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/cnn_predictions_era5_to_mswep.nc"
+    variable_name: "precipitation"
+
+# Metric Category toggles (determines which metrics to calculate and plot)
+postproc:
+  # Mean metrics suite
+  mean:
+    enable: true        # Set to false to disable all mean metrics
+    bias: true          # Mean Bias Error (MBE) spatial and temporal distribution
+    rmse: true          # Root Mean Square Error (RMSE)
+    correlation: true   # Temporal pearson correlation coefficient
+    
+  # Extreme precipitation indices and diagnostics suite
+  extreme:
+    enable: true                  # Set to false to disable all extreme metrics
+    cdd: true                     # Consecutive Dry Days index
+    cdd_thresholds: [1.0, 0.5]    # Threshold values (in mm/day) to run and plot CDD dynamically
+    qqplot: false                 # Quantile-Quantile diagnostic plots
+    r01: false                    # Wet days frequency index (> 1mm/day)
+    r99: false                    # 99th percentile precipitation threshold value
+    r95: true                     # 95th percentile precipitation threshold value
+    r99_freq: false               # Number of extremely wet days (> 99th percentile) per year
+    r95_freq: true                # Number of very wet days (> 95th percentile) per year
+    rocss: false                  # Relative Operating Characteristic Skill Score
+
+# Dynamic Graphic Visualisation and Styling Configuration
+visualisation:
+  # Custom HEX color codes assigned to each dataset in temporal lines and boxplot distributions
+  model_colors:
+    MSWEP: "#000000"      # Black for reference observation
+    GLM: "#2A9D8F"        # Green
+    UNET: "#1D3557"       # Dark Blue
+    ViT: "#E63946"        # Red
+    CNN: "#457B9D"        # Light Blue
+
+  # Subconfigs for each individual metric providing colormaps and contour levels / plot limits
+  metrics:
+    # Climatological mean precipitation
+    mean:
+      colormaps:
+        spatial: "custom_precip"       # Custom sequential rain ramp (white to blue to red)
+        difference: "custom_bias"      # Symmetrical diverging red-blue-white zero-centered map
+      limits:
+        spatial: [0, 0.1, 0.3, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5] # Discrete levels for absolute spatial maps
+        boxplot: [0, 6]                                                # Y-axis range for boxplot distributions
+        temporal: [0, 0.1, 0.3, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6] # Y-axis limits for temporal curves
+        
+    # Mean Bias Error (MBE)
+    bias:
+      colormaps:
+        spatial: "custom_bias"
+        difference: "custom_bias"
+      limits:
+        spatial: [-5, -4, -3, -2, -1, -0.5, -0.2, -0.1, 0, 0.1, 0.2, 0.5, 1, 2, 3, 4, 5]
+        boxplot: [-2.5, 2.5]
+        temporal: [-2.5, 2.5]
+        
+    # Root Mean Square Error (RMSE)
+    rmse:
+      colormaps:
+        spatial: "custom_precip"
+        difference: "custom_bias"
+      limits:
+        spatial: [0, 0.1, 0.3, 0.5, 1, 1.5, 2]
+        boxplot: [0, 2]
+        temporal: [0, 2]
+        
+    # Consecutive Dry Days (CDD)
+    cdd:
+      colormaps:
+        spatial: "YlOrBr"               # Sequential Yellow-Orange-Brown colormap for dryness
+        difference: "custom_bias"
+      limits:
+        spatial: [0, 10, 20, 30, 40, 60, 80, 100, 150, 200, 250, 300, 400]
+        difference: [-100, -80, -60, -40, -20, 0, 20, 40, 60, 80, 100]  # Dedicated limits for spatial error/difference plots
+        boxplot: [0, 400]
+        temporal: [0, 400]
+        
+    # 95th Percentile Wet-Day Precipitation (R95)
+    r95:
+      colormaps:
+        spatial: "custom_precip"
+        difference: "custom_bias"
+      limits:
+        spatial: [0, 0.1, 0.3, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10]
+        difference: [-5, -4, -3, -2, -1, -0.5, -0.2, -0.1, 0, 0.1, 0.2, 0.5, 1, 2, 3, 4, 5]
+        boxplot: [0, 10]
+        temporal: [0, 0.1, 0.3, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10]
+        
+    # Frequency of very wet days (> 95th percentile events)
+    r95_freq:
+      colormaps:
+        spatial: "custom_freq"         # Custom sequential frequency ramp (yellow to magenta)
+        difference: "custom_bias"
+      limits:
+        spatial: [0, 2, 4, 6, 8, 10, 15]
+        difference: [-10, -8, -6, -4, -2, -1, 0, 1, 2, 4, 6, 8, 10]
+        boxplot: [0, 15]
+        temporal: [0, 15]
+        
+    # Pearson Correlation Coefficient
+    correlation:
+      colormaps:
+        spatial: "RdBu_r"              # Diverging Red-Yellow-Blue or Red-Blue colormap
+        difference: "custom_bias"
+      limits:
+        spatial: [-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1]
+        boxplot: [-1, 1]
+        temporal: [-1, 1]
+        
+    # Default fallbacks if a specific metric is not explicitly detailed above
+    default:
+      colormaps:
+        spatial: "viridis"             # Standard sequential matplotlib viridis map
+        difference: "custom_bias"

@@ -11,8 +11,12 @@ parameters:
   plot_only: false
   impose_robust_limits: true
   show_title_metadata: true
+  customize_colorbars: true
   plot_periods:
-    - Annual
+    - DJF
+    - MAM
+    - JJA
+    - SON
 
 reference:
   name: "mswep"
@@ -30,7 +34,7 @@ datasets:
     file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/vit/vit_precip_exp21_best_hybrid/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/vit_predictions_era5_to_mswep.nc"
     variable_name: "precipitation"
   - name: "CNN"
-    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/cnn/cnn_exp3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/cnn_predictions_era5_to_mswep.nc"
+    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/cnn/cnn_exp5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/cnn_predictions_era5_to_mswep.nc"
     variable_name: "precipitation"
 
 postproc:
@@ -42,6 +46,7 @@ postproc:
   extreme:
     enable: true
     cdd: true
+    cdd_thresholds: [1.0, 0.5]
     qqplot: false
     r01: false
     r99: false
@@ -50,32 +55,77 @@ postproc:
     r95_freq: true
     rocss: false
 
-custom_limits:
-  bias:
-    spatial: [-5, -4, -3, -2, -1, -0.5, -0.2, -0.1, 0, 0.1, 0.2, 0.5, 1, 2, 3, 4, 5]
-    boxplot: [-10, 10]
-    temporal: [-5, 5]
-  rmse:
-    spatial: [0, 1, 2, 3, 4, 5, 6, 8, 10]
-    boxplot: [0, 10]
-    temporal: [0, 10]
-  mean:
-    spatial: [0, 0.1, 0.3, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6]
-    boxplot: [0, 6]
-    temporal: [0, 0.1, 0.3, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6]
-  cdd:
-    spatial: [0, 10, 20, 30, 40, 60, 80, 100]
-    boxplot: [0, 100]
-    temporal: [0, 100]
-  r95:
-    spatial: [0, 5, 10, 20, 30, 40, 50]
-    boxplot: [0, 50]
-    temporal: [0, 50]
-  r95_freq:
-    spatial: [0, 2, 4, 6, 8, 10, 15]
-    boxplot: [0, 15]
-    temporal: [0, 15]
-  correlation:
-    spatial: [-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1]
-    boxplot: [-1, 1]
-    temporal: [-1, 1]
+visualisation:
+  # Global dataset/model colors used across all line and boxplot figures
+  model_colors:
+    MSWEP: "#000000"      # Black for reference
+    GLM: "#2A9D8F"        # Green
+    UNET: "#1D3557"       # Dark Blue
+    ViT: "#E63946"        # Red
+    CNN: "#457B9D"        # Light Blue
+
+  # Subconfigs for each metric containing all details of figure visualization (colormaps, limits)
+  metrics:
+    mean:
+      colormaps:
+        spatial: "custom_precip"
+        difference: "custom_bias"
+      limits:
+        spatial: [0, 0.1, 0.3, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
+        boxplot: [0, 6]
+        temporal: [0, 0.1, 0.3, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6]
+    bias:
+      colormaps:
+        spatial: "custom_bias"
+        difference: "custom_bias"
+      limits:
+        spatial: [-5, -4, -3, -2, -1, -0.5, -0.2, -0.1, 0, 0.1, 0.2, 0.5, 1, 2, 3, 4, 5]
+        boxplot: [-2.5, 2.5]
+        temporal: [-2.5, 2.5]
+    rmse:
+      colormaps:
+        spatial: "custom_precip"
+        difference: "custom_bias"
+      limits:
+        spatial: [0, 0.1, 0.3, 0.5, 1, 1.5, 2]
+        boxplot: [0, 2]
+        temporal: [0, 2]
+    cdd:
+      colormaps:
+        spatial: "YlOrBr"
+        difference: "custom_bias"
+      limits:
+        spatial: [0, 10, 20, 30, 40, 60, 80, 100, 150, 200, 250, 300, 400]
+        difference: [-100, -80, -60, -40, -20, 0, 20, 40, 60, 80, 100]
+        boxplot: [0, 400]
+        temporal: [0, 400]
+    r95:
+      colormaps:
+        spatial: "custom_precip"
+        difference: "custom_bias"
+      limits:
+        spatial: [0, 0.1, 0.3, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10]
+        difference: [-5, -4, -3, -2, -1, -0.5, -0.2, -0.1, 0, 0.1, 0.2, 0.5, 1, 2, 3, 4, 5]
+        boxplot: [0, 10]
+        temporal: [0, 0.1, 0.3, 0.5, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10]
+    r95_freq:
+      colormaps:
+        spatial: "custom_freq"
+        difference: "custom_bias"
+      limits:
+        spatial: [0, 2, 4, 6, 8, 10, 15]
+        difference: [-10, -8, -6, -4, -2, -1, 0, 1, 2, 4, 6, 8, 10]
+        boxplot: [0, 15]
+        temporal: [0, 15]
+    correlation:
+      colormaps:
+        spatial: "RdBu_r"
+        difference: "custom_bias"
+      limits:
+        spatial: [-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1]
+        boxplot: [-1, 1]
+        temporal: [-1, 1]
+    default:
+      colormaps:
+        spatial: "viridis"
+        difference: "custom_bias"

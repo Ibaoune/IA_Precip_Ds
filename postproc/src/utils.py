@@ -105,6 +105,18 @@ def get_title_metadata(metric_name, period=""):
     if match:
         what = METRIC_METADATA[match]["what"]
         how = METRIC_METADATA[match]["how"]
+        if match == "cdd":
+            thresh = "1"
+            if "0.5" in base_name:
+                thresh = "0.5"
+            elif "1mm" in base_name:
+                thresh = "1"
+            else:
+                import re
+                m = re.search(r'cdd_([0-9\.]+)', base_name)
+                if m:
+                    thresh = m.group(1)
+            how = f"Max consecutive days with precipitation < {thresh}mm/day"
         return f"\n[ Period: {period_str} | {what} | {how} ]"
     
     return f"\n[ Period: {period_str} ]"
@@ -119,6 +131,30 @@ def use_robust_limits():
                 return global_cfg['parameters'].get('impose_robust_limits', True)
     return True
 
+def _get_metric_config(metric_name):
+    """
+    Helper to extract the visual subconfig dictionary for a specific metric from global configuration.
+    """
+    config_path = os.environ.get("POSTPROC_MASTER_CONFIG", os.path.join(PROJECT_ROOT, "config.yaml"))
+    if os.path.exists(config_path):
+        import yaml
+        try:
+            with open(config_path, 'r') as f:
+                cfg = yaml.safe_load(f)
+                if cfg:
+                    vis_cfg = cfg.get('visualisation', {})
+                    metrics_cfg = vis_cfg.get('metrics', {})
+                    
+                    base_name = str(metric_name).lower()
+                    # Find exact or best key match in subconfig keys
+                    for k in sorted(metrics_cfg.keys(), key=len, reverse=True):
+                        if k in base_name:
+                            return metrics_cfg[k]
+                    return metrics_cfg.get('default', {})
+        except Exception as e:
+            print(f"⚠️ Warning loading visualisation config: {e}")
+    return {}
+
 def get_custom_limits(metric_name, plot_type):
     config_path = os.environ.get("POSTPROC_MASTER_CONFIG", os.path.join(PROJECT_ROOT, "config.yaml"))
     if os.path.exists(config_path):
@@ -128,6 +164,26 @@ def get_custom_limits(metric_name, plot_type):
             if global_cfg and 'parameters' in global_cfg:
                 if not global_cfg['parameters'].get('impose_robust_limits', True):
                     return None
+                    
+    # Read from new structured visualisation.metrics subconfig
+    metric_cfg = _get_metric_config(metric_name)
+    limits_cfg = metric_cfg.get('limits', {})
+    
+    # Symmetrically direct difference/error spatial maps to look for a 'difference' subconfig key
+    actual_plot_type = plot_type
+    if plot_type == 'spatial' and any(x in metric_name.lower() for x in ['error', 'bias', 'difference']):
+        if 'difference' in limits_cfg:
+            actual_plot_type = 'difference'
+            
+    if actual_plot_type in limits_cfg:
+        limits = limits_cfg[actual_plot_type]
+        if isinstance(limits, list) and len(limits) >= 2:
+            return limits
+            
+    # Fallback to old custom_limits for safety / backward compatibility
+    if os.path.exists(config_path):
+        with open(config_path, 'r') as f:
+            global_cfg = yaml.safe_load(f)
             custom = global_cfg.get('custom_limits', {})
             base_name = str(metric_name).lower()
             match = None
@@ -140,6 +196,64 @@ def get_custom_limits(metric_name, plot_type):
                 if isinstance(limits, list) and len(limits) >= 2:
                     return limits
     return None
+
+def get_custom_colormap(metric_name, map_type='spatial'):
+    """
+    Retrieves the custom colormap for a given metric and map type from config if customize_colorbars is enabled.
+    Returns None if not customized or disabled.
+    """
+    config_path = os.environ.get("POSTPROC_MASTER_CONFIG", os.path.join(PROJECT_ROOT, "config.yaml"))
+    if os.path.exists(config_path):
+        import yaml
+        try:
+            with open(config_path, 'r') as f:
+                cfg = yaml.safe_load(f)
+                if not (cfg and cfg.get('parameters', {}).get('customize_colorbars', False)):
+                    return None
+        except:
+            return None
+            
+    # Check new structured subconfig first
+    metric_cfg = _get_metric_config(metric_name)
+    cmaps_cfg = metric_cfg.get('colormaps', {})
+    if map_type in cmaps_cfg:
+        return cmaps_cfg[map_type]
+        
+    # Fallback to old colorbars config for backward compatibility
+    if os.path.exists(config_path):
+        try:
+            with open(config_path, 'r') as f:
+                cfg = yaml.safe_load(f)
+                colorbars = cfg.get('colorbars', {})
+                type_cfg = colorbars.get(map_type, {})
+                base_name = str(metric_name).lower()
+                for k in sorted(type_cfg.keys(), key=len, reverse=True):
+                    if k in base_name:
+                        return type_cfg[k]
+                return type_cfg.get('default')
+        except Exception as e:
+            print(f"⚠️ Warning loading colorbar config: {e}")
+    return None
+
+def get_custom_model_colors():
+    """
+    Retrieves the custom model colors dict from config if customize_colorbars is enabled.
+    """
+    config_path = os.environ.get("POSTPROC_MASTER_CONFIG", os.path.join(PROJECT_ROOT, "config.yaml"))
+    if os.path.exists(config_path):
+        import yaml
+        try:
+            with open(config_path, 'r') as f:
+                cfg = yaml.safe_load(f)
+                if cfg and cfg.get('parameters', {}).get('customize_colorbars', False):
+                    vis_cfg = cfg.get('visualisation', {})
+                    if 'model_colors' in vis_cfg:
+                        return vis_cfg['model_colors']
+                    # Fallback to old root key for compatibility
+                    return cfg.get('model_colors', {})
+        except Exception as e:
+            print(f"⚠️ Warning loading model_colors config: {e}")
+    return {}
 
 def get_results_dir(config, metric_name, root_path):
     """
@@ -448,7 +562,19 @@ def plot_spatial_maps(data_dict, metric_name, period="Annual", shapefile=None, s
                     levels = [-20, -10, -5, -2, -1, -0.5, 0, 0.5, 1, 2, 5, 10, 20]
                 else:
                     levels = BIAS_LEVELS
-            cmap = mcolors.LinearSegmentedColormap.from_list("custom_bias", BIAS_RDBU_WHITE, N=len(levels) + 1)
+            
+            custom_cmap_name = get_custom_colormap(metric_name, 'difference')
+            if custom_cmap_name == "custom_bias" or not custom_cmap_name:
+                cmap = mcolors.LinearSegmentedColormap.from_list("custom_bias", BIAS_RDBU_WHITE, N=len(levels) + 1)
+            elif custom_cmap_name == "custom_freq":
+                cmap = mcolors.LinearSegmentedColormap.from_list("custom_freq", ["white", "lightyellow", "gold", "darkorange", "crimson", "purple", "darkmagenta"], N=256)
+            elif custom_cmap_name == "custom_precip":
+                cmap = mcolors.LinearSegmentedColormap.from_list("custom_precip", ["white", "lightblue", "darkblue", "darkgreen", "lightgreen", "yellow", "orange", "red"], N=256)
+            else:
+                try:
+                    cmap = plt.get_cmap(custom_cmap_name)
+                except ValueError:
+                    cmap = mcolors.LinearSegmentedColormap.from_list("custom_bias", BIAS_RDBU_WHITE, N=len(levels) + 1)
             norm = mcolors.BoundaryNorm(levels, ncolors=cmap.N, extend='both')
 
         elif "freq" in low_metric or "nbevents" in low_metric or "r95p" in low_metric or "r99p" in low_metric:
@@ -465,12 +591,29 @@ def plot_spatial_maps(data_dict, metric_name, period="Annual", shapefile=None, s
                     levels = [0, 5, 10, 15, 20, 25, 30]
                 else:
                     levels = FREQ_LEVELS
-            cmap = mcolors.LinearSegmentedColormap.from_list(
-                "custom_freq",
-                ["white", "lightyellow", "gold", "darkorange", "crimson", "purple", "darkmagenta"],
-                N=256
-            )
+            
+            custom_cmap_name = get_custom_colormap(metric_name, 'spatial')
+            if custom_cmap_name == "custom_freq" or not custom_cmap_name:
+                cmap = mcolors.LinearSegmentedColormap.from_list(
+                    "custom_freq",
+                    ["white", "lightyellow", "gold", "darkorange", "crimson", "purple", "darkmagenta"],
+                    N=256
+                )
+            elif custom_cmap_name == "custom_bias":
+                cmap = mcolors.LinearSegmentedColormap.from_list("custom_bias", BIAS_RDBU_WHITE, N=len(levels) + 1)
+            elif custom_cmap_name == "custom_precip":
+                cmap = mcolors.LinearSegmentedColormap.from_list("custom_precip", ["white", "lightblue", "darkblue", "darkgreen", "lightgreen", "yellow", "orange", "red"], N=256)
+            else:
+                try:
+                    cmap = plt.get_cmap(custom_cmap_name)
+                except ValueError:
+                    cmap = mcolors.LinearSegmentedColormap.from_list(
+                        "custom_freq",
+                        ["white", "lightyellow", "gold", "darkorange", "crimson", "purple", "darkmagenta"],
+                        N=256
+                    )
             norm = mcolors.BoundaryNorm(levels, ncolors=cmap.N, extend='max')
+            
         elif "cdd" in low_metric:
             if custom_levels is not None:
                 levels = custom_levels
@@ -483,8 +626,23 @@ def plot_spatial_maps(data_dict, metric_name, period="Annual", shapefile=None, s
                     levels = [0, 20, 40, 60, 80, 100, 120, 150]
                 else:
                     levels = CDD_LEVELS
-            cmap = plt.get_cmap("YlOrBr")
+            
+            custom_cmap_name = get_custom_colormap(metric_name, 'spatial')
+            if custom_cmap_name == "custom_bias":
+                cmap = mcolors.LinearSegmentedColormap.from_list("custom_bias", BIAS_RDBU_WHITE, N=len(levels) + 1)
+            elif custom_cmap_name == "custom_freq":
+                cmap = mcolors.LinearSegmentedColormap.from_list("custom_freq", ["white", "lightyellow", "gold", "darkorange", "crimson", "purple", "darkmagenta"], N=256)
+            elif custom_cmap_name == "custom_precip":
+                cmap = mcolors.LinearSegmentedColormap.from_list("custom_precip", ["white", "lightblue", "darkblue", "darkgreen", "lightgreen", "yellow", "orange", "red"], N=256)
+            elif custom_cmap_name:
+                try:
+                    cmap = plt.get_cmap(custom_cmap_name)
+                except ValueError:
+                    cmap = plt.get_cmap("YlOrBr")
+            else:
+                cmap = plt.get_cmap("YlOrBr")
             norm = mcolors.BoundaryNorm(levels, ncolors=cmap.N, extend='max')
+            
         elif "r01" in low_metric:
             if custom_levels is not None:
                 levels = custom_levels
@@ -495,8 +653,23 @@ def plot_spatial_maps(data_dict, metric_name, period="Annual", shapefile=None, s
                     levels = [0, 5, 10, 15, 20, 30, 40, 50]
                 else:
                     levels = [0, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-            cmap = plt.get_cmap("YlGnBu")
+            
+            custom_cmap_name = get_custom_colormap(metric_name, 'spatial')
+            if custom_cmap_name == "custom_bias":
+                cmap = mcolors.LinearSegmentedColormap.from_list("custom_bias", BIAS_RDBU_WHITE, N=len(levels) + 1)
+            elif custom_cmap_name == "custom_freq":
+                cmap = mcolors.LinearSegmentedColormap.from_list("custom_freq", ["white", "lightyellow", "gold", "darkorange", "crimson", "purple", "darkmagenta"], N=256)
+            elif custom_cmap_name == "custom_precip":
+                cmap = mcolors.LinearSegmentedColormap.from_list("custom_precip", ["white", "lightblue", "darkblue", "darkgreen", "lightgreen", "yellow", "orange", "red"], N=256)
+            elif custom_cmap_name:
+                try:
+                    cmap = plt.get_cmap(custom_cmap_name)
+                except ValueError:
+                    cmap = plt.get_cmap("YlGnBu")
+            else:
+                cmap = plt.get_cmap("YlGnBu")
             norm = mcolors.BoundaryNorm(levels, ncolors=cmap.N, extend='max')
+            
         elif low_metric in ["mean", "rmse", "precipitation", "r95", "r99"]:
             if custom_levels is not None:
                 levels = custom_levels
@@ -511,14 +684,45 @@ def plot_spatial_maps(data_dict, metric_name, period="Annual", shapefile=None, s
                     levels = [0, 5, 10, 20, 30, 40, 60, 80, 100]
                 else:
                     levels = PRECIP_EXTREME_LEVELS if low_metric in ["r95", "r99"] else PRECIP_MEAN_LEVELS
-            cmap = mcolors.LinearSegmentedColormap.from_list(
-                "custom_precip",
-                ["white", "lightblue", "darkblue", "darkgreen", "lightgreen", "yellow", "orange", "red"],
-                N=256
-            )
+            
+            custom_cmap_name = get_custom_colormap(metric_name, 'spatial')
+            if custom_cmap_name == "custom_precip" or not custom_cmap_name:
+                cmap = mcolors.LinearSegmentedColormap.from_list(
+                    "custom_precip",
+                    ["white", "lightblue", "darkblue", "darkgreen", "lightgreen", "yellow", "orange", "red"],
+                    N=256
+                )
+            elif custom_cmap_name == "custom_bias":
+                cmap = mcolors.LinearSegmentedColormap.from_list("custom_bias", BIAS_RDBU_WHITE, N=len(levels) + 1)
+            elif custom_cmap_name == "custom_freq":
+                cmap = mcolors.LinearSegmentedColormap.from_list("custom_freq", ["white", "lightyellow", "gold", "darkorange", "crimson", "purple", "darkmagenta"], N=256)
+            else:
+                try:
+                    cmap = plt.get_cmap(custom_cmap_name)
+                except ValueError:
+                    cmap = mcolors.LinearSegmentedColormap.from_list(
+                        "custom_precip",
+                        ["white", "lightblue", "darkblue", "darkgreen", "lightgreen", "yellow", "orange", "red"],
+                        N=256
+                    )
             norm = mcolors.BoundaryNorm(levels, ncolors=cmap.N, extend='max')
+            
         elif "correlation" in low_metric or "rocss" in low_metric:
-            cmap = plt.get_cmap("RdYlGn") if "rocss" in low_metric else plt.get_cmap("RdBu_r")
+            custom_cmap_name = get_custom_colormap(metric_name, 'spatial')
+            if custom_cmap_name == "custom_bias":
+                cmap = mcolors.LinearSegmentedColormap.from_list("custom_bias", BIAS_RDBU_WHITE, N=12)
+            elif custom_cmap_name == "custom_freq":
+                cmap = mcolors.LinearSegmentedColormap.from_list("custom_freq", ["white", "lightyellow", "gold", "darkorange", "crimson", "purple", "darkmagenta"], N=256)
+            elif custom_cmap_name == "custom_precip":
+                cmap = mcolors.LinearSegmentedColormap.from_list("custom_precip", ["white", "lightblue", "darkblue", "darkgreen", "lightgreen", "yellow", "orange", "red"], N=256)
+            elif custom_cmap_name:
+                try:
+                    cmap = plt.get_cmap(custom_cmap_name)
+                except ValueError:
+                    cmap = plt.get_cmap("RdYlGn") if "rocss" in low_metric else plt.get_cmap("RdBu_r")
+            else:
+                cmap = plt.get_cmap("RdYlGn") if "rocss" in low_metric else plt.get_cmap("RdBu_r")
+                
             if custom_levels is not None:
                 levels = custom_levels
             else:
@@ -527,6 +731,7 @@ def plot_spatial_maps(data_dict, metric_name, period="Annual", shapefile=None, s
                 else:
                     levels = [0.0, 0.2, 0.4, 0.6, 0.8, 1.0]
             norm = mcolors.BoundaryNorm(levels, ncolors=cmap.N, extend='neither')
+            
         else:
             norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
             cmap = plt.get_cmap("viridis")
@@ -933,7 +1138,8 @@ def plot_temporal_evolution(model_paths, metric_name, period="Annual", shapefile
             local_min = min(local_min, np.nanmin(means))
             local_max = max(local_max, np.nanmax(means))
                 
-            color = GLOBAL_MODEL_COLORS.get(model_name.upper(), colors[i % len(colors)])
+            custom_model_colors = get_custom_model_colors()
+            color = custom_model_colors.get(model_name, custom_model_colors.get(model_name.upper(), GLOBAL_MODEL_COLORS.get(model_name.upper(), colors[i % len(colors)])))
             linestyle = linestyles[i % len(linestyles)]
             marker = markers[i % len(markers)]
             
@@ -1020,7 +1226,8 @@ def plot_metric_boxplot(model_paths, metric_name, period="Annual", shapefile=Non
     else:
         colors = ['#E63946', '#457B9D', '#1D3557', '#2A9D8F', '#F4A261', '#8E44AD']
         
-    palette = {name: GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)]) 
+    custom_model_colors = get_custom_model_colors()
+    palette = {name: custom_model_colors.get(name, custom_model_colors.get(name.upper(), GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)]))) 
                for i, name in enumerate(model_paths.keys())}
 
     sns.boxplot(data=df, x="Model", y=metric_name.upper(), palette=palette, 
@@ -1088,7 +1295,8 @@ def plot_monthly_cycle(datasets_dict, region=None, shapefile=None, save_path=Non
             m_mean, _ = get_regional_means(m_data, shapefile)
             means.append(m_mean)
         
-        color = GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)])
+        custom_model_colors = get_custom_model_colors()
+        color = custom_model_colors.get(name, custom_model_colors.get(name.upper(), GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)])))
         linestyle = linestyles[i % len(linestyles)]
         marker = markers[i % len(markers)]
         plt.plot(range(1, 13), means, label=name, marker=marker, linestyle=linestyle, linewidth=2, color=color)
@@ -1143,7 +1351,8 @@ def plot_intensity_distribution_log(datasets_dict, region=None, shapefile=None, 
         vals = vals[~np.isnan(vals)]
         vals = vals[vals >= threshold]
         
-        color = GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)])
+        custom_model_colors = get_custom_model_colors()
+        color = custom_model_colors.get(name, custom_model_colors.get(name.upper(), GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)])))
         linestyle = linestyles[i % len(linestyles)]
         if len(vals) > 1:
             bins = np.logspace(np.log10(threshold), np.log10(max(vals) if max(vals) > threshold else threshold+10), 50)
@@ -1205,7 +1414,8 @@ def plot_intensity_distribution_linear(datasets_dict, region=None, shapefile=Non
         vals = vals[~np.isnan(vals)]
         vals = vals[vals >= threshold]
         
-        color = GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)])
+        custom_model_colors = get_custom_model_colors()
+        color = custom_model_colors.get(name, custom_model_colors.get(name.upper(), GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)])))
         linestyle = linestyles[i % len(linestyles)]
         
         if len(vals) > 1:

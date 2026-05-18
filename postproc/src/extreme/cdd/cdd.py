@@ -71,11 +71,45 @@ def main():
     # === Output Path Setup ===
     base_results_dir = utils.get_results_dir(config, metric_cfg['name'], POST_PROCESS_ROOT)
     
-    # We run CDD for both 1.0mm and 0.5mm thresholds
-    thresholds = [1.0, 0.5]
+    # === Retrieve CDD Thresholds from Config ===
+    # Check global master config first under postproc.extreme, then fall back to local metric config
+    postproc_cfg = config.get("postproc", {})
+    extreme_cfg = postproc_cfg.get("extreme", {})
+    raw_threshold = extreme_cfg.get("cdd_thresholds", extreme_cfg.get("cdd_threshold"))
+    
+    if raw_threshold is None:
+        raw_threshold = metric_cfg.get("threshold_mm", 1.0)
+        
+    if isinstance(raw_threshold, list):
+        raw_list = raw_threshold
+    else:
+        raw_list = [raw_threshold]
+        
+    thresholds = []
+    for val in raw_list:
+        if isinstance(val, str):
+            val_clean = val.replace("mm", "").strip()
+            try:
+                thresholds.append(float(val_clean))
+            except ValueError:
+                print(f"⚠️ Warning: Could not parse CDD threshold '{val}' as float. Skipping.")
+        else:
+            try:
+                thresholds.append(float(val))
+            except (ValueError, TypeError):
+                print(f"⚠️ Warning: Could not parse CDD threshold '{val}' as float. Skipping.")
+                
+    if not thresholds:
+        thresholds = [1.0]
     
     for threshold_mm in thresholds:
-        threshold_str = "1mm" if threshold_mm == 1.0 else f"{threshold_mm}mm"
+        if threshold_mm == 1.0:
+            threshold_str = "1mm"
+        elif threshold_mm == 0.5:
+            threshold_str = "0.5"
+        else:
+            threshold_str = f"{threshold_mm}mm" if int(threshold_mm) == threshold_mm else f"{threshold_mm}"
+            
         RESULTS_DIR = os.path.join(base_results_dir, f"cdd_{threshold_str}")
         os.makedirs(RESULTS_DIR, exist_ok=True)
         
@@ -185,14 +219,14 @@ def main():
                     spatial_cdd_error_dict[name] = mean_cdd - ref_cdd
 
             # Plot 1: CDD Comparison Map
-            utils.plot_spatial_maps(spatial_cdd_dict, metric_cfg['name'], period=period, 
+            utils.plot_spatial_maps(spatial_cdd_dict, f"cdd_{threshold_str}", period=period, 
                                        save_path=os.path.join(period_fig_dir, f"spatial_cdd_comparison_{period}.png"),
                                        title=f"{period} Spatial CDD Comparison ({params['predictand'].upper()})", 
                                        unit="days", nrows=nrows)
             
             # Plot 2: CDD Error Map
             if spatial_cdd_error_dict:
-                utils.plot_spatial_maps(spatial_cdd_error_dict, "cdd_error", period=period, 
+                utils.plot_spatial_maps(spatial_cdd_error_dict, f"cdd_{threshold_str}_error", period=period, 
                                            save_path=os.path.join(period_fig_dir, f"spatial_cdd_error_{period}.png"),
                                            title=f"{period} Spatial CDD Error ({params['predictand'].upper()})", 
                                            unit="days", nrows=nrows)

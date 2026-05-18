@@ -35,11 +35,45 @@ def main():
     # === Output Path Setup ===
     base_results_dir = utils.get_results_dir(config, METRIC, POST_PROCESS_ROOT)
     
-    # We plot CDD for both 1.0mm and 0.5mm thresholds
-    thresholds = [1.0, 0.5]
+    # === Retrieve CDD Thresholds from Config ===
+    # Check global master config first under postproc.extreme, then fall back to local metric config
+    postproc_cfg = config.get("postproc", {})
+    extreme_cfg = postproc_cfg.get("extreme", {})
+    raw_threshold = extreme_cfg.get("cdd_thresholds", extreme_cfg.get("cdd_threshold"))
+    
+    if raw_threshold is None:
+        raw_threshold = metric_cfg.get("threshold_mm", 1.0)
+        
+    if isinstance(raw_threshold, list):
+        raw_list = raw_threshold
+    else:
+        raw_list = [raw_threshold]
+        
+    thresholds = []
+    for val in raw_list:
+        if isinstance(val, str):
+            val_clean = val.replace("mm", "").strip()
+            try:
+                thresholds.append(float(val_clean))
+            except ValueError:
+                print(f"⚠️ Warning: Could not parse CDD threshold '{val}' as float. Skipping.")
+        else:
+            try:
+                thresholds.append(float(val))
+            except (ValueError, TypeError):
+                print(f"⚠️ Warning: Could not parse CDD threshold '{val}' as float. Skipping.")
+                
+    if not thresholds:
+        thresholds = [1.0]
     
     for threshold_mm in thresholds:
-        threshold_str = "1mm" if threshold_mm == 1.0 else f"{threshold_mm}mm"
+        if threshold_mm == 1.0:
+            threshold_str = "1mm"
+        elif threshold_mm == 0.5:
+            threshold_str = "0.5"
+        else:
+            threshold_str = f"{threshold_mm}mm" if int(threshold_mm) == threshold_mm else f"{threshold_mm}"
+            
         RESULTS_DIR = os.path.join(base_results_dir, f"cdd_{threshold_str}")
         DATA_RESULTS_DIR = os.path.join(RESULTS_DIR, "results")
         
@@ -79,17 +113,17 @@ def main():
             # Plot 1: Spatial Map
             spatial_path = os.path.join(period_fig_dir, f"{METRIC}_spatial_map_{period}.png")
             print(f"Generating spatial map for {period}...")
-            utils.plot_spatial_maps(data_spatial, METRIC, period=period, save_path=spatial_path, unit="days")
+            utils.plot_spatial_maps(data_spatial, f"{METRIC}_{threshold_str}", period=period, save_path=spatial_path, unit="days")
 
             # Plot 2: Temporal Evolution
             evol_path = os.path.join(period_fig_dir, f"{METRIC}_evolution_{period}.png")
             print(f"Generating temporal evolution plot for {period}...")
-            utils.plot_temporal_evolution(MODEL_PATHS_BASE, METRIC, period=period, save_path=evol_path, unit="days")
+            utils.plot_temporal_evolution(MODEL_PATHS_BASE, f"{METRIC}_{threshold_str}", period=period, save_path=evol_path, unit="days")
             
             # Plot 3: Boxplots
             box_path = os.path.join(period_fig_dir, f"{METRIC}_boxplot_{period}.png")
             print(f"Generating distribution boxplots for {period}...")
-            utils.plot_metric_boxplot(MODEL_PATHS_BASE, METRIC, period=period, save_path=box_path)
+            utils.plot_metric_boxplot(MODEL_PATHS_BASE, f"{METRIC}_{threshold_str}", period=period, save_path=box_path)
 
     print("\nPlotting completed successfully! ✅")
 
