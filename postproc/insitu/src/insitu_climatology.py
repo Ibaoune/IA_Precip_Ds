@@ -9,7 +9,7 @@ from matplotlib.projections import PolarAxes
 import mpl_toolkits.axisartist.floating_axes as FA
 import mpl_toolkits.axisartist.grid_finder as GF
 
-# Add src to sys.path
+# Add postproc/src to sys.path
 root_path = str(Path(__file__).resolve().parents[2])
 src_path = os.path.join(root_path, "src")
 if src_path not in sys.path:
@@ -89,32 +89,37 @@ class TaylorDiagram(object):
 def main():
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--config", default="configs/config_1979_2014.yaml", help="Path to config file")
+    # Default config points to config.yaml in the insitu directory
+    default_config = os.path.abspath(os.path.join(os.path.dirname(__file__), "../config.yaml"))
+    parser.add_argument("--config", default=default_config, help="Path to config file")
     args, unknown = parser.parse_known_args()
 
     # === Load Configuration ===
-    config_path = args.config if os.path.isabs(args.config) else os.path.join(root_path, args.config)
-    config = utils.load_config(config_path)
+    config = utils.load_config(args.config)
     
     params = config['parameters']
     ref_cfg = config['reference']
     datasets_cfg = config['datasets']
+    obs_cfg = config.get('observations', {})
 
     # Set up results directories
+    insitu_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     results_dir = os.path.join(root_path, "results", config.get('experiment', 'postproc'), "insitu")
     os.makedirs(results_dir, exist_ok=True)
 
     # === 1. Load Station Observations ===
     obs_df = insitu_utils.load_insitu_observations(
+        excel_path=obs_cfg.get('excel_path', insitu_utils.DEFAULT_EXCEL_PATH),
+        cache_path=obs_cfg.get('cache_path', insitu_utils.DEFAULT_CACHE_PATH),
         start_date=params['start_date'],
         end_date=params['end_date']
     )
     stations_meta = insitu_utils.get_station_metadata(obs_df)
-    stations_list = ["CASABLANCA", "AGADIR", "FES"]
+    stations_list = params.get('stations', ["CASABLANCA", "FES", "BGE TANGER MED", "DAKHLA", "AGADIR"])
     stations_to_process = [s for s in stations_list if s in stations_meta]
     
     if not stations_to_process:
-        print("[WARNING] Casablanca, Agadir, and Fes stations not found. Processing first 3 available.")
+        print("[WARNING] Requested stations not found in data. Processing first 3 available.")
         stations_to_process = list(stations_meta.keys())[:3]
 
     # === 2. Load Model Datasets ===
@@ -138,11 +143,6 @@ def main():
         fpath = os.path.join(root_path, d['file_path'])
         if os.path.exists(fpath):
             ds_mod = xr.open_dataset(fpath)
-            # Ensure correct coordinate order
-            if 'lat' in ds_mod.coords and ds_mod['lat'].values[0] < ds_mod['lat'].values[-1]:
-                # Ascending order, standard
-                pass
-            
             models_data[d['name'].upper()] = {
                 "ds": ds_mod,
                 "var_name": d['variable_name'],

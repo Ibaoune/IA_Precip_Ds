@@ -13,6 +13,7 @@ parameters:
   show_title_metadata: true
   customize_colorbars: true
   plot_periods:
+    - Annual
     - DJF
     - MAM
     - JJA

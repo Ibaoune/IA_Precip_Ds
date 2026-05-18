@@ -4,16 +4,22 @@ import xarray as xr
 import numpy as np
 
 DEFAULT_EXCEL_PATH = "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/insitu/ABH_stations_plusziz_and_abhbc1.xlsx"
-DEFAULT_CACHE_PATH = "/srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/src/insitu/stations_cache.csv"
+DEFAULT_CACHE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "../data/stations_cache.csv"))
 
-def load_insitu_observations(excel_path=DEFAULT_EXCEL_PATH, start_date="2006-01-01", end_date="2020-12-31"):
+def load_insitu_observations(excel_path=DEFAULT_EXCEL_PATH, cache_path=DEFAULT_CACHE_PATH, start_date="2006-01-01", end_date="2020-12-31"):
     """
     Loads weather station daily observations from a pre-compiled CSV cache if available,
     otherwise loads from the Excel sheet, filters by date range, and extracts all station metadata (lat/lon).
     """
-    if os.path.exists(DEFAULT_CACHE_PATH):
-        print(f"[INFO] Loading observations from fast CSV cache: {DEFAULT_CACHE_PATH}...")
-        df = pd.read_csv(DEFAULT_CACHE_PATH)
+    # Resolve paths relative to the subproject root if they are relative
+    if not os.path.isabs(cache_path):
+        cache_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", cache_path))
+    if not os.path.isabs(excel_path):
+        excel_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", excel_path))
+
+    if os.path.exists(cache_path):
+        print(f"[INFO] Loading observations from fast CSV cache: {cache_path}...")
+        df = pd.read_csv(cache_path)
     else:
         if not os.path.exists(excel_path):
             raise FileNotFoundError(f"Observations file not found at: {excel_path}")
