@@ -101,13 +101,25 @@ def main():
         else:
             print(f"[WARNING] Prediction file not found: {fpath}. Skipping.")
 
-    # Initialize plotting figure
-    fig, axes = plt.subplots(1, len(stations_to_process), figsize=(5 * len(stations_to_process), 5), dpi=300)
-    if len(stations_to_process) == 1:
-        axes = [axes]
+    # Initialize plotting grid (max 3 stations per line)
+    num_stations = len(stations_to_process)
+    ncols = min(3, num_stations)
+    nrows = int(np.ceil(num_stations / 3))
+
+    fig, axes = plt.subplots(nrows, ncols, figsize=(5 * ncols, 5 * nrows), dpi=300)
+    
+    # Flatten and wrap axes list
+    if nrows == 1 and ncols == 1:
+        axes_flat = [axes]
+    else:
+        axes_flat = axes.flatten()
+        
+    # Hide any unused axes in the grid
+    for idx in range(num_stations, len(axes_flat)):
+        axes_flat[idx].set_visible(False)
 
     for i, station in enumerate(stations_to_process):
-        ax = axes[i]
+        ax = axes_flat[i]
         st_obs = obs_df[obs_df["Station"] == station].copy().sort_values("Date")
         obs_series = st_obs.set_index("Date")["Precipitation"]
         
@@ -153,8 +165,8 @@ def main():
         ax.grid(True, linestyle="--", alpha=0.5)
 
     # Standardize Legend
-    handles, labels = axes[0].get_legend_handles_labels()
-    fig.legend(handles, labels, loc="upper center", ncol=len(labels), bbox_to_anchor=(0.5, 1.05), fontsize=10)
+    handles, labels = axes_flat[0].get_legend_handles_labels()
+    fig.legend(handles, labels, loc="upper center", ncol=len(labels), bbox_to_anchor=(0.5, 1.02 + 0.03 * nrows), fontsize=10)
     plt.tight_layout()
     
     plot_path = os.path.join(results_dir, "qqplot_insitu.png")

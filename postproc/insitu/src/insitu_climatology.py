@@ -45,7 +45,10 @@ class TaylorDiagram(object):
         if fig is None:
             fig = plt.figure()
             
-        ax = FA.FloatingSubplot(fig, rect, grid_helper=ghelper)
+        if isinstance(rect, tuple) or isinstance(rect, list):
+            ax = FA.FloatingSubplot(fig, *rect, grid_helper=ghelper)
+        else:
+            ax = FA.FloatingSubplot(fig, rect, grid_helper=ghelper)
         fig.add_subplot(ax)
 
         ax.axis["top"].set_axis_direction("bottom")
@@ -158,12 +161,24 @@ def main():
     # A. ANNUAL MONTHLY CLIMATOLOGY FIGURE
     # ==========================================================
     print("[INFO] Generating Annual Monthly Climatology Plots...")
-    fig_clim, axes_clim = plt.subplots(1, len(stations_to_process), figsize=(6 * len(stations_to_process), 5), dpi=300)
-    if len(stations_to_process) == 1:
-        axes_clim = [axes_clim]
+    num_stations = len(stations_to_process)
+    ncols = min(3, num_stations)
+    nrows = int(np.ceil(num_stations / 3))
+
+    fig_clim, axes_clim = plt.subplots(nrows, ncols, figsize=(6 * ncols, 5 * nrows), dpi=300)
+    
+    # Flatten and wrap axes list
+    if nrows == 1 and ncols == 1:
+        axes_flat = [axes_clim]
+    else:
+        axes_flat = axes_clim.flatten()
+        
+    # Hide any unused axes in the grid
+    for idx in range(num_stations, len(axes_flat)):
+        axes_flat[idx].set_visible(False)
         
     for i, station in enumerate(stations_to_process):
-        ax = axes_clim[i]
+        ax = axes_flat[i]
         st_obs = obs_df[obs_df["Station"] == station].copy().sort_values("Date")
         obs_series = st_obs.set_index("Date")["Precipitation"]
         
@@ -192,8 +207,8 @@ def main():
         ax.grid(True, linestyle="--", alpha=0.5)
         
     # Standardize Legend
-    handles, labels = axes_clim[0].get_legend_handles_labels()
-    fig_clim.legend(handles, labels, loc="upper center", ncol=len(labels), bbox_to_anchor=(0.5, 1.05), fontsize=10)
+    handles, labels = axes_flat[0].get_legend_handles_labels()
+    fig_clim.legend(handles, labels, loc="upper center", ncol=len(labels), bbox_to_anchor=(0.5, 1.02 + 0.03 * nrows), fontsize=10)
     plt.tight_layout()
     clim_path = os.path.join(results_dir, "annual_cycle_insitu.png")
     plt.savefig(clim_path, dpi=400, bbox_inches="tight")
@@ -204,7 +219,7 @@ def main():
     # B. TAYLOR DIAGRAM FIGURE
     # ==========================================================
     print("[INFO] Generating Taylor Diagrams...")
-    fig_taylor = plt.figure(figsize=(5 * len(stations_to_process), 5), dpi=300)
+    fig_taylor = plt.figure(figsize=(5 * ncols, 5 * nrows), dpi=300)
     
     for i, station in enumerate(stations_to_process):
         st_obs = obs_df[obs_df["Station"] == station].copy().sort_values("Date")
@@ -212,7 +227,9 @@ def main():
         obs_monthly = obs_series.resample("M").mean()
         
         ref_std = obs_monthly.std()
-        rect = 100 + (10 * len(stations_to_process)) + (i + 1)
+        
+        # Grid parameters (nrows, ncols, index)
+        rect = (nrows, ncols, i + 1)
         
         # Initialize Taylor Diagram Subplot
         dia = TaylorDiagram(ref_std, fig=fig_taylor, rect=rect, label='OBS', srange=(0, 2.5))

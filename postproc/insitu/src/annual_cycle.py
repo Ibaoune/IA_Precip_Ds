@@ -86,21 +86,31 @@ def main():
     }
 
     # ==========================================================
-    # FIGURE
+    # FIGURE GRID SETUP (max 3 stations per line)
     # ==========================================================
     print("[INFO] Initializing figure...")
-    fig, axes = plt.subplots(1, len(stations), figsize=(6 * len(stations), 5))
-    if len(stations) == 1:
-        axes = [axes]
+    num_stations = len(stations)
+    ncols = min(3, num_stations)
+    nrows = int(np.ceil(num_stations / 3))
+
+    fig, axes = plt.subplots(nrows, ncols, figsize=(6 * ncols, 5 * nrows))
+    
+    # Flatten and wrap axes list
+    if nrows == 1 and ncols == 1:
+        axes_flat = [axes]
     else:
-        axes = axes.flatten()
+        axes_flat = axes.flatten()
+        
+    # Hide any unused axes in the grid
+    for idx in range(num_stations, len(axes_flat)):
+        axes_flat[idx].set_visible(False)
 
     # ==========================================================
     # LOOP STATIONS
     # ==========================================================
     for i, station in enumerate(stations):
         print(f"[INFO] Processing station {i+1}/{len(stations)}: {station}")
-        ax = axes[i]
+        ax = axes_flat[i]
 
         st = df[df["Station"] == station].copy()
         st = st.sort_values("Date")
@@ -163,14 +173,14 @@ def main():
         # Legend
         handles, labels = ax.get_legend_handles_labels()
         if len(handles) > 0:
-            handles, labels = axes[0].get_legend_handles_labels()
+            handles, labels = axes_flat[0].get_legend_handles_labels()
             fig.legend(
                 handles,
                 labels,
                 loc="upper center",
                 ncol=len(labels),
                 fontsize=10,
-                bbox_to_anchor=(0.5, 1.05)
+                bbox_to_anchor=(0.5, 1.02 + 0.03 * nrows)
             )
 
         # Metrics box

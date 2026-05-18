@@ -49,7 +49,10 @@ class TaylorDiagram(object):
         if fig is None:
             fig = plt.figure()
             
-        ax = FA.FloatingSubplot(fig, rect, grid_helper=ghelper)
+        if isinstance(rect, tuple) or isinstance(rect, list):
+            ax = FA.FloatingSubplot(fig, *rect, grid_helper=ghelper)
+        else:
+            ax = FA.FloatingSubplot(fig, rect, grid_helper=ghelper)
         fig.add_subplot(ax)
 
         ax.axis["top"].set_axis_direction("bottom")
@@ -162,7 +165,12 @@ def main():
         "cnn": "v"
     }
 
-    fig = plt.figure(figsize=(5 * len(stations), 6))
+    # Grid configuration (max 3 columns)
+    num_stations = len(stations)
+    ncols = min(3, num_stations)
+    nrows = int(np.ceil(num_stations / 3))
+
+    fig = plt.figure(figsize=(5 * ncols, 6 * nrows), dpi=300)
 
     for i, station in enumerate(stations):
         print(f"[INFO] Processing station: {station}")
@@ -176,7 +184,7 @@ def main():
         obs_monthly = obs_series.resample("M").mean()
 
         # Create Taylor diagram for this station
-        rect = 100 + (len(stations) * 10) + (i + 1)
+        rect = (nrows, ncols, i + 1)
         ref_std = obs_monthly.std()
         
         # Initialize diagram
@@ -184,7 +192,6 @@ def main():
         
         for name, ds in datasets.items():
             point = insitu_utils.extract_nearest_gridpoint(ds, lat, lon)
-            var_name = point.name
             
             sim = pd.Series(
                 point.values,
@@ -214,7 +221,7 @@ def main():
         plt.clabel(contours, inline=1, fontsize=10, fmt='%.2f')
 
         # Add title
-        dia._ax.set_title(station, pad=20)
+        dia._ax.set_title(station, pad=20, fontweight='bold')
         
         # Add legend to the first plot
         if i == 0:
