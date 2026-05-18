@@ -50,7 +50,8 @@ def main():
     obs_cfg = config.get('observations', {})
 
     # Set up results directories
-    results_dir = os.path.join(root_path, "results", config.get('experiment', 'postproc'), "insitu")
+    insitu_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    results_dir = os.path.join(insitu_root, "Figs")
     csv_results_dir = os.path.join(results_dir, "results")
     os.makedirs(csv_results_dir, exist_ok=True)
 

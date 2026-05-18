@@ -122,7 +122,8 @@ def main():
     df["month"] = df["Date"].dt.month
 
     # Set up results directories
-    results_dir = os.path.join(root_path, "results", config.get('experiment', 'postproc'), "insitu")
+    insitu_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    results_dir = os.path.join(insitu_root, "Figs")
     os.makedirs(results_dir, exist_ok=True)
 
     print("[INFO] Loading NetCDF datasets...")

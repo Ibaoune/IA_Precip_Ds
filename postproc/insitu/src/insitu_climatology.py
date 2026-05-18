@@ -104,7 +104,7 @@ def main():
 
     # Set up results directories
     insitu_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    results_dir = os.path.join(root_path, "results", config.get('experiment', 'postproc'), "insitu")
+    results_dir = os.path.join(insitu_root, "Figs")
     os.makedirs(results_dir, exist_ok=True)
 
     # === 1. Load Station Observations ===
