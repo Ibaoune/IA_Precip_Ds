@@ -12,15 +12,16 @@ parameters:
   # Target meteorological stations to process
   stations:
     - "CASABLANCA"
+    - "TANGER"
     - "FES"
-    - "BGE TANGER MED"
-    - "DAKHLA"
-    - "AGADIR"
+    - "OUJDA"
+    - "OUARZAZATE"
+    - "MARRAKECH"
 
 # Meteorological observation data sources
 observations:
-  # Raw source Excel file containing station data
-  excel_path: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/insitu/ABH_stations_plusziz_and_abhbc1.xlsx"
+  # Raw source file containing station data
+  excel_path: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/insitu/ABH_stations_plusziz_and_abhbc1.csv"
   # Fast-loading compiled CSV cache
   cache_path: "data/stations_cache.csv"
   # List of all available stations

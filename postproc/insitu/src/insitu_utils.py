@@ -23,9 +23,11 @@ def load_insitu_observations(excel_path=DEFAULT_EXCEL_PATH, cache_path=DEFAULT_C
     else:
         if not os.path.exists(excel_path):
             raise FileNotFoundError(f"Observations file not found at: {excel_path}")
-        print(f"[INFO] Loading observations from Excel: {excel_path}...")
-        df = pd.read_excel(excel_path)
-        
+        print(f"[INFO] Loading observations from raw file: {excel_path}...")
+        if excel_path.endswith('.csv'):
+            df = pd.read_csv(excel_path)
+        else:
+            df = pd.read_excel(excel_path)
     df["Date"] = pd.to_datetime(df["Date"])
     
     # Filter by date range
