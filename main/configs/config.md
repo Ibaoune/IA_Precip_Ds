@@ -1,3 +1,4 @@
+<!-- Author: M. El Aabaribaoune (@um6p) -->
 # Configuration Guide (config.yaml)
 
 This document explains the parameters used in the YAML configuration files for the downscaling project.

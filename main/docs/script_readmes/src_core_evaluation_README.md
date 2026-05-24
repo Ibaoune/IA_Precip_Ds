@@ -3,7 +3,7 @@
 ## Overview
 ==========================================================
  Script: evaluation.py
- Author: M. El Aabaribaoune
+ Author: M. El Aabaribaoune (@um6p)
  Description:
      Model evaluation and diagnostics.
 

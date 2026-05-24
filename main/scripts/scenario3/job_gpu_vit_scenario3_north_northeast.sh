@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=vit_scenario3_north_northeast
 #SBATCH --output=vit_scenario3_north_northeast_%j.log
 #SBATCH --error=vit_scenario3_north_northeast_%j.log

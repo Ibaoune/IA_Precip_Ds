@@ -3,7 +3,7 @@
 ## Overview
 ==========================================================
  Script: preprocessing.py
- Author: M. El Aabaribaoune
+ Author: M. El Aabaribaoune (@um6p)
  Description:
      Data preprocessing utilities:
      - Normalization of predictors

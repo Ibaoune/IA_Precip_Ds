@@ -1,3 +1,4 @@
+# Author: M. El Aabaribaoune (@um6p)
 general:
   verbose: true
   experiment: unet_exp1_v2_bg_bs512_lr1e-5

@@ -1,3 +1,4 @@
+# Author: M. El Aabaribaoune (@um6p)
 import numpy as np
 import statsmodels.api as sm
 import os

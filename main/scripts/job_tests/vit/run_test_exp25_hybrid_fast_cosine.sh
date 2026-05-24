@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=test_exp25_hybrid_fast_cosine
 #SBATCH --output=test_exp25_hybrid_fast_cosine_%j.log
 #SBATCH --error=test_exp25_hybrid_fast_cosine_%j.log

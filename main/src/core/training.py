@@ -1,7 +1,7 @@
 """
 ==========================================================
  Script: training.py
- Author: M. El Aabaribaoune
+ Author: M. El Aabaribaoune (@um6p)
  Description:
      Defines the training loop, loss computation, and
      early stopping for the downscaling model.

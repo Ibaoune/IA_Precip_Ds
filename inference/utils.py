@@ -1,7 +1,7 @@
 """
 ==========================================================
  Script: utils.py
- Author: M. El Aabaribaoune
+ Author: M. El Aabaribaoune (@um6p)
  Description:
      Collection of utility and helper functions for prediction.
      - Verbose printing utilities

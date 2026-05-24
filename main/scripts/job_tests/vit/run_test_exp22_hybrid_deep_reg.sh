@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=test_exp22_hybrid_deep_reg
 #SBATCH --output=test_exp22_hybrid_deep_reg_%j.log
 #SBATCH --error=test_exp22_hybrid_deep_reg_%j.log

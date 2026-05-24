@@ -1,3 +1,4 @@
+<!-- Author: M. El Aabaribaoune (@um6p) -->
 # Campagne d'Expérimentations et Optimisation du Vision Transformer (ViT) pour la Descente d'Échelle de Précipitations
 
 Ce document répertorie de manière exhaustive les architectures, les corrections théoriques et les 20 configurations d'expérimentation conçues pour évaluer et optimiser le modèle **Vision Transformer (ViT)** sur la tâche de descente d'échelle (downscaling) de précipitations (ERA5 vers MSWEP).

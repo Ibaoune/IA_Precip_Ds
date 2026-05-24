@@ -1,3 +1,4 @@
+<!-- Author: M. El Aabaribaoune (@um6p) -->
 # Documentation for `src/models/cnn.py`
 
 ## Overview

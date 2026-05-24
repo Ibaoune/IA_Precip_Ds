@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 
 #SBATCH --job-name=vit_south_gpu
 #SBATCH --output=vit_south_gpu%j.log
@@ -36,16 +37,18 @@ nvidia-smi --query-gpu=timestamp,utilization.gpu,utilization.memory,memory.used 
            --format=csv,nounits,noheader \
            --loop=60 > "$gpu_log" &
 
-CONFIG="../../configs/vit/regional/south.yaml"
+CONFIG="/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/configs/vit/regional/south.yaml"
+
+cd /srv/data/mohammad.elaabaribao/work/papers/downscaling/main
 
 if [[ "$train" == "yes" ]]; then
     echo "[INFO] Running training..."
-    python3 -u ../../train.py "$CONFIG"
+    python3 -u train.py "$CONFIG"
 fi
 
 if [[ "$validation" == "yes" ]]; then
     echo "[INFO] Running validation..."
-    python3 -u ../../eval.py "$CONFIG"
+    python3 -u eval.py "$CONFIG"
 fi
 
 end_time=$(date +%s)

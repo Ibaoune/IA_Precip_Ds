@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=cnn_exp5_lm_east
 #SBATCH --output=cnn_exp5_lm_east_%j.log
 #SBATCH --error=cnn_exp5_lm_east_%j.log

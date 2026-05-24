@@ -1,3 +1,4 @@
+# Author: M. El Aabaribaoune (@um6p)
 import glob
 
 for filepath in glob.glob("sweep_scripts/*.sh"):

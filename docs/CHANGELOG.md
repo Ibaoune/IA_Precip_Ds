@@ -1,3 +1,4 @@
+<!-- Author: M. El Aabaribaoune (@um6p) -->
 # Changelog
 
 All notable changes to this project are documented in this file, which is updated after each commit.

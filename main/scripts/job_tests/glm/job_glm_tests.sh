@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 
 #SBATCH --job-name=glm_tests
 #SBATCH --output=glm_tests_%j.log

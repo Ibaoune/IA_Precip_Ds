@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=e2_b128_l1e-5
 #SBATCH --output=../logs/sweep_exp2_bs128_lr1e-5_%j.log
 #SBATCH --error=../logs/sweep_exp2_bs128_lr1e-5_%j.log

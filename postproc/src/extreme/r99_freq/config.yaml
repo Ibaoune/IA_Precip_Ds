@@ -1,3 +1,4 @@
+# Author: M. El Aabaribaoune (@um6p)
 metric:
   name: r99_nbEvents_freq
   plot_seasons:

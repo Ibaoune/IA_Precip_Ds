@@ -1,7 +1,7 @@
 """
 ==========================================================
  Script: train.py
- Author: M. El Aabaribaoune
+ Author: M. El Aabaribaoune (@um6p)
  Description:
      Main entry point for training the downscaling model.
      - Loads configuration

@@ -1,3 +1,4 @@
+<!-- Author: M. El Aabaribaoune (@um6p) -->
 # Precipitation Downscaling: Main Training & Evaluation Environment
 
 This directory (`main/`) is the central workspace for training, evaluating, and testing deep learning and statistical models for precipitation downscaling. It handles the end-to-end pipeline: from loading and preprocessing coarse-resolution climate data (e.g., ERA5, GCM) to predicting and evaluating high-resolution precipitation fields (e.g., MSWEP-like grids).

@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=cnn_pred
 #SBATCH --output=out_cnn_%j.log
 #SBATCH --error=out_cnn_%j.log

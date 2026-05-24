@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=unet_pred
 #SBATCH --output=out_unet_%j.log
 #SBATCH --error=out_unet_%j.log

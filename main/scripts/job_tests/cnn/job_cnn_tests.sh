@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 
 #SBATCH --job-name=cnn_tests
 #SBATCH --output=cnn_tests_%j.log

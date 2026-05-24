@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=unet_8
 #SBATCH --output=logs/unet_8_%j.log
 #SBATCH --error=logs/unet_8_%j.log

@@ -3,7 +3,7 @@
 ## Overview
 ==========================================================
  Script: utils.py
- Author: M. El Aabaribaoune
+ Author: M. El Aabaribaoune (@um6p)
  Description:
      Collection of utility and helper functions used across
      the project, including:

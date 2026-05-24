@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 
 #SBATCH --job-name=vit_best_gpu
 #SBATCH --output=vit_best_gpu%j.log

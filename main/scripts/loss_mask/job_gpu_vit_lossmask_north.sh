@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=vit_lm_north
 #SBATCH --output=vit_lm_north_%j.log
 #SBATCH --error=vit_lm_north_%j.log

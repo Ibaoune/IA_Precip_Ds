@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=test_exp4
 #SBATCH --output=test_exp4_%j.log
 #SBATCH --error=test_exp4_%j.log

@@ -1,3 +1,4 @@
+# Author: M. El Aabaribaoune (@um6p)
 import os
 import numpy as np
 import pandas as pd
@@ -14,6 +15,26 @@ import matplotlib as mpl
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_SHAPEFILE = os.path.join(PROJECT_ROOT, "shape_files/morocco_unified_fixed_v2.shp")
 DEFAULT_RESULTS_DIR = os.path.join(PROJECT_ROOT, "results")
+
+def get_display_name(name):
+    if not isinstance(name, str):
+        return name
+    name_upper = name.upper()
+    if name_upper in ['UNET', 'U-NET', 'UNET_LMDZ250', 'UNET_LMDZ35', 'UNET_LMDZ250_COARSE', 'UNET_LMDZ35_COARSE']:
+        return 'U-Net'
+    if name_upper in ['VIT', 'VIT_EXP21_BEST', 'VIT_LMDZ250', 'VIT_LMDZ250_COARSE']:
+        return 'ViT'
+    if name_upper in ['MSWEP']:
+        return 'MSWEP'
+    if name_upper in ['GLM', 'GLM_LMDZ250', 'GLM_LMDZ35', 'GLM_LMDZ250_COARSE', 'GLM_LMDZ35_COARSE']:
+        return 'GLM'
+    if name_upper in ['CNN', 'CNN_EXP5', 'CNN_LMDZ250', 'CNN_LMDZ35', 'CNN_LMDZ250_COARSE', 'CNN_LMDZ35_COARSE']:
+        return 'CNN'
+    if name_upper in ['RAW_LMDZ250_10KM', 'LMDZ250_RAW', 'LMDZ250_ROUGH', 'LMDZ250']:
+        return 'LMDZ 250'
+    if name_upper in ['RAW_LMDZ35_10KM', 'LMDZ35_RAW', 'LMDZ35_ROUGH', 'LMDZ35']:
+        return 'LMDZ 3.5'
+    return name
 
 def get_current_region():
     return os.environ.get("POSTPROC_REGION", "allmorr")
@@ -306,16 +327,23 @@ BIAS_EXTREME_LEVELS = [-50, -30, -20, -10, -5, -2, 0, 2, 5, 10, 20, 30, 50]
 
 GLOBAL_MODEL_COLORS = {
     'MSWEP': '#000000', # Black
-    'CNN_EXP3': '#A8DADC', # Very Light Blue
-    'CNN_EXP5': '#457B9D', # Light Blue
-    'VIT_EXP21_BEST': '#E63946', # Red
+    'GLM': '#2A9D8F', # Green
+    'CNN': '#457B9D', # Light Blue
+    'U-Net': '#1D3557', # Dark Blue
+    'UNET': '#1D3557', # Dark Blue
+    'U-NET': '#1D3557', # Dark Blue
+    'ViT': '#E63946', # Red
+    'VIT': '#E63946', # Red
+    'CNN_EXP3': '#1D3557', # Dark Blue (U-Net)
+    'CNN_EXP5': '#457B9D', # Light Blue (CNN)
+    'VIT_EXP21_BEST': '#E63946', # Red (ViT)
     'VIT_PRECIP_EXP22_HYBRID_DEEP_REG': '#9B2226', # Dark Red
     'GLM_LMDZ250': '#2A9D8F', # Green
     'GLM_ERA5': '#264653', # Dark Teal
-    'VIT': '#E63946',
-    'CNN': '#457B9D',
-    'UNET': '#1D3557',
-    'GLM': '#2A9D8F',
+    'LMDZ 250': '#F4A261', # Warm Orange
+    'LMDZ 3.5': '#E76F51', # Warm Red-Orange
+    'LMDZ250': '#F4A261',
+    'LMDZ35': '#E76F51',
 }
 
 VIRIDIS_PALETTE = [
@@ -762,7 +790,8 @@ def plot_spatial_maps(data_dict, metric_name, period="Annual", shapefile=None, s
         spatial_min = float(data.min())
         spatial_mean = float(data.mean())
         spatial_max = float(data.max())
-        title_str = f"{model_name}\nMin: {spatial_min:.2f} | Mean: {spatial_mean:.2f} | Max: {spatial_max:.2f} {unit}"
+        display_name = get_display_name(model_name)
+        title_str = f"{display_name}\nMin: {spatial_min:.2f} | Mean: {spatial_mean:.2f} | Max: {spatial_max:.2f} {unit}"
         ax.set_title(title_str, fontsize=10, pad=10, fontweight='semibold')
         ax.set_extent([bounds[0], bounds[2], bounds[1], bounds[3]])
 
@@ -853,7 +882,8 @@ def plot_spatial_summary(data_dict, label, bounds, cmap_val, shapefile=None, sav
         ax.coastlines(resolution='10m', linewidth=0.5)
         morocco.plot(ax=ax, edgecolor="black", linewidth=1, transform=ccrs.PlateCarree())
         s_min, s_mean, s_max = float(data.min()), float(data.mean()), float(data.max())
-        ax.set_title(f'{key}\nMin: {s_min:.2f} | Mean: {s_mean:.2f} | Max: {s_max:.2f}', fontsize=12)
+        display_name = get_display_name(key)
+        ax.set_title(f'{display_name}\nMin: {s_min:.2f} | Mean: {s_mean:.2f} | Max: {s_max:.2f}', fontsize=12)
         ax.set_extent([map_bounds[0], map_bounds[2], map_bounds[1], map_bounds[3]])
         
     if n == 1:
@@ -935,7 +965,8 @@ def plot_spatial_bias(data_dict, label='Bias (mm/day)', bounds=None, shapefile=N
         ax.coastlines(resolution='10m', linewidth=0.5)
         morocco.plot(ax=ax, edgecolor="black", linewidth=1, transform=ccrs.PlateCarree())
         s_min, s_mean, s_max = float(data.min()), float(data.mean()), float(data.max())
-        ax.set_title(f'{key} Error\nMin: {s_min:.2f} | Mean Bias: {s_mean:.2f} | Max: {s_max:.2f}', fontsize=12)
+        display_name = get_display_name(key)
+        ax.set_title(f'{display_name} Error\nMin: {s_min:.2f} | Mean Bias: {s_mean:.2f} | Max: {s_max:.2f}', fontsize=12)
         ax.set_extent([map_bounds[0], map_bounds[2], map_bounds[1], map_bounds[3]])
         
     if n == 1:
@@ -1139,11 +1170,12 @@ def plot_temporal_evolution(model_paths, metric_name, period="Annual", shapefile
             local_max = max(local_max, np.nanmax(means))
                 
             custom_model_colors = get_custom_model_colors()
-            color = custom_model_colors.get(model_name, custom_model_colors.get(model_name.upper(), GLOBAL_MODEL_COLORS.get(model_name.upper(), colors[i % len(colors)])))
+            display_name = get_display_name(model_name)
+            color = custom_model_colors.get(display_name, custom_model_colors.get(model_name, custom_model_colors.get(model_name.upper(), GLOBAL_MODEL_COLORS.get(display_name, GLOBAL_MODEL_COLORS.get(model_name.upper(), colors[i % len(colors)])))))
             linestyle = linestyles[i % len(linestyles)]
             marker = markers[i % len(markers)]
             
-            plt.plot(time_axis, means, label=model_name, marker=marker, markersize=5, 
+            plt.plot(time_axis, means, label=display_name, marker=marker, markersize=5, 
                      linestyle=linestyle, linewidth=2, color=color, alpha=0.85)
     
     custom_limits = get_custom_limits(metric_name, 'temporal')
@@ -1195,12 +1227,13 @@ def plot_metric_boxplot(model_paths, metric_name, period="Annual", shapefile=Non
             points = gpd.GeoSeries(gpd.points_from_xy(lon2d.ravel(), lat2d.ravel()), crs="EPSG:4326")
             mask = points.within(morocco).values.reshape((var.sizes['lat'], var.sizes['lon']))
             
+            display_name = get_display_name(model_name)
             data_values = var.values
             for i in range(var.sizes.get('year', 1)):
                 frame = data_values[i, :, :] if 'year' in var.dims else data_values
                 valid_vals = frame[mask]
                 valid_vals = valid_vals[~np.isnan(valid_vals)]
-                all_data.extend([(model_name, v) for v in valid_vals])
+                all_data.extend([(display_name, v) for v in valid_vals])
 
     if not all_data:
         print(f"Warning: No valid data found for boxplot in {period}")
@@ -1227,7 +1260,7 @@ def plot_metric_boxplot(model_paths, metric_name, period="Annual", shapefile=Non
         colors = ['#E63946', '#457B9D', '#1D3557', '#2A9D8F', '#F4A261', '#8E44AD']
         
     custom_model_colors = get_custom_model_colors()
-    palette = {name: custom_model_colors.get(name, custom_model_colors.get(name.upper(), GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)]))) 
+    palette = {get_display_name(name): custom_model_colors.get(get_display_name(name), custom_model_colors.get(name, custom_model_colors.get(name.upper(), GLOBAL_MODEL_COLORS.get(get_display_name(name), GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)]))))) 
                for i, name in enumerate(model_paths.keys())}
 
     sns.boxplot(data=df, x="Model", y=metric_name.upper(), palette=palette, 
@@ -1296,10 +1329,11 @@ def plot_monthly_cycle(datasets_dict, region=None, shapefile=None, save_path=Non
             means.append(m_mean)
         
         custom_model_colors = get_custom_model_colors()
-        color = custom_model_colors.get(name, custom_model_colors.get(name.upper(), GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)])))
+        display_name = get_display_name(name)
+        color = custom_model_colors.get(display_name, custom_model_colors.get(name, custom_model_colors.get(name.upper(), GLOBAL_MODEL_COLORS.get(display_name, GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)])))))
         linestyle = linestyles[i % len(linestyles)]
         marker = markers[i % len(markers)]
-        plt.plot(range(1, 13), means, label=name, marker=marker, linestyle=linestyle, linewidth=2, color=color)
+        plt.plot(range(1, 13), means, label=display_name, marker=marker, linestyle=linestyle, linewidth=2, color=color)
 
     plt.xticks(range(1, 13), ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], fontsize=9)
     plt.yticks(fontsize=9)
@@ -1352,11 +1386,12 @@ def plot_intensity_distribution_log(datasets_dict, region=None, shapefile=None, 
         vals = vals[vals >= threshold]
         
         custom_model_colors = get_custom_model_colors()
-        color = custom_model_colors.get(name, custom_model_colors.get(name.upper(), GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)])))
+        display_name = get_display_name(name)
+        color = custom_model_colors.get(display_name, custom_model_colors.get(name, custom_model_colors.get(name.upper(), GLOBAL_MODEL_COLORS.get(display_name, GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)])))))
         linestyle = linestyles[i % len(linestyles)]
         if len(vals) > 1:
             bins = np.logspace(np.log10(threshold), np.log10(max(vals) if max(vals) > threshold else threshold+10), 50)
-            plt.hist(vals, bins=bins, histtype='step', label=name, color=color, linestyle=linestyle, linewidth=2, density=True)
+            plt.hist(vals, bins=bins, histtype='step', label=display_name, color=color, linestyle=linestyle, linewidth=2, density=True)
 
     plt.xscale('log')
     plt.yscale('log')
@@ -1415,7 +1450,8 @@ def plot_intensity_distribution_linear(datasets_dict, region=None, shapefile=Non
         vals = vals[vals >= threshold]
         
         custom_model_colors = get_custom_model_colors()
-        color = custom_model_colors.get(name, custom_model_colors.get(name.upper(), GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)])))
+        display_name = get_display_name(name)
+        color = custom_model_colors.get(display_name, custom_model_colors.get(name, custom_model_colors.get(name.upper(), GLOBAL_MODEL_COLORS.get(display_name, GLOBAL_MODEL_COLORS.get(name.upper(), colors[i % len(colors)])))))
         linestyle = linestyles[i % len(linestyles)]
         
         if len(vals) > 1:
@@ -1423,7 +1459,7 @@ def plot_intensity_distribution_linear(datasets_dict, region=None, shapefile=Non
             kde = gaussian_kde(vals)
             pdf_vals = kde(x_range)
             
-            plt.plot(x_range, pdf_vals, color=color, linestyle=linestyle, label=name, linewidth=2)
+            plt.plot(x_range, pdf_vals, color=color, linestyle=linestyle, label=display_name, linewidth=2)
             
             # Vertical line for mean
             dist_mean = np.mean(vals)

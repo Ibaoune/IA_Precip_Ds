@@ -101,3 +101,209 @@ Plotting completed successfully! ✅
 
 🔹 Processing: CORRELATION (ALLMORR)
 --- Executing: python3 src/mean/correlation/correlation.py
+[DEBUG] Processing reference data for Correlation: mswep...
+
+Processing dataset: GLM
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/correlation/results/GLM_pr_allmorr_calcul_land_strategy_per_year_corr_per_year_Annual.nc
+Results saved: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/correlation/results/seasonal_metrics_GLM_pr_allmorr_calcul_land_per_year.csv
+
+Processing dataset: UNET
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/correlation/results/UNET_pr_allmorr_calcul_land_strategy_per_year_corr_per_year_Annual.nc
+Results saved: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/correlation/results/seasonal_metrics_UNET_pr_allmorr_calcul_land_per_year.csv
+
+Processing dataset: ViT
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/correlation/results/ViT_pr_allmorr_calcul_land_strategy_per_year_corr_per_year_Annual.nc
+Results saved: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/correlation/results/seasonal_metrics_ViT_pr_allmorr_calcul_land_per_year.csv
+
+Processing dataset: CNN
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/correlation/results/CNN_pr_allmorr_calcul_land_strategy_per_year_corr_per_year_Annual.nc
+Results saved: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/correlation/results/seasonal_metrics_CNN_pr_allmorr_calcul_land_per_year.csv
+
+Generating plots for period: Annual...
+Saved scientific spatial map: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/correlation/figures/all/spatial_correlation_Annual.png
+Saved boxplot distribution: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/correlation/figures/all/correlation_boxplot_Annual.png
+Saved evolution plot: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/correlation/figures/all/correlation_evolution_Annual.png
+
+=== PIPELINE TESTS ===
+[PASSED]: File created -> seasonal_metrics_GLM_pr_allmorr_calcul_land_per_year.csv
+[PASSED]: File created -> GLM_pr_allmorr_calcul_land_strategy_per_year_corr_per_year_Annual.nc
+[PASSED]: File created -> seasonal_metrics_UNET_pr_allmorr_calcul_land_per_year.csv
+[PASSED]: File created -> UNET_pr_allmorr_calcul_land_strategy_per_year_corr_per_year_Annual.nc
+[PASSED]: File created -> seasonal_metrics_ViT_pr_allmorr_calcul_land_per_year.csv
+[PASSED]: File created -> ViT_pr_allmorr_calcul_land_strategy_per_year_corr_per_year_Annual.nc
+[PASSED]: File created -> seasonal_metrics_CNN_pr_allmorr_calcul_land_per_year.csv
+[PASSED]: File created -> CNN_pr_allmorr_calcul_land_strategy_per_year_corr_per_year_Annual.nc
+All Pipeline tests passed successfully! ✅
+--- Executing: python3 src/mean/correlation/plot_corr.py
+
+Processing plots for period: Annual
+Generating spatial map for Annual...
+Saved scientific spatial map: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/correlation/figures/all/correlation_spatial_map_Annual.png
+Generating temporal evolution plot for Annual...
+Saved evolution plot: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/correlation/figures/all/correlation_evolution_Annual.png
+Generating distribution boxplots for Annual...
+Saved boxplot distribution: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/correlation/figures/all/correlation_boxplot_Annual.png
+
+Plotting completed successfully! ✅
+
+🚀 Starting EXTREME metrics suite for ALLMORR...
+
+🔹 Processing: CDD (ALLMORR)
+--- Executing: python3 src/extreme/cdd/cdd.py
+
+==========================================================
+CDD Pipeline: Running for threshold = 1.0 mm
+Results Directory: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/cdd/cdd_1mm
+==========================================================
+[DEBUG] Processing reference data for CDD: mswep...
+
+Processing dataset: mswep
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/cdd/cdd_1mm/results/mswep_pr_allmorr_calcul_land_strategy_per_year_corr_per_year_Annual.nc
+Results saved: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/cdd/cdd_1mm/results/seasonal_metrics_mswep_pr_allmorr_calcul_land_per_year.csv
+
+Processing dataset: GLM
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/cdd/cdd_1mm/results/GLM_pr_allmorr_calcul_land_strategy_per_year_corr_per_year_Annual.nc
+Results saved: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/cdd/cdd_1mm/results/seasonal_metrics_GLM_pr_allmorr_calcul_land_per_year.csv
+
+Processing dataset: UNET
+Traceback (most recent call last):
+  File "/home/mohammad.elaabaribao/.conda/envs/clean_env_Pytorch/lib/python3.9/site-packages/xarray/backends/file_manager.py", line 211, in _acquire_with_cache_info
+    file = self._cache[self._key]
+  File "/home/mohammad.elaabaribao/.conda/envs/clean_env_Pytorch/lib/python3.9/site-packages/xarray/backends/lru_cache.py", line 56, in __getitem__
+    value = self._cache[key]
+KeyError: [<class 'netCDF4._netCDF4.Dataset'>, ('/srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/cdd/cdd_1mm/results/UNET_pr_allmorr_calcul_land_strategy_per_year_corr_per_year_Annual.nc',), 'a', (('clobber', True), ('diskless', False), ('format', 'NETCDF4'), ('persist', False)), '6ef2d125-fc4a-4f6d-956b-6910491a436f']
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/src/extreme/cdd/cdd.py", line 237, in <module>
+    main()
+  File "/srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/src/extreme/cdd/cdd.py", line 168, in main
+    _, df = utils.compute_generic_metrics(
+  File "/srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/src/utils.py", line 835, in compute_generic_metrics
+    save_metrics_to_netcdf(metrics_dict, prefix, output_dir, tag=season)
+  File "/srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/src/utils.py", line 399, in save_metrics_to_netcdf
+    dataset.to_netcdf(path)
+  File "/home/mohammad.elaabaribao/.conda/envs/clean_env_Pytorch/lib/python3.9/site-packages/xarray/core/dataset.py", line 2329, in to_netcdf
+    return to_netcdf(  # type: ignore  # mypy cannot resolve the overloads:(
+  File "/home/mohammad.elaabaribao/.conda/envs/clean_env_Pytorch/lib/python3.9/site-packages/xarray/backends/api.py", line 1343, in to_netcdf
+    store = store_open(target, mode, format, group, **kwargs)
+  File "/home/mohammad.elaabaribao/.conda/envs/clean_env_Pytorch/lib/python3.9/site-packages/xarray/backends/netCDF4_.py", line 408, in open
+    return cls(manager, group=group, mode=mode, lock=lock, autoclose=autoclose)
+  File "/home/mohammad.elaabaribao/.conda/envs/clean_env_Pytorch/lib/python3.9/site-packages/xarray/backends/netCDF4_.py", line 355, in __init__
+    self.format = self.ds.data_model
+  File "/home/mohammad.elaabaribao/.conda/envs/clean_env_Pytorch/lib/python3.9/site-packages/xarray/backends/netCDF4_.py", line 417, in ds
+    return self._acquire()
+  File "/home/mohammad.elaabaribao/.conda/envs/clean_env_Pytorch/lib/python3.9/site-packages/xarray/backends/netCDF4_.py", line 411, in _acquire
+    with self._manager.acquire_context(needs_lock) as root:
+  File "/home/mohammad.elaabaribao/.conda/envs/clean_env_Pytorch/lib/python3.9/contextlib.py", line 119, in __enter__
+    return next(self.gen)
+  File "/home/mohammad.elaabaribao/.conda/envs/clean_env_Pytorch/lib/python3.9/site-packages/xarray/backends/file_manager.py", line 199, in acquire_context
+    file, cached = self._acquire_with_cache_info(needs_lock)
+  File "/home/mohammad.elaabaribao/.conda/envs/clean_env_Pytorch/lib/python3.9/site-packages/xarray/backends/file_manager.py", line 217, in _acquire_with_cache_info
+    file = self._opener(*self._args, **kwargs)
+  File "src/netCDF4/_netCDF4.pyx", line 2521, in netCDF4._netCDF4.Dataset.__init__
+  File "src/netCDF4/_netCDF4.pyx", line 2158, in netCDF4._netCDF4._ensure_nc_success
+PermissionError: [Errno 13] Permission denied: '/srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/cdd/cdd_1mm/results/UNET_pr_allmorr_calcul_land_strategy_per_year_corr_per_year_Annual.nc'
+!!! Error executing python3 src/extreme/cdd/cdd.py
+--- Executing: python3 src/extreme/cdd/plot_cdd.py
+
+==========================================================
+CDD Plotting: Running for threshold = 1.0 mm
+Data Directory: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/cdd/cdd_1mm/results
+==========================================================
+
+Processing plots for period: Annual
+Traceback (most recent call last):
+  File "/srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/src/extreme/cdd/plot_cdd.py", line 131, in <module>
+    main()
+  File "/srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/src/extreme/cdd/plot_cdd.py", line 106, in main
+    data_raw = utils.load_metric_results(MODEL_PATHS_BASE, period=period)
+  File "/srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/src/utils.py", line 865, in load_metric_results
+    ds = xr.open_dataset(filename)
+  File "/home/mohammad.elaabaribao/.conda/envs/clean_env_Pytorch/lib/python3.9/site-packages/xarray/backends/api.py", line 569, in open_dataset
+    engine = plugins.guess_engine(filename_or_obj)
+  File "/home/mohammad.elaabaribao/.conda/envs/clean_env_Pytorch/lib/python3.9/site-packages/xarray/backends/plugins.py", line 197, in guess_engine
+    raise ValueError(error_msg)
+ValueError: did not find a match in any of xarray's currently installed IO backends ['netcdf4', 'h5netcdf', 'scipy']. Consider explicitly selecting one of the installed engines via the ``engine`` parameter, or installing additional IO dependencies, see:
+https://docs.xarray.dev/en/stable/getting-started-guide/installing.html
+https://docs.xarray.dev/en/stable/user-guide/io.html
+!!! Error executing python3 src/extreme/cdd/plot_cdd.py
+
+🔹 Processing: R95 (ALLMORR)
+--- Executing: python3 src/extreme/r95/r95.py
+[DEBUG] Processing reference data for R95: mswep...
+
+Processing dataset: mswep
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95/results/mswep_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Processing dataset: GLM
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95/results/GLM_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Processing dataset: UNET
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95/results/UNET_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Processing dataset: ViT
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95/results/ViT_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Processing dataset: CNN
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95/results/CNN_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Generating plots for period: Annual...
+Saved scientific spatial map: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95/figures/all/spatial_r95_comparison_Annual.png
+Saved scientific spatial map: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95/figures/all/spatial_r95_error_Annual.png
+
+Pipeline tests passed! ✅
+--- Executing: python3 src/extreme/r95/plot_r95.py
+/srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/src/utils.py:903: RuntimeWarning: Mean of empty slice
+  results.append(np.nanmean(data.values[mask]))
+
+Processing plots for period: Annual
+Generating spatial map for Annual...
+Saved scientific spatial map: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95/figures/all/r95_spatial_map_Annual.png
+Generating temporal evolution plot for Annual...
+Saved evolution plot: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95/figures/all/r95_evolution_Annual.png
+Generating distribution boxplots for Annual...
+Saved boxplot distribution: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95/figures/all/r95_boxplot_Annual.png
+
+Plotting completed successfully! ✅
+
+🔹 Processing: R95_FREQ (ALLMORR)
+--- Executing: python3 src/extreme/r95_freq/r95_nbEvents_freq.py
+[DEBUG] Processing reference data for R95p: mswep...
+
+Processing dataset: mswep
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95_nbEvents_freq/results/mswep_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Processing dataset: GLM
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95_nbEvents_freq/results/GLM_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Processing dataset: UNET
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95_nbEvents_freq/results/UNET_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Processing dataset: ViT
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95_nbEvents_freq/results/ViT_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Processing dataset: CNN
+Saved metrics to: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95_nbEvents_freq/results/CNN_pr_allmorr_calcul_land_strategy_daily_first_corr_per_year_Annual.nc
+
+Generating plots for period: Annual...
+Saved scientific spatial map: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95_nbEvents_freq/figures/all/spatial_frequency_comparison_Annual.png
+Saved scientific spatial map: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95_nbEvents_freq/figures/all/spatial_frequency_error_Annual.png
+
+Pipeline tests passed! ✅
+--- Executing: python3 src/extreme/r95_freq/plot_r95_nbEvents_freq.py
+
+Processing plots for period: Annual
+Generating spatial map for Annual...
+Saved scientific spatial map: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95_nbEvents_freq/figures/all/r95_nbEvents_freq_spatial_map_Annual.png
+Generating temporal evolution plot for Annual...
+Saved evolution plot: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95_nbEvents_freq/figures/all/r95_nbEvents_freq_evolution_Annual.png
+Generating distribution boxplots for Annual...
+Saved boxplot distribution: /srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/retained_models_evaluation_2006_2020/2006-01-01_2020-12-31/allmorr/test/r95_nbEvents_freq/figures/all/r95_nbEvents_freq_boxplot_Annual.png
+
+Plotting completed successfully! ✅
+
+====================================================
+   Post-Processing Finished for all regions!
+====================================================

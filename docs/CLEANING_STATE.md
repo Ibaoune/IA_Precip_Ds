@@ -1,3 +1,4 @@
+<!-- Author: M. El Aabaribaoune (@um6p) -->
 # Cleaning State & Config Selection Guide
 
 This document summarizes the current status of all downscaling experiments, identifying the best-performing models, their corresponding configuration files, and instructions for safely cleaning up directories without losing valuable work.

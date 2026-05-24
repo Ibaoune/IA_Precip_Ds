@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=cnnexp3_scenario3_east_south
 #SBATCH --output=cnnexp3_scenario3_east_south_%j.log
 #SBATCH --error=cnnexp3_scenario3_east_south_%j.log

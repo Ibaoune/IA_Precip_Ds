@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=test_exp23_hybrid_bilinear_channel
 #SBATCH --output=test_exp23_hybrid_bilinear_channel_%j.log
 #SBATCH --error=test_exp23_hybrid_bilinear_channel_%j.log

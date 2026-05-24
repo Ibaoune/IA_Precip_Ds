@@ -3,7 +3,7 @@
 ## Overview
 ==========================================================
  Script: data_loading.py
- Author: M. El Aabaribaoune
+ Author: M. El Aabaribaoune (@um6p)
  Description:
      Unified data loader for downscaling experiments.
 

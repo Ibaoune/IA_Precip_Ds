@@ -1,3 +1,4 @@
+# Author: M. El Aabaribaoune (@um6p)
 import os
 import yaml
 
@@ -132,16 +133,18 @@ nvidia-smi --query-gpu=timestamp,utilization.gpu,utilization.memory,memory.used 
            --format=csv,nounits,noheader \\
            --loop=60 > "$gpu_log" &
 
-CONFIG="{relative_yaml_path}"
+CONFIG="{yaml_path}"
+
+cd {base_dir}
 
 if [[ "$train" == "yes" ]]; then
     echo "[INFO] Running training..."
-    python3 -u ../../train.py "$CONFIG"
+    python3 -u train.py "$CONFIG"
 fi
 
 if [[ "$validation" == "yes" ]]; then
     echo "[INFO] Running validation..."
-    python3 -u ../../eval.py "$CONFIG"
+    python3 -u eval.py "$CONFIG"
 fi
 
 end_time=$(date +%s)
@@ -182,16 +185,18 @@ echo "Start time: $(date)"
 echo "Model: {setup['name']} ({reg_name.upper()}) | Train: $train | Validation: $validation"
 echo "======================================"
 
-CONFIG="{relative_yaml_path}"
+CONFIG="{yaml_path}"
+
+cd {base_dir}
 
 if [[ "$train" == "yes" ]]; then
     echo "[INFO] Running training..."
-    python3 -u ../../train.py "$CONFIG"
+    python3 -u train.py "$CONFIG"
 fi
 
 if [[ "$validation" == "yes" ]]; then
     echo "[INFO] Running validation..."
-    python3 -u ../../eval.py "$CONFIG"
+    python3 -u eval.py "$CONFIG"
 fi
 
 end_time=$(date +%s)

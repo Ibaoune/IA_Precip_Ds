@@ -1,3 +1,4 @@
+# Author: M. El Aabaribaoune (@um6p)
 general:
   experiment: vit_exp2
   model_type: vit

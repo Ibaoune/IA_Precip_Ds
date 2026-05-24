@@ -1,3 +1,4 @@
+<!-- Author: M. El Aabaribaoune (@um6p) -->
 # Regional Splits & Splicing Evaluation Guide
 
 This guide documents the framework's capability to train and evaluate models across distinct regional boundaries, and how separate regional prediction outputs are assembled back into a single unified Morocco grid for post-processing comparison.

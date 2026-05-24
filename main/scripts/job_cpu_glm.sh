@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 
 #SBATCH --job-name=glm_l2_cpu
 #SBATCH --output=glm_l2_cpu%j.log

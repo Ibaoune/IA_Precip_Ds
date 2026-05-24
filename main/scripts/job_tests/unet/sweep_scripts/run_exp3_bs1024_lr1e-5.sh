@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=e3_b1024_l1e-5
 #SBATCH --output=../logs/sweep_exp3_bs1024_lr1e-5_%j.log
 #SBATCH --error=../logs/sweep_exp3_bs1024_lr1e-5_%j.log

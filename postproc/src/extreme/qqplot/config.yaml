@@ -1,3 +1,4 @@
+# Author: M. El Aabaribaoune (@um6p)
 metric:
   n_quantiles: 10000
   name: qqplot

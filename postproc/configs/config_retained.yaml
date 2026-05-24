@@ -1,3 +1,4 @@
+# Author: M. El Aabaribaoune (@um6p)
 experiment: "retained_models_evaluation_2006_2020"
 parameters:
   start_date: "2006-01-01"
@@ -28,14 +29,14 @@ datasets:
   - name: "GLM"
     file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/glm/glm_precip_l2/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_10ep_wd/output_data/glm_predictions_era5_to_mswep.nc"
     variable_name: "precipitation"
+  - name: "CNN"
+    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/cnn/cnn_exp5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/cnn_predictions_era5_to_mswep.nc"
+    variable_name: "precipitation"
   - name: "UNET"
     file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/cnn/cnn_exp3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/cnn_predictions_era5_to_mswep.nc"
     variable_name: "precipitation"
   - name: "ViT"
     file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/vit/vit_precip_exp21_best_hybrid/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/vit_predictions_era5_to_mswep.nc"
-    variable_name: "precipitation"
-  - name: "CNN"
-    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/cnn/cnn_exp5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/cnn_predictions_era5_to_mswep.nc"
     variable_name: "precipitation"
 
 postproc:
@@ -61,9 +62,11 @@ visualisation:
   model_colors:
     MSWEP: "#000000"      # Black for reference
     GLM: "#2A9D8F"        # Green
+    CNN: "#457B9D"        # Light Blue
+    U-Net: "#1D3557"      # Dark Blue
     UNET: "#1D3557"       # Dark Blue
     ViT: "#E63946"        # Red
-    CNN: "#457B9D"        # Light Blue
+    VIT: "#E63946"        # Red
 
   # Subconfigs for each metric containing all details of figure visualization (colormaps, limits)
   metrics:

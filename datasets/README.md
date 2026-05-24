@@ -1,3 +1,4 @@
+<!-- Author: M. El Aabaribaoune (@um6p) -->
 # Datasets Directory
 
 This directory serves as the centralized staging area for processed datasets and normalization statistics used by the downscaling models (ViT, CNN, U-Net, GLM).

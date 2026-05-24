@@ -1,3 +1,4 @@
+# Author: M. El Aabaribaoune (@um6p)
 import gc
 import xarray as xr
 import numpy as np

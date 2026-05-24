@@ -1,3 +1,4 @@
+# Author: M. El Aabaribaoune (@um6p)
 general:
   experiment: glm_precip_l2
   model_type: glm

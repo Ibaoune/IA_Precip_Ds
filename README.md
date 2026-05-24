@@ -1,3 +1,4 @@
+<!-- Author: M. El Aabaribaoune (@um6p) -->
 # Precipitation Downscaling Project
 
 This repository hosts a comprehensive, end-to-end framework for statistical and deep learning-based climate downscaling over Morocco. It is designed to take coarse-resolution Global Circulation Model (GCM) outputs (like LMDZ) or reanalysis data (ERA5) and downscale them into high-resolution precipitation fields (matching the MSWEP reference dataset).

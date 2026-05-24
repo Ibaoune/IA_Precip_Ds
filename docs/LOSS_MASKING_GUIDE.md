@@ -1,3 +1,4 @@
+<!-- Author: M. El Aabaribaoune (@um6p) -->
 # Regional & Macro-Region Loss Masking Guide (Scenario 3)
 
 This guide documents the **Regional Loss Masking** methodology implemented in the downscaling framework. This setup allows models to be trained over the **full domain** (preserving complete spatial boundary conditions) while calculating optimization loss and gradient updates exclusively on specific sub-regions.

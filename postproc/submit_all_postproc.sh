@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 
 sbatch scripts/jobs/job_postproc_unet_exp1.sh
 sbatch scripts/jobs/job_postproc_unet_exp2.sh

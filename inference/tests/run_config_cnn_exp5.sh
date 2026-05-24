@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=config_cnn_exp5
 #SBATCH --output=out_config_cnn_exp5_%j.log
 #SBATCH --error=out_config_cnn_exp5_%j.log

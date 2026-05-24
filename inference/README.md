@@ -1,3 +1,4 @@
+<!-- Author: M. El Aabaribaoune (@um6p) -->
 # Moteur d'Inférence Unifié (Downscaling)
 
 Ce dossier contient le moteur d'inférence universel et robuste pour déployer l'ensemble de vos modèles de descente d'échelle (ViT, CNN, UNet, GLM).

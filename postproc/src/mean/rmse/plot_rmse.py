@@ -1,3 +1,4 @@
+# Author: M. El Aabaribaoune (@um6p)
 import os
 import sys
 import matplotlib

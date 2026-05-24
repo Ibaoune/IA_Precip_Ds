@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=postproc_retained
 #SBATCH --nodes=1
 #SBATCH --ntasks=1

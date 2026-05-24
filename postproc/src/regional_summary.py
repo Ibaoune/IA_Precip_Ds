@@ -1,3 +1,4 @@
+# Author: M. El Aabaribaoune (@um6p)
 """
 regional_summary.py
 ====================
@@ -20,6 +21,8 @@ import pandas as pd
 import xarray as xr
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+import geopandas as gpd
+import regionmask
 from pathlib import Path
 
 # ── import project utils ────────────────────────────────────────────────────
@@ -87,8 +90,37 @@ METRICS = {
 # Helper functions
 # ════════════════════════════════════════════════════════════════════════════
 
-def regional_mean(da: xr.DataArray, region: tuple) -> float:
-    """Average a 2-D (or 3-D with year) DataArray over a lat/lon bounding box."""
+def regional_mean(da: xr.DataArray, region: tuple, reg_name: str = None) -> float:
+    """Average a 2-D (or 3-D with year) DataArray over a shapefile or lat/lon bounding box."""
+    if reg_name:
+        shp_map = {
+            "North": "north.shp",
+            "Northeast": "north_east.shp",
+            "East": "east.shp",
+            "South": "south.shp"
+        }
+        shp_file = shp_map.get(reg_name)
+        if shp_file:
+            shp_path = os.path.join(ROOT, "shape_files", shp_file)
+            if os.path.exists(shp_path):
+                try:
+                    # Load regional shapefile
+                    gdf = gpd.read_file(shp_path).to_crs("EPSG:4326").dissolve()
+                    gdf["name"] = [reg_name]
+                    gdf = gdf.reset_index(drop=True)
+                    
+                    # Create regionmask mask
+                    mask = regionmask.from_geopandas(gdf, names="name", name=reg_name).mask(da)
+                    
+                    # Mask and calculate mean
+                    da_masked = da.where(~mask.isnull())
+                    val = float(np.nanmean(da_masked.values))
+                    if not np.isnan(val):
+                        return val
+                except Exception as e:
+                    print(f"  [WARNING] Shapefile masking failed for {reg_name} ({e}). Falling back to bounding box.")
+
+    # Fallback to simple bounding box
     lat_min, lat_max, lon_min, lon_max = region
     lat_name = "lat" if "lat" in da.dims else "latitude"
     lon_name = "lon" if "lon" in da.dims else "longitude"
@@ -152,7 +184,7 @@ def build_table(base_dir: str, period: str) -> dict[str, pd.DataFrame]:
             da = load_metric(base_dir, meta, model, period)
             for reg_name, bbox in REGIONS.items():
                 if da is not None:
-                    row[reg_name] = regional_mean(da, bbox)
+                    row[reg_name] = regional_mean(da, bbox, reg_name)
                 else:
                     row[reg_name] = np.nan
             rows[model] = row
@@ -278,6 +310,11 @@ def main():
 
     config = utils.load_config(args.config)
 
+    global MODELS
+    MODELS = [d["name"] for d in config.get("datasets", [])]
+    if not MODELS:
+        MODELS = ["GLM", "UNET", "ViT", "CNN"]
+
     experiment  = config.get("experiment", "postproc")
     start       = config["parameters"]["start_date"]
     end         = config["parameters"]["end_date"]
@@ -285,12 +322,22 @@ def main():
 
     # Model colors from config (fallback to defaults)
     model_colors_cfg = config.get("visualisation", {}).get("model_colors", {})
-    model_colors = {
-        "GLM":  model_colors_cfg.get("GLM",  "#2A9D8F"),
-        "UNET": model_colors_cfg.get("UNET", "#1D3557"),
-        "ViT":  model_colors_cfg.get("ViT",  "#E63946"),
-        "CNN":  model_colors_cfg.get("CNN",  "#457B9D"),
-    }
+    model_colors = {}
+    for m in MODELS:
+        if m in model_colors_cfg:
+            model_colors[m] = model_colors_cfg[m]
+        else:
+            m_lower = m.lower()
+            if "unet" in m_lower or "u-net" in m_lower:
+                model_colors[m] = "#1D3557" if "unified" in m_lower else "#457B9D"
+            elif "cnn" in m_lower:
+                model_colors[m] = "#2A9D8F" if "unified" in m_lower else "#E76F51"
+            elif "vit" in m_lower:
+                model_colors[m] = "#E63946" if "unified" in m_lower else "#F4A261"
+            elif "glm" in m_lower:
+                model_colors[m] = "#264653" if "unified" in m_lower else "#2A9D8F"
+            else:
+                model_colors[m] = "#888888"
 
     # Base directory where per-metric results are stored
     base_dir = os.path.join(

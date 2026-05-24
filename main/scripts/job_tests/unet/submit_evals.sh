@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 
 for i in {2..12}; do
   cat << INNER_EOF > eval_test_unet_exp${i}.sh

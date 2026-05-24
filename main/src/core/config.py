@@ -1,7 +1,7 @@
 """
 ==========================================================
  Script: config.py
- Author: M. El Aabaribaoune
+ Author: M. El Aabaribaoune (@um6p)
  Description:
      Loads configuration from YAML and exposes attributes
      as a simple namespace with robust type casting
