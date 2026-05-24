@@ -5,15 +5,15 @@
  Script: train.py
  Author: M. El Aabaribaoune (@um6p)
  Description:
-     Main entry point for training the downscaling model.
-     - Loads configuration
-     - Loads and preprocesses data
-     - Trains the model
-     - Saves trained weights and losses
+ Main entry point for training the downscaling model.
+ - Loads configuration
+ - Loads and preprocesses data
+ - Trains the model
+ - Saves trained weights and losses
 
  Notes:
-     - Compatible CPU / GPU
-     - Model-agnostic (ViT by default)
+ - Compatible CPU / GPU
+ - Model-agnostic (ViT by default)
 ==========================================================
 
 ## Functions

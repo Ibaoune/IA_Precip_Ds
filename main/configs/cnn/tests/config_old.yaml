@@ -1,94 +1,91 @@
 # Author: M. El Aabaribaoune (@um6p)
-###########################################################
-# Script: training.py / train.py
+########################################################### # Script: training.py / train.py
 # Description: Main configuration for deep learning downscaling.
 # Input: ERA5 or LMDZ datasets (predictors), Precipitation or Temperature (targets).
 # Output: Trained models (.pth) and losses saved in results/exp_name/.
-###########################################################
-
-general:
-  verbose: true
-  experiment: "cnn_gdbx_lr1e5_bs512"
-  variable: "precip"  
-  target: "mswep"    
-  src: "era5"        
-  model_type: "cnn" 
-  interpolation_type: "linear" 
-  variables: ["z", "q", "t", "u", "v"]
-  levels: [500, 700, 850, 1000]
-  resolution: 2.0
+########################################################### general:
+ verbose: true
+ experiment: "cnn_gdbx_lr1e5_bs512"
+ variable: "precip" 
+ target: "mswep" 
+ src: "era5" 
+ model_type: "cnn" 
+ interpolation_type: "linear" 
+ variables: ["z", "q", "t", "u", "v"]
+ levels: [500, 700, 850, 1000]
+ resolution: 2.0
 
 training:
-  learning_rate: 1e-5
-  epochs: 300
-  batch_size: 512
-  loss_type: "bernoulli_gamma" 
-  norm_mode: "gridbox"         
-  early_stopping:
-    enable: true
-    max: 15
-  LR_scheduler:
-    enable: false
-    patience: 5
-    factor: 0.5
-    min_lr: 1e-6
-  gradient_clipping:
-    enable: true
-    value: 1.0
-  weight_decay:
-    enable: true
-    value: 1e-4
-  optimizer: "adamw"
-  dropout:
-    enable: true
-    value: 0.1
-  scheduler: 
-    enable: true
-    type: "cosine"
-  group_norm:
-    enable: true
-    num_groups: 32
-  validation:
-    enable: true
-    pecentage: 0.2
+ learning_rate: 1e-5
+ epochs: 300
+ batch_size: 512
+ loss_type: "bernoulli_gamma" 
+ norm_mode: "gridbox" 
+ early_stopping:
+ enable: true
+ max: 15
+ LR_scheduler:
+ enable: false
+ patience: 5
+ factor: 0.5
+ min_lr: 1e-6
+ gradient_clipping:
+ enable: true
+ value: 1.0
+ weight_decay:
+ enable: true
+ value: 1e-4
+ optimizer: "adamw"
+ dropout:
+ enable: true
+ value: 0.1
+ scheduler: 
+ enable: true
+ type: "cosine"
+ group_norm:
+ enable: true
+ num_groups: 32
+ validation:
+ enable: true
+ pecentage: 0.2
 
 model:
-  vit:
-    emb_size: 128
-    patch_size: 4
-    num_layers: 4
-    num_heads: 4
-    dropout: 0.0
+ vit:
+ emb_size: 128
+ patch_size: 4
+ num_layers: 4
+ num_heads: 4
+ dropout: 0.0
 
 region:
-  lon_min: -18
-  lon_max: 0
-  lat_min: 21
-  lat_max: 37
+ lon_min: -18
+ lon_max: 0
+ lat_min: 21
+ lat_max: 37
 
 dates:
-  train:
-    start: "1979-01-01"
-    end: "2005-12-31"
-  test:
-    start: "2006-01-01"
-    end: "2020-12-31"
+ train:
+ start: "1979-01-01"
+ end: "2005-12-31"
+ test:
+ start: "2006-01-01"
+ end: "2020-12-31"
 
 plots:
-  eval:
-    show_suffix_components_in_title: true
+ eval:
+ show_suffix_components_in_title: true
 
 paths:
-  # Paths for Mohammad's environment
-  root_dir: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data//era5ztquv/1979_2020/all_data"
-  results_dir: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/"
-  shapefile_path: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/shapefiles/Morocco_shpfile/DA_REGIONS_12R.shp"
-  
-  # Paths for Hassan's environment
-  #root_dir: "/home/hassan/All data/Internship/Code/DS_intern/Dataset/"
-  #results_dir: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/"
-  #shapefile_path: "ma_shp/ma.shp"
+ # Paths for Mohammad's environment
+ root_dir: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data//era5ztquv/1979_2020/all_data"
+ results_dir: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/"
+ shapefile_path: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/shapefiles/Morocco_shpfile/DA_REGIONS_12R.shp"
+ 
+ # Paths for Hassan's environment
+ #root_dir: "/home/hassan/All data/Internship/Code/DS_intern/Dataset/"
+ #results_dir: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/"
+ #shapefile_path: "ma_shp/ma.shp"
 
-  # Common file naming conventions 
-  era5_predictor_pattern: "{var}_1979-2020_levels.nc"
-  mswep_path: "mswep_1979_2020.nc"
+ # Common file naming conventions 
+ era5_predictor_pattern: "{var}_1979-2020_levels.nc"
+ mswep_path: "mswep_1979_2020.nc"

@@ -4,16 +4,16 @@
 # ==========================================================
 # Script: evaluate.sh
 # Description:
-#     Executes climate metrics step-by-step using the new
-#     hierarchical structure and configuration system.
+# Executes climate metrics step-by-step using the new
+# hierarchical structure and configuration system.
 # ==========================================================
 
 # Set project root in PYTHONPATH
 export PYTHONPATH=$PYTHONPATH:$(pwd)
 
 echo "----------------------------------------------------"
-echo "   Starting Post-Processing Evaluation Pipeline"
-echo "   (Working Root: $(pwd))"
+echo " Starting Post-Processing Evaluation Pipeline"
+echo " (Working Root: $(pwd))"
 echo "----------------------------------------------------"
 # acitvate conda
 source /home/hassan/anaconda3/etc/profile.d/conda.sh
@@ -24,6 +24,6 @@ python3 src/postproc.py
 
 echo ""
 echo "----------------------------------------------------"
-echo "   Post-Processing Completed!"
-echo "   Results Saved in: results/"
+echo " Post-Processing Completed!"
+echo " Results Saved in: results/"
 echo "----------------------------------------------------"

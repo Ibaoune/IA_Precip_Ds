@@ -1,9 +1,9 @@
 # Author: M. El Aabaribaoune (@um6p)
 metric:
-  name: r01
-  plot_seasons:
-  - Annual
-  - JJA
-  - MAM
-  strategy: mean_first
-  threshold: 1.0
+ name: r01
+ plot_seasons:
+ - Annual
+ - JJA
+ - MAM
+ strategy: mean_first
+ threshold: 1.0

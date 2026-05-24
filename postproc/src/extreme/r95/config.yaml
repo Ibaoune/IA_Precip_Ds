@@ -1,9 +1,9 @@
 # Author: M. El Aabaribaoune (@um6p)
 metric:
-  condition: greater_equal
-  name: r95
-  plot_seasons:
-  - Annual
-  - JJA
-  - MAM
-  strategy: daily_first
+ condition: greater_equal
+ name: r95
+ plot_seasons:
+ - Annual
+ - JJA
+ - MAM
+ strategy: daily_first

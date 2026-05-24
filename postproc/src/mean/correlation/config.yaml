@@ -1,9 +1,9 @@
 # Author: M. El Aabaribaoune (@um6p)
 metric:
-  corr_strategy: per_year
-  name: correlation
-  plot_seasons:
-  - Annual
-  - JJA
-  - MAM
-  strategy: per_year
+ corr_strategy: per_year
+ name: correlation
+ plot_seasons:
+ - Annual
+ - JJA
+ - MAM
+ strategy: per_year

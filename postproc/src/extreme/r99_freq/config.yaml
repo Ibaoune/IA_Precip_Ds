@@ -1,8 +1,8 @@
 # Author: M. El Aabaribaoune (@um6p)
 metric:
-  name: r99_nbEvents_freq
-  plot_seasons:
-  - Annual
-  - JJA
-  - MAM
-  strategy: daily_first
+ name: r99_nbEvents_freq
+ plot_seasons:
+ - Annual
+ - JJA
+ - MAM
+ strategy: daily_first

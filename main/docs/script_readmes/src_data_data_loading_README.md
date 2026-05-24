@@ -5,18 +5,18 @@
  Script: data_loading.py
  Author: M. El Aabaribaoune (@um6p)
  Description:
-     Unified data loader for downscaling experiments.
+ Unified data loader for downscaling experiments.
 
-     - Loads predictors (ERA5 or LMDZ)
-     - Loads precipitation targets (MSWEP or LMDZ35)
-     - Applies spatial masking
-     - Handles daily / sub-daily temporal resolution
-     - Returns tensors and coordinate metadata
+ - Loads predictors (ERA5 or LMDZ)
+ - Loads precipitation targets (MSWEP or LMDZ35)
+ - Applies spatial masking
+ - Handles daily / sub-daily temporal resolution
+ - Returns tensors and coordinate metadata
 
  Notes:
-     - Model-agnostic (ViT, CNN, UNet, RF...)
-     - GPU-ready but does NOT force GPU allocation
-     - Logging via vprint only
+ - Model-agnostic (ViT, CNN, UNet, RF...)
+ - GPU-ready but does NOT force GPU allocation
+ - Logging via vprint only
 ==========================================================
 
 ## Functions
@@ -30,8 +30,8 @@ Print mean / min / max statistics for an xarray DataArray.
 ### `def _rh_to_specific_humidity(...)`
 Convert relative humidity (fraction 0-1) to specific humidity (kg/kg).
 Uses Magnus formula for saturation vapor pressure.
-rh   : relative humidity, dimensionless fraction [0, 1]
-t_k  : temperature in Kelvin
+rh : relative humidity, dimensionless fraction [0, 1]
+t_k : temperature in Kelvin
 p_hpa: pressure level in hPa (scalar)
 
 ### `def _process_level_array(...)`

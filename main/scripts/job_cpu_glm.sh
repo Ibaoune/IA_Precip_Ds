@@ -31,13 +31,13 @@ echo "======================================"
 CONFIG="../configs/glm/config.yaml"
 
 if [[ "$train" == "yes" ]]; then
-    echo "[INFO] Running training..."
-    python3 -u ../train.py "$CONFIG"
+ echo "[INFO] Running training..."
+ python3 -u ../train.py "$CONFIG"
 fi
 
 if [[ "$validation" == "yes" ]]; then
-    echo "[INFO] Running validation..."
-    python3 -u ../eval.py "$CONFIG"
+ echo "[INFO] Running validation..."
+ python3 -u ../eval.py "$CONFIG"
 fi
 
 end_time=$(date +%s)
