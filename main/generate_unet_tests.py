@@ -22,32 +22,32 @@ training:
  loss_type: "bernoulli_gamma" 
  norm_mode: "gridbox" 
  early_stopping:
- enable: true
- max: 20
+  enable: true
+  max: 20
  LR_scheduler:
- enable: true
- patience: 10
- factor: 0.5
- min_lr: 1e-6
+  enable: true
+  patience: 10
+  factor: 0.5
+  min_lr: 1e-6
  gradient_clipping:
- enable: true
- value: 1.0
+  enable: true
+  value: 1.0
  weight_decay:
- enable: true
- value: 1e-4
+  enable: true
+  value: 1e-4
  optimizer: "adamw"
  dropout:
- enable: true
- value: 0.1
+  enable: true
+  value: 0.1
  scheduler: 
- enable: false
- type: "cosine"
+  enable: false
+  type: "cosine"
  group_norm:
- enable: true
- num_groups: 32
+  enable: true
+  num_groups: 32
  validation:
- enable: true
- pecentage: 0.2
+  enable: true
+  pecentage: 0.2
 
 region:
  lon_min: -18.0
@@ -94,7 +94,7 @@ experiments = {
  "test_exp12": {"experiment": "unet_exp12_lr_1e-4", "model_type": "doury_unet", "loss_type": "hurdle_loss", "learning_rate": 1e-4},
 }
 
-os.makedirs("main/configs/unet/tests", exist_ok=True)
+os.makedirs("configs/unet/tests", exist_ok=True)
 base_dict = yaml.safe_load(base_yaml_str)
 
 for exp_name, mods in experiments.items():
@@ -104,13 +104,13 @@ for exp_name, mods in experiments.items():
  d["training"]["loss_type"] = mods["loss_type"]
  
  if "learning_rate" in mods:
- d["training"]["learning_rate"] = mods["learning_rate"]
+  d["training"]["learning_rate"] = mods["learning_rate"]
  if "batch_size" in mods:
- d["training"]["batch_size"] = mods["batch_size"]
+  d["training"]["batch_size"] = mods["batch_size"]
  if "scheduler_enable" in mods:
- d["training"]["scheduler"]["enable"] = mods["scheduler_enable"]
+  d["training"]["scheduler"]["enable"] = mods["scheduler_enable"]
  
- with open(f"main/configs/unet/tests/{exp_name}.yaml", "w") as f:
- yaml.dump(d, f, sort_keys=False)
+ with open(f"configs/unet/tests/{exp_name}.yaml", "w") as f:
+  yaml.dump(d, f, sort_keys=False)
 
-print("Generated 5 configurations.")
+print("Generated 12 configurations.")

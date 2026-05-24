@@ -30,11 +30,11 @@ echo "Job completed."
 echo "======================================"
 """
 
-os.makedirs("main/scripts/job_tests", exist_ok=True)
+os.makedirs("scripts/job_tests", exist_ok=True)
 for i in range(1, 13):
  script_content = template.format(exp=i)
- script_path = f"main/scripts/job_tests/run_test_unet_exp{i}.sh"
+ script_path = f"scripts/job_tests/run_test_unet_exp{i}.sh"
  with open(script_path, "w") as f:
- f.write(script_content)
+  f.write(script_content)
 
-print("Generated 5 SLURM scripts.")
+print("Generated 12 SLURM scripts.")
