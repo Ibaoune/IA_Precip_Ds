@@ -1,94 +1,94 @@
 # Author: M. El Aabaribaoune (@um6p)
 dates:
- reference:
- end: '2005-12-31'
- start: '1979-01-01'
- test:
- end: '2020-12-31'
- start: '2006-01-01'
- train:
- end: '2005-12-31'
- start: '1980-01-01'
+  reference:
+    end: '2005-12-31'
+    start: '1979-01-01'
+  test:
+    end: '2020-12-31'
+    start: '2006-01-01'
+  train:
+    end: '2005-12-31'
+    start: '1980-01-01'
 general:
- experiment: vit_precip_exp21_hybrid_base
- interpolation_type: linear
- levels:
- - 500
- - 700
- - 850
- - 1000
- loss_type: bernoulli_gamma
- model_type: vit
- resolution: 2.0
- src: era5
- target: mswep
- variable: precip
- variables:
- - z
- - q
- - t
- - u
- - v
- verbose: true
+  experiment: vit_precip_exp21_hybrid_base
+  interpolation_type: linear
+  levels:
+  - 500
+  - 700
+  - 850
+  - 1000
+  loss_type: bernoulli_gamma
+  model_type: vit
+  resolution: 2.0
+  src: era5
+  target: mswep
+  variable: precip
+  variables:
+  - z
+  - q
+  - t
+  - u
+  - v
+  verbose: true
 mappings:
- lmdz_var_map:
- q: rhum
- t: temp
- u: vitu
- v: vitv
- z: geop
+  lmdz_var_map:
+    q: rhum
+    t: temp
+    u: vitu
+    v: vitv
+    z: geop
 paths:
- era5_predictor_pattern: '{var}_1979-2020_levels.nc'
- lmdz_predictor_pattern: '{folder}/{lmdz_var}-hist.nc'
- model_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/tests/vit/vit_precip_exp21_hybrid_base/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn/models/vit_precip.pth
- mswep_path: mswep_1979_2020.nc
- results_dir: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/
- root_dir: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data
- shapefile_path: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/shapefiles/Morocco_shpfile/DA_REGIONS_12R.shp
+  era5_predictor_pattern: '{var}_1979-2020_levels.nc'
+  lmdz_predictor_pattern: '{folder}/{lmdz_var}-hist.nc'
+  model_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/tests/vit/vit_precip_exp21_hybrid_base/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn/models/vit_precip.pth
+  mswep_path: mswep_1979_2020.nc
+  results_dir: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/
+  root_dir: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data
+  shapefile_path: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/shapefiles/Morocco_shpfile/DA_REGIONS_12R.shp
 prediction:
- bc_reference_folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250
- models_dir: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/
- output_dir: results/1979_2014/vit_precip_exp21_hybrid_base
- scenarios:
- - bias_correction: false
- enable: false
- end: '2014-12-31'
- folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data
- name: era5_present
- src: era5
- start: '1979-01-01'
- - bc_reference_folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35
- bias_correction: true
- enable: false
- end: '2014-12-31'
- folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35
- name: lmdz_35_present
- src: lmdz
- start: '1979-01-01'
- - bc_reference_folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250
- bias_correction: true
- enable: true
- end: '2014-12-31'
- folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250
- name: lmdz_250_present
- src: lmdz
- start: '1979-01-01'
- train_config_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/tests/vit/vit_precip_exp21_hybrid_base/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn/config.txt
+  bc_reference_folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250
+  models_dir: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/
+  output_dir: results/1979_2014/vit_precip_exp21_hybrid_base
+  scenarios:
+  - bias_correction: false
+    enable: false
+    end: '2014-12-31'
+    folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data
+    name: era5_present
+    src: era5
+    start: '1979-01-01'
+  - bc_reference_folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35
+    bias_correction: true
+    enable: false
+    end: '2014-12-31'
+    folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35
+    name: lmdz_35_present
+    src: lmdz
+    start: '1979-01-01'
+  - bc_reference_folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250
+    bias_correction: true
+    enable: true
+    end: '2014-12-31'
+    folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250
+    name: lmdz_250_present
+    src: lmdz
+    start: '1979-01-01'
+  train_config_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/tests/vit/vit_precip_exp21_hybrid_base/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn/config.txt
 region:
- lat_max: 36
- lat_min: 21
- lon_max: 0
- lon_min: -18
+  lat_max: 36
+  lat_min: 21
+  lon_max: 0
+  lon_min: -18
 training:
- batch_size: 64
- early_stopping:
- enable: true
- max: 15
- epochs: 100
- learning_rate: 1e-3
- loss_type: bernoulli_gamma
- norm_mode: gridbox
- optimizer: adamw
- weight_decay:
- enable: true
- value: 1e-4
+  batch_size: 64
+  early_stopping:
+    enable: true
+    max: 15
+  epochs: 100
+  learning_rate: 1e-3
+  loss_type: bernoulli_gamma
+  norm_mode: gridbox
+  optimizer: adamw
+  weight_decay:
+    enable: true
+    value: 1e-4

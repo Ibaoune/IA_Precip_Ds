@@ -1,3 +1,4 @@
+# Author: M. El Aabaribaoune (@um6p)
 general:
   verbose: true
   experiment: unet_exp8_doury_hurdle
@@ -57,13 +58,15 @@ region:
   lat_min: 21.0
   lat_max: 37.0
 dates:
-  train: null
-  start: '1984-01-01'
-  end: '1984-12-31'
-  test: null
+  train:
+    start: '1979-01-01'
+    end: '1983-12-31'
+  test:
+    start: '1984-01-01'
+    end: '1984-12-31'
 plots:
-  eval: null
-  show_suffix_components_in_title: true
+  eval:
+    show_suffix_components_in_title: true
 paths:
   root_dir: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data
   results_dir: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/
