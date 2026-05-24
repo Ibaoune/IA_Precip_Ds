@@ -104,6 +104,26 @@ class Config:
         self.validation_enable = _to_bool(val.get("enable", False))
         self.validation_percentage = _to_float(val.get("pecentage", 0.0))
 
+        # Loss Masking (Optional, for regional loss training over full domain)
+        lm = tr.get("loss_mask", {})
+        self.loss_mask_enable = _to_bool(lm.get("enable", False))
+        self.loss_mask_region = str(lm.get("region", ""))
+        
+        lm_shapefile = lm.get("shapefile", "")
+        if isinstance(lm_shapefile, list):
+            self.loss_mask_shapefile = [
+                os.path.join(self.root_dir, s) if (s and not os.path.isabs(s) and self.root_dir) else s
+                for s in lm_shapefile
+            ]
+        else:
+            self.loss_mask_shapefile = str(lm_shapefile)
+            if self.loss_mask_shapefile and not os.path.isabs(self.loss_mask_shapefile) and self.root_dir:
+                self.loss_mask_shapefile = os.path.join(self.root_dir, self.loss_mask_shapefile)
+
+        if self.loss_mask_enable and self.loss_mask_region:
+            if not self.experiment.endswith(self.loss_mask_region):
+                self.experiment = f"{self.experiment}_lossmask_{self.loss_mask_region}"
+
         # ----------------------
         # Model parameters
         # ----------------------

@@ -47,6 +47,33 @@ Key parameters managed in the configs:
 - **Hyperparameters**: Learning rate, batch size, epochs, normalization mode, loss type, and schedulers.
 - **Geospatial & Temporal**: Bounding box coordinates (lat/lon) and date ranges for training/testing.
 
+### 🎯 Regional & Macro-Region Loss Masking (Scenario 3)
+
+The framework supports training models on the **full domain** (preserving complete spatial and boundary conditions) while calculating the loss and gradients exclusively on specific sub-domains. This prevents boundary edge artifacts in regional predictions.
+
+To enable regional loss masking in a YAML configuration, add a `loss_mask` block under `training`:
+
+```yaml
+training:
+  loss_mask:
+    enable: true
+    region: north_northeast  # Name suffix appended to experiment output directory
+    shapefile:               # Single shapefile path (string) or a list of shapefiles to merge
+      - postproc/shape_files/north.shp
+      - postproc/shape_files/north_east.shp
+```
+
+When enabled, the training loop:
+1. Loads the shapefile(s) and dissolves them into a single macro-region boundary.
+2. Projects the geometry to match the target grid resolution and boundaries.
+3. Combines it with the land/sea mask so that backpropagation only runs on land pixels within the selected region.
+4. Saves all model checkpoints and validation outputs separately under `results/<experiment>_lossmask_<region>/` (unless the experiment name already ends with the region name).
+
+Three script generators are available in `main/` to automate configuring regional and loss-mask jobs:
+* **`generate_regional_setups.py`**: Generates cropped-region setups (physical bounding box cropped).
+* **`generate_lossmask_setups.py`**: Generates full-domain setups with loss masking for standard sub-regions (`north`, `south`, `east`, `north_east`).
+* **`generate_scenario3_setups.py`**: Generates full-domain setups with merged macro-region loss masking (`north_northeast` and `east_south`).
+
 ## 🚀 Usage
 
 ### 1. Training a Model

@@ -27,9 +27,15 @@ To clean up the directories and keep only the production-ready setups, configura
 - **`cnn/`**
   - `cnn_exp3.yaml` ➔ **Main config for Exp 3**.
   - `cnn_exp5.yaml` ➔ **Main config for Exp 5**.
+  - `regional/` ➔ Bounding box cropped regional configurations.
+  - `loss_mask/` ➔ Full-domain configurations with sub-domain loss masking.
+  - `scenario3/` ➔ Full-domain configurations with merged macro-region loss masking (Scenario 3).
   - `tests/` ➔ Contains hyperparameter exploration configs (`gridbox_LR_scheduler.yaml`, `gridbox_dropout.yaml`, etc., and `config_old.yaml`, `test.yaml`). *Can be archived or cleaned.*
 - **`vit/`**
   - `config.yaml` ➔ **Main production config** (based on `test_exp21_best_hybrid`).
+  - `regional/` ➔ Bounding box cropped regional configurations.
+  - `loss_mask/` ➔ Full-domain configurations with sub-domain loss masking.
+  - `scenario3/` ➔ Full-domain configurations with merged macro-region loss masking (Scenario 3).
   - `tests/` ➔ Contains experiments 1 to 25 (`test_exp1.yaml` to `test_exp25_hybrid_fast_cosine.yaml`, etc., and `config_old.yaml`, `test.yaml`). *Can be archived or cleaned.*
 - **`unet/`**
   - Keep as is during sweep evaluation. `tests/sweep/` holds all 72 active configurations.

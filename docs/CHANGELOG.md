@@ -4,6 +4,18 @@ All notable changes to this project are documented in this file, which is update
 
 ---
 
+## [Scenario 3 & Loss Masking] - 2026-05-24
+### Added
+- **Macro-Region Loss Masking (Scenario 3)**: Implemented training models on the full domain while restricting loss calculations to merged sub-domain shapefiles. Built two macro-regions:
+  - **Macro-region A (`north_northeast`)**: Merged North and Northeast shapefiles.
+  - **Macro-region B (`east_south`)**: Merged East and South shapefiles.
+- **Support for Multi-Shapefile Loss Masks**: Enhanced the mask building pipeline in `train.py` to accept lists of shapefiles, automatically load them, concatenate their geometries using `geopandas` and `pandas`, and project/rasterize the dissolved shape onto the target grid.
+- **List-Based Shapefile Parser**: Updated `config.py` to parse list-based shapefile inputs and resolve relative paths correctly. Added checks to prevent redundant suffix appending if the experiment name already ends with the macro-region name.
+- **SLURM Job Generator scripts**: Created `generate_lossmask_setups.py` and `generate_scenario3_setups.py` to automatically compile configurations and generate cluster submission scripts. Generated scripts use absolute paths to avoid SLURM spool folder failures.
+- **Job Queuing**: Automatically generated and queued all 12 sub-domain loss-mask jobs and 6 Scenario 3 macro-region loss-mask jobs for `cnn_exp3`, `cnn_exp5`, and `vit_precip_exp21_best_hybrid`.
+
+---
+
 ## [f4a9b2c] - 2026-05-17
 ### Added
 - **Regional vs Unified Post-Processing Framework**: Created a dedicated comparison configuration [config_regional_vs_unified.yaml](file:///srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/tests/config_regional_vs_unified.yaml) to evaluate the spatial training impact by directly comparing unified Moroccan models against their sliced regional counterparts (glued back from separate North and South training sessions) over testing period (2006–2020).

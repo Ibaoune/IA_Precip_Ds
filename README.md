@@ -30,6 +30,16 @@ An alternative/legacy version of the training framework implemented using PyTorc
 
 ---
 
+## 📚 General Documentation
+
+For general guides, methodology descriptions, and repository maintenance:
+*   **[Loss Masking Guide](docs/LOSS_MASKING_GUIDE.md)**: Detailed technical guide on regional loss masking, single sub-regions, and merged macro-regions (Scenario 3).
+*   **[Regional Splits & Splicing Guide](docs/REGIONAL_EVALUATION_GUIDE.md)**: Guide on cropped regional splitting ($28.0^\circ\text{N}$ boundary), prediction gluing (`glue_regional_predictions.py`), and GLM spatial redundancy.
+*   **[Cleaning State & Config Guide](docs/CLEANING_STATE.md)**: Selection guide identifying top models, config directories organization, and safe cleanup instructions.
+*   **[Project Changelog](docs/CHANGELOG.md)**: Detailed historical log of features added and changed in the repository.
+
+---
+
 ## 🚀 Getting Started
 
 ### Environment Setup

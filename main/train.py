@@ -70,7 +70,27 @@ def main():
     region = regionmask.defined_regions.natural_earth_v5_0_0.land_110
     mask = region.mask(da)
     land_mask_np = mask.notnull().values.astype("float32") # 1.0 for land, 0.0 for ocean
-    land_mask_tensor = torch.tensor(land_mask_np, dtype=torch.float32).to(cfg.device)
+
+    if getattr(cfg, "loss_mask_enable", False) and getattr(cfg, "loss_mask_shapefile", None):
+        vprint(f"[INFO] Applying sub-domain loss mask from: {cfg.loss_mask_shapefile}")
+        import geopandas as gpd
+        import pandas as pd
+        if isinstance(cfg.loss_mask_shapefile, list):
+            gdfs = [gpd.read_file(shp).to_crs("EPSG:4326") for shp in cfg.loss_mask_shapefile]
+            gdf = gpd.GeoDataFrame(pd.concat(gdfs, ignore_index=True), crs="EPSG:4326")
+        else:
+            gdf = gpd.read_file(cfg.loss_mask_shapefile).to_crs("EPSG:4326")
+        gdf_dissolved = gdf.dissolve()
+        gdf_dissolved["name"] = ["mask_region"]
+        gdf_dissolved = gdf_dissolved.reset_index(drop=True)
+        rm_mask = regionmask.from_geopandas(gdf_dissolved, names="name", name="mask_region")
+        sub_mask_np = rm_mask.mask(da)
+        region_mask_np = (~sub_mask_np.isnull()).values.astype("float32")
+        final_mask_np = land_mask_np * region_mask_np
+    else:
+        final_mask_np = land_mask_np
+
+    land_mask_tensor = torch.tensor(final_mask_np, dtype=torch.float32).to(cfg.device)
 
     # ----------------
     # Train model
