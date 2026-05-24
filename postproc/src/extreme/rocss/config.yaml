@@ -1,0 +1,8 @@
+metric:
+  name: rocss
+  plot_seasons:
+  - Annual
+  - JJA
+  - MAM
+  strategy: mean_first
+  threshold: 1.0

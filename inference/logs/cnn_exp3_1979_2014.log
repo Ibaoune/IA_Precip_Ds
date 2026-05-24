@@ -1,0 +1,560 @@
+Using device: cpu
+Loading hyperparameters from train config: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/cnn/cnn_exp3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/config.txt
+Hyperparameters updated successfully.
+Using complex model directory: /srv/data/mohammad.elaabaribao/work/interns/y2026/code/era5Tomswep/results/cnn_exp3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/models
+Final absolute model directory: /srv/data/mohammad.elaabaribao/work/interns/y2026/code/era5Tomswep/results/cnn_exp3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/models
+User-specified model_path detected: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/cnn/cnn_exp3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/models/cnn_precip.pth
+=== Starting Prediction Pipeline for cnn_exp3 ===
+Models dir: /srv/data/mohammad.elaabaribao/work/interns/y2026/code/era5Tomswep/results/cnn_exp3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/models
+
+--- Starting Scenario: era5_present ---
+Flow Step 1 & 2: Loading and Interpolating era5 predictors...
+=== Loading datasets (src=era5, target=mswep) ===
+Loading precipitation file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/mswep_1979_2020.nc
+→ Applying spatial mask
+Precip shapes → train=(9497, 160, 180), test=(13149, 160, 180)
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/z_1979-2020_levels.nc...
+  → Extracting level 500 from z
+→ Applying spatial mask
+   [STATS] z_500: mean=57036.8 m**2 s**-2, min=51355.7, max=58985.4
+  → Extracting level 700 from z
+→ Applying spatial mask
+   [STATS] z_700: mean=30927.7 m**2 s**-2, min=27009.6, max=32387.8
+  → Extracting level 850 from z
+→ Applying spatial mask
+   [STATS] z_850: mean=15056.1 m**2 s**-2, min=11703.2, max=16740.1
+  → Extracting level 1000 from z
+→ Applying spatial mask
+   [STATS] z_1000: mean=1407.92 m**2 s**-2, min=-1629.04, max=3461.49
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/q_1979-2020_levels.nc...
+  → Extracting level 500 from q
+→ Applying spatial mask
+   [STATS] q_500: mean=0.000869772 kg kg**-1, min=2.47326e-07, max=0.00508807
+  → Extracting level 700 from q
+→ Applying spatial mask
+   [STATS] q_700: mean=0.00237605 kg kg**-1, min=2.47326e-07, max=0.0101267
+  → Extracting level 850 from q
+→ Applying spatial mask
+   [STATS] q_850: mean=0.00399139 kg kg**-1, min=3.40433e-06, max=0.0160928
+  → Extracting level 1000 from q
+→ Applying spatial mask
+   [STATS] q_1000: mean=0.00698389 kg kg**-1, min=0.000379719, max=0.0196643
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/t_1979-2020_levels.nc...
+  → Extracting level 500 from t
+→ Applying spatial mask
+   [STATS] t_500: mean=261.125 K, min=235.464, max=272.399
+  → Extracting level 700 from t
+→ Applying spatial mask
+   [STATS] t_700: mean=279.211 K, min=252.777, max=291.408
+  → Extracting level 850 from t
+→ Applying spatial mask
+   [STATS] t_850: mean=288.916 K, min=263.789, max=307.263
+  → Extracting level 1000 from t
+→ Applying spatial mask
+   [STATS] t_1000: mean=288.916 K, min=263.789, max=307.263
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/u_1979-2020_levels.nc...
+  → Extracting level 500 from u
+→ Applying spatial mask
+   [STATS] u_500: mean=7.52805 m s**-1, min=-37.2602, max=57.0537
+  → Extracting level 700 from u
+→ Applying spatial mask
+   [STATS] u_700: mean=3.51298 m s**-1, min=-30.728, max=41.3677
+  → Extracting level 850 from u
+→ Applying spatial mask
+   [STATS] u_850: mean=-0.0500811 m s**-1, min=-30.6586, max=35.1178
+  → Extracting level 1000 from u
+→ Applying spatial mask
+   [STATS] u_1000: mean=-1.25107 m s**-1, min=-21.4339, max=21.492
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/v_1979-2020_levels.nc...
+  → Extracting level 500 from v
+→ Applying spatial mask
+   [STATS] v_500: mean=0.493968 m s**-1, min=-58.1839, max=48.7587
+  → Extracting level 700 from v
+→ Applying spatial mask
+   [STATS] v_700: mean=0.415354 m s**-1, min=-37.9504, max=37.6175
+  → Extracting level 850 from v
+→ Applying spatial mask
+   [STATS] v_850: mean=-0.780596 m s**-1, min=-29.7655, max=34.6308
+  → Extracting level 1000 from v
+→ Applying spatial mask
+   [STATS] v_1000: mean=-2.07933 m s**-1, min=-26.2215, max=22.4446
+Checking time resolution...
+=== Finished loading datasets ===
+Loading historical references (ERA5/GCM 1979-01-01 to 2005-12-31)...
+Loading cached ERA5 stats...
+Flow Step 3: Skipping Bias Correction.
+Flow Step 4: Standardizing predictors (Baseline: ERA5 Hist)...
+Flow Step 5: Preparing Model...
+ Loading PyTorch model from user-provided path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/cnn/cnn_exp3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/models/cnn_precip.pth
+Flow Step 5: Running Inference...
+Flow Step 6: Results saved to /srv/data/mohammad.elaabaribao/work/papers/downscaling/inference/results/1979_2014/cnn_exp3/cnn_era5_present_false.nc
+--> [SUCCESS] Scenario 'era5_present' completed.
+
+--- Starting Scenario: lmdz_35_present ---
+Flow Step 1 & 2: Loading and Interpolating lmdz predictors...
+=== Loading datasets (src=lmdz, target=mswep) ===
+Loading precipitation file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/mswep_1979_2020.nc
+→ Applying spatial mask
+Precip shapes → train=(9497, 160, 180), test=(13149, 160, 180)
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35/geop-hist.nc...
+  → Extracting level 500 from z
+→ Applying spatial mask
+   [STATS] z_500: mean=56913.5 m2/s2, min=50805.1, max=66868.4
+  → Extracting level 700 from z
+→ Applying spatial mask
+   [STATS] z_700: mean=31757.2 m2/s2, min=27239.5, max=44784.5
+  → Extracting level 850 from z
+→ Applying spatial mask
+   [STATS] z_850: mean=17317.3 m2/s2, min=13707.8, max=31738.9
+  → Extracting level 1000 from z
+→ Applying spatial mask
+   [STATS] z_1000: mean=3904.61 m2/s2, min=1050.57, max=19200.2
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35/rhum-hist.nc...
+→ Applying spatial mask
+  → Loaded temperature for RH→q conversion (/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35/temp-hist.nc)
+  → Extracting level 500 from q
+→ Applying spatial mask
+  → Converted rhum → specific humidity at 500 hPa
+   [STATS] q_500: mean=0.000657582, min=-0.000490997, max=0.00416109
+  → Extracting level 700 from q
+→ Applying spatial mask
+  → Converted rhum → specific humidity at 700 hPa
+   [STATS] q_700: mean=0.00188782, min=-0.000510689, max=0.00962404
+  → Extracting level 850 from q
+→ Applying spatial mask
+  → Converted rhum → specific humidity at 850 hPa
+   [STATS] q_850: mean=0.00336413, min=-0.000744379, max=0.012606
+  → Extracting level 1000 from q
+→ Applying spatial mask
+  → Converted rhum → specific humidity at 1000 hPa
+   [STATS] q_1000: mean=0.00616004, min=-0.000730274, max=0.0195419
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35/temp-hist.nc...
+  → Extracting level 500 from t
+→ Applying spatial mask
+   [STATS] t_500: mean=258.245 K, min=232.491, max=269.754
+  → Extracting level 700 from t
+→ Applying spatial mask
+   [STATS] t_700: mean=275.774 K, min=247.779, max=287.512
+  → Extracting level 850 from t
+→ Applying spatial mask
+   [STATS] t_850: mean=284.726 K, min=253.801, max=302.118
+  → Extracting level 1000 from t
+→ Applying spatial mask
+   [STATS] t_1000: mean=292.739 K, min=259.669, max=314.041
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35/vitu-hist.nc...
+  → Extracting level 500 from u
+→ Applying spatial mask
+   [STATS] u_500: mean=7.07015 m/s, min=-44.1185, max=55.4642
+  → Extracting level 700 from u
+→ Applying spatial mask
+   [STATS] u_700: mean=2.9958 m/s, min=-29.4525, max=39.3053
+  → Extracting level 850 from u
+→ Applying spatial mask
+   [STATS] u_850: mean=-0.161934 m/s, min=-26.4814, max=34.4513
+  → Extracting level 1000 from u
+→ Applying spatial mask
+   [STATS] u_1000: mean=-1.96299 m/s, min=-24.0335, max=25.3506
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35/vitv-hist.nc...
+  → Extracting level 500 from v
+→ Applying spatial mask
+   [STATS] v_500: mean=-0.0430005 m/s, min=-52.8578, max=46.7176
+  → Extracting level 700 from v
+→ Applying spatial mask
+   [STATS] v_700: mean=-0.0418367 m/s, min=-32.0361, max=38.6385
+  → Extracting level 850 from v
+→ Applying spatial mask
+   [STATS] v_850: mean=-0.871302 m/s, min=-29.4857, max=33.8642
+  → Extracting level 1000 from v
+→ Applying spatial mask
+   [STATS] v_1000: mean=-2.81217 m/s, min=-23.4127, max=24.7047
+=== Finished loading datasets ===
+Loading historical references (ERA5/GCM 1979-01-01 to 2005-12-31)...
+Loading ERA5 historical (1979-01-01 to 2005-12-31)...
+=== Loading datasets (src=era5, target=mswep) ===
+Loading precipitation file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/mswep_1979_2020.nc
+→ Applying spatial mask
+Precip shapes → train=(9497, 160, 180), test=(9862, 160, 180)
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/z_1979-2020_levels.nc...
+  → Extracting level 500 from z
+→ Applying spatial mask
+   [STATS] z_500: mean=57029.9 m**2 s**-2, min=51355.7, max=58985.4
+  → Extracting level 700 from z
+→ Applying spatial mask
+   [STATS] z_700: mean=30927.1 m**2 s**-2, min=27009.6, max=32387.8
+  → Extracting level 850 from z
+→ Applying spatial mask
+   [STATS] z_850: mean=15060.1 m**2 s**-2, min=11926.9, max=16740.1
+  → Extracting level 1000 from z
+→ Applying spatial mask
+   [STATS] z_1000: mean=1416.09 m**2 s**-2, min=-1557.59, max=3461.49
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/q_1979-2020_levels.nc...
+  → Extracting level 500 from q
+→ Applying spatial mask
+   [STATS] q_500: mean=0.000856815 kg kg**-1, min=2.47326e-07, max=0.00494601
+  → Extracting level 700 from q
+→ Applying spatial mask
+   [STATS] q_700: mean=0.00234333 kg kg**-1, min=2.47326e-07, max=0.00999532
+  → Extracting level 850 from q
+→ Applying spatial mask
+   [STATS] q_850: mean=0.00397199 kg kg**-1, min=5.92993e-06, max=0.0160928
+  → Extracting level 1000 from q
+→ Applying spatial mask
+   [STATS] q_1000: mean=0.00696817 kg kg**-1, min=0.000379719, max=0.0196643
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/t_1979-2020_levels.nc...
+  → Extracting level 500 from t
+→ Applying spatial mask
+   [STATS] t_500: mean=261.059 K, min=235.464, max=272.399
+  → Extracting level 700 from t
+→ Applying spatial mask
+   [STATS] t_700: mean=279.146 K, min=254.358, max=291.408
+  → Extracting level 850 from t
+→ Applying spatial mask
+   [STATS] t_850: mean=288.829 K, min=264.393, max=307.263
+  → Extracting level 1000 from t
+→ Applying spatial mask
+   [STATS] t_1000: mean=288.829 K, min=264.393, max=307.263
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/u_1979-2020_levels.nc...
+  → Extracting level 500 from u
+→ Applying spatial mask
+   [STATS] u_500: mean=7.48734 m s**-1, min=-37.2602, max=57.0537
+  → Extracting level 700 from u
+→ Applying spatial mask
+   [STATS] u_700: mean=3.44946 m s**-1, min=-30.728, max=41.3677
+  → Extracting level 850 from u
+→ Applying spatial mask
+   [STATS] u_850: mean=-0.101543 m s**-1, min=-30.6586, max=35.1178
+  → Extracting level 1000 from u
+→ Applying spatial mask
+   [STATS] u_1000: mean=-1.27835 m s**-1, min=-21.4339, max=21.492
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/v_1979-2020_levels.nc...
+  → Extracting level 500 from v
+→ Applying spatial mask
+   [STATS] v_500: mean=0.566704 m s**-1, min=-55.792, max=48.7587
+  → Extracting level 700 from v
+→ Applying spatial mask
+   [STATS] v_700: mean=0.418681 m s**-1, min=-37.9504, max=37.6175
+  → Extracting level 850 from v
+→ Applying spatial mask
+   [STATS] v_850: mean=-0.797951 m s**-1, min=-29.7655, max=34.6308
+  → Extracting level 1000 from v
+→ Applying spatial mask
+   [STATS] v_1000: mean=-2.09409 m s**-1, min=-26.2215, max=21.6515
+Checking time resolution...
+=== Finished loading datasets ===
+Loading cached ERA5 stats...
+Flow Step 3: Applying Bias Correction (SDM)...
+=== Loading datasets (src=lmdz, target=mswep) ===
+Loading precipitation file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/mswep_1979_2020.nc
+→ Applying spatial mask
+Precip shapes → train=(9497, 160, 180), test=(9862, 160, 180)
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35/geop-hist.nc...
+  → Extracting level 500 from z
+→ Applying spatial mask
+   [STATS] z_500: mean=56886.7 m2/s2, min=50805.1, max=66868.4
+  → Extracting level 700 from z
+→ Applying spatial mask
+   [STATS] z_700: mean=31744.6 m2/s2, min=27239.5, max=44784.5
+  → Extracting level 850 from z
+→ Applying spatial mask
+   [STATS] z_850: mean=17311.4 m2/s2, min=13707.8, max=31738.9
+  → Extracting level 1000 from z
+→ Applying spatial mask
+   [STATS] z_1000: mean=3904.16 m2/s2, min=1050.57, max=19200.2
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35/rhum-hist.nc...
+→ Applying spatial mask
+  → Loaded temperature for RH→q conversion (/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35/temp-hist.nc)
+  → Extracting level 500 from q
+→ Applying spatial mask
+  → Converted rhum → specific humidity at 500 hPa
+   [STATS] q_500: mean=0.000647258, min=-0.000445393, max=0.00416109
+  → Extracting level 700 from q
+→ Applying spatial mask
+  → Converted rhum → specific humidity at 700 hPa
+   [STATS] q_700: mean=0.00185899, min=-0.000510689, max=0.00930561
+  → Extracting level 850 from q
+→ Applying spatial mask
+  → Converted rhum → specific humidity at 850 hPa
+   [STATS] q_850: mean=0.00331691, min=-0.000744379, max=0.0125008
+  → Extracting level 1000 from q
+→ Applying spatial mask
+  → Converted rhum → specific humidity at 1000 hPa
+   [STATS] q_1000: mean=0.00609502, min=-0.000730274, max=0.0191056
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35/temp-hist.nc...
+  → Extracting level 500 from t
+→ Applying spatial mask
+   [STATS] t_500: mean=258.064 K, min=232.718, max=269.754
+  → Extracting level 700 from t
+→ Applying spatial mask
+   [STATS] t_700: mean=275.627 K, min=247.779, max=287.433
+  → Extracting level 850 from t
+→ Applying spatial mask
+   [STATS] t_850: mean=284.597 K, min=253.801, max=302.118
+  → Extracting level 1000 from t
+→ Applying spatial mask
+   [STATS] t_1000: mean=292.615 K, min=259.669, max=313.866
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35/vitu-hist.nc...
+  → Extracting level 500 from u
+→ Applying spatial mask
+   [STATS] u_500: mean=6.99129 m/s, min=-44.1185, max=55.4642
+  → Extracting level 700 from u
+→ Applying spatial mask
+   [STATS] u_700: mean=2.93941 m/s, min=-29.4525, max=39.3053
+  → Extracting level 850 from u
+→ Applying spatial mask
+   [STATS] u_850: mean=-0.191305 m/s, min=-26.4814, max=34.4513
+  → Extracting level 1000 from u
+→ Applying spatial mask
+   [STATS] u_1000: mean=-1.97396 m/s, min=-24.0335, max=25.3506
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35/vitv-hist.nc...
+  → Extracting level 500 from v
+→ Applying spatial mask
+   [STATS] v_500: mean=-0.0609633 m/s, min=-49.0748, max=46.7176
+  → Extracting level 700 from v
+→ Applying spatial mask
+   [STATS] v_700: mean=-0.0329387 m/s, min=-32.0361, max=35.8302
+  → Extracting level 850 from v
+→ Applying spatial mask
+   [STATS] v_850: mean=-0.845138 m/s, min=-25.6662, max=33.8642
+  → Extracting level 1000 from v
+→ Applying spatial mask
+   [STATS] v_1000: mean=-2.77523 m/s, min=-22.8374, max=24.7047
+=== Finished loading datasets ===
+Flow Step 4: Standardizing predictors (Baseline: ERA5 Hist)...
+Flow Step 5: Running Inference...
+Flow Step 6: Results saved to /srv/data/mohammad.elaabaribao/work/papers/downscaling/inference/results/1979_2014/cnn_exp3/cnn_lmdz_35_present_true.nc
+--> [SUCCESS] Scenario 'lmdz_35_present' completed.
+
+--- Starting Scenario: lmdz_250_present ---
+Flow Step 1 & 2: Loading and Interpolating lmdz predictors...
+=== Loading datasets (src=lmdz, target=mswep) ===
+Loading precipitation file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/mswep_1979_2020.nc
+→ Applying spatial mask
+Precip shapes → train=(9497, 160, 180), test=(13149, 160, 180)
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250/geop-hist.nc...
+  → Extracting level 500 from z
+→ Applying spatial mask
+   [STATS] z_500: mean=56955.6 m2/s2, min=50706.3, max=64449
+  → Extracting level 700 from z
+→ Applying spatial mask
+   [STATS] z_700: mean=31763.1 m2/s2, min=26937.9, max=41199.8
+  → Extracting level 850 from z
+→ Applying spatial mask
+   [STATS] z_850: mean=17297.5 m2/s2, min=13294, max=27442.6
+  → Extracting level 1000 from z
+→ Applying spatial mask
+   [STATS] z_1000: mean=3847.16 m2/s2, min=520.432, max=14290.5
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250/rhum-hist.nc...
+→ Applying spatial mask
+  → Loaded temperature for RH→q conversion (/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250/temp-hist.nc)
+  → Extracting level 500 from q
+→ Applying spatial mask
+  → Converted rhum → specific humidity at 500 hPa
+   [STATS] q_500: mean=0.000941919, min=-0.000290861, max=0.00483569
+  → Extracting level 700 from q
+→ Applying spatial mask
+  → Converted rhum → specific humidity at 700 hPa
+   [STATS] q_700: mean=0.00247211, min=-0.000427055, max=0.010673
+  → Extracting level 850 from q
+→ Applying spatial mask
+  → Converted rhum → specific humidity at 850 hPa
+   [STATS] q_850: mean=0.00416203, min=-0.000275401, max=0.0146049
+  → Extracting level 1000 from q
+→ Applying spatial mask
+  → Converted rhum → specific humidity at 1000 hPa
+   [STATS] q_1000: mean=0.00692667, min=0.00052619, max=0.0196263
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250/temp-hist.nc...
+  → Extracting level 500 from t
+→ Applying spatial mask
+   [STATS] t_500: mean=258.459 K, min=235.044, max=270.691
+  → Extracting level 700 from t
+→ Applying spatial mask
+   [STATS] t_700: mean=276.112 K, min=249.648, max=288.794
+  → Extracting level 850 from t
+→ Applying spatial mask
+   [STATS] t_850: mean=285.208 K, min=257.454, max=303.617
+  → Extracting level 1000 from t
+→ Applying spatial mask
+   [STATS] t_1000: mean=293.788 K, min=265.968, max=314.689
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250/vitu-hist.nc...
+  → Extracting level 500 from u
+→ Applying spatial mask
+   [STATS] u_500: mean=7.7936 m/s, min=-36.7718, max=49.9298
+  → Extracting level 700 from u
+→ Applying spatial mask
+   [STATS] u_700: mean=3.49456 m/s, min=-31.3713, max=40.4256
+  → Extracting level 850 from u
+→ Applying spatial mask
+   [STATS] u_850: mean=0.00826461 m/s, min=-27.5041, max=35.5831
+  → Extracting level 1000 from u
+→ Applying spatial mask
+   [STATS] u_1000: mean=-1.7564 m/s, min=-19.6587, max=25.2932
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250/vitv-hist.nc...
+  → Extracting level 500 from v
+→ Applying spatial mask
+   [STATS] v_500: mean=0.263627 m/s, min=-46.8455, max=42.0239
+  → Extracting level 700 from v
+→ Applying spatial mask
+   [STATS] v_700: mean=0.176675 m/s, min=-33.1427, max=30.8424
+  → Extracting level 850 from v
+→ Applying spatial mask
+   [STATS] v_850: mean=-0.66037 m/s, min=-26.4313, max=28.9306
+  → Extracting level 1000 from v
+→ Applying spatial mask
+   [STATS] v_1000: mean=-2.75432 m/s, min=-21.6264, max=24.1449
+=== Finished loading datasets ===
+Loading historical references (ERA5/GCM 1979-01-01 to 2005-12-31)...
+Loading ERA5 historical (1979-01-01 to 2005-12-31)...
+=== Loading datasets (src=era5, target=mswep) ===
+Loading precipitation file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/mswep_1979_2020.nc
+→ Applying spatial mask
+Precip shapes → train=(9497, 160, 180), test=(9862, 160, 180)
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/z_1979-2020_levels.nc...
+  → Extracting level 500 from z
+→ Applying spatial mask
+   [STATS] z_500: mean=57029.9 m**2 s**-2, min=51355.7, max=58985.4
+  → Extracting level 700 from z
+→ Applying spatial mask
+   [STATS] z_700: mean=30927.1 m**2 s**-2, min=27009.6, max=32387.8
+  → Extracting level 850 from z
+→ Applying spatial mask
+   [STATS] z_850: mean=15060.1 m**2 s**-2, min=11926.9, max=16740.1
+  → Extracting level 1000 from z
+→ Applying spatial mask
+   [STATS] z_1000: mean=1416.09 m**2 s**-2, min=-1557.59, max=3461.49
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/q_1979-2020_levels.nc...
+  → Extracting level 500 from q
+→ Applying spatial mask
+   [STATS] q_500: mean=0.000856815 kg kg**-1, min=2.47326e-07, max=0.00494601
+  → Extracting level 700 from q
+→ Applying spatial mask
+   [STATS] q_700: mean=0.00234333 kg kg**-1, min=2.47326e-07, max=0.00999532
+  → Extracting level 850 from q
+→ Applying spatial mask
+   [STATS] q_850: mean=0.00397199 kg kg**-1, min=5.92993e-06, max=0.0160928
+  → Extracting level 1000 from q
+→ Applying spatial mask
+   [STATS] q_1000: mean=0.00696817 kg kg**-1, min=0.000379719, max=0.0196643
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/t_1979-2020_levels.nc...
+  → Extracting level 500 from t
+→ Applying spatial mask
+   [STATS] t_500: mean=261.059 K, min=235.464, max=272.399
+  → Extracting level 700 from t
+→ Applying spatial mask
+   [STATS] t_700: mean=279.146 K, min=254.358, max=291.408
+  → Extracting level 850 from t
+→ Applying spatial mask
+   [STATS] t_850: mean=288.829 K, min=264.393, max=307.263
+  → Extracting level 1000 from t
+→ Applying spatial mask
+   [STATS] t_1000: mean=288.829 K, min=264.393, max=307.263
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/u_1979-2020_levels.nc...
+  → Extracting level 500 from u
+→ Applying spatial mask
+   [STATS] u_500: mean=7.48734 m s**-1, min=-37.2602, max=57.0537
+  → Extracting level 700 from u
+→ Applying spatial mask
+   [STATS] u_700: mean=3.44946 m s**-1, min=-30.728, max=41.3677
+  → Extracting level 850 from u
+→ Applying spatial mask
+   [STATS] u_850: mean=-0.101543 m s**-1, min=-30.6586, max=35.1178
+  → Extracting level 1000 from u
+→ Applying spatial mask
+   [STATS] u_1000: mean=-1.27835 m s**-1, min=-21.4339, max=21.492
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/v_1979-2020_levels.nc...
+  → Extracting level 500 from v
+→ Applying spatial mask
+   [STATS] v_500: mean=0.566704 m s**-1, min=-55.792, max=48.7587
+  → Extracting level 700 from v
+→ Applying spatial mask
+   [STATS] v_700: mean=0.418681 m s**-1, min=-37.9504, max=37.6175
+  → Extracting level 850 from v
+→ Applying spatial mask
+   [STATS] v_850: mean=-0.797951 m s**-1, min=-29.7655, max=34.6308
+  → Extracting level 1000 from v
+→ Applying spatial mask
+   [STATS] v_1000: mean=-2.09409 m s**-1, min=-26.2215, max=21.6515
+Checking time resolution...
+=== Finished loading datasets ===
+Loading cached ERA5 stats...
+Flow Step 3: Applying Bias Correction (SDM)...
+=== Loading datasets (src=lmdz, target=mswep) ===
+Loading precipitation file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/mswep_1979_2020.nc
+→ Applying spatial mask
+Precip shapes → train=(9497, 160, 180), test=(9862, 160, 180)
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250/geop-hist.nc...
+  → Extracting level 500 from z
+→ Applying spatial mask
+   [STATS] z_500: mean=56945.7 m2/s2, min=50706.3, max=64340.9
+  → Extracting level 700 from z
+→ Applying spatial mask
+   [STATS] z_700: mean=31757.5 m2/s2, min=26937.9, max=41146.8
+  → Extracting level 850 from z
+→ Applying spatial mask
+   [STATS] z_850: mean=17294.9 m2/s2, min=13294, max=27422.6
+  → Extracting level 1000 from z
+→ Applying spatial mask
+   [STATS] z_1000: mean=3846.93 m2/s2, min=524.379, max=14290.2
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250/rhum-hist.nc...
+→ Applying spatial mask
+  → Loaded temperature for RH→q conversion (/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250/temp-hist.nc)
+  → Extracting level 500 from q
+→ Applying spatial mask
+  → Converted rhum → specific humidity at 500 hPa
+   [STATS] q_500: mean=0.000933764, min=-0.000260161, max=0.00470618
+  → Extracting level 700 from q
+→ Applying spatial mask
+  → Converted rhum → specific humidity at 700 hPa
+   [STATS] q_700: mean=0.00243632, min=-0.000427055, max=0.010673
+  → Extracting level 850 from q
+→ Applying spatial mask
+  → Converted rhum → specific humidity at 850 hPa
+   [STATS] q_850: mean=0.00411212, min=-0.000275401, max=0.0142045
+  → Extracting level 1000 from q
+→ Applying spatial mask
+  → Converted rhum → specific humidity at 1000 hPa
+   [STATS] q_1000: mean=0.00686828, min=0.000565373, max=0.0193507
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250/temp-hist.nc...
+  → Extracting level 500 from t
+→ Applying spatial mask
+   [STATS] t_500: mean=258.393 K, min=235.044, max=270.691
+  → Extracting level 700 from t
+→ Applying spatial mask
+   [STATS] t_700: mean=276.045 K, min=249.648, max=288.794
+  → Extracting level 850 from t
+→ Applying spatial mask
+   [STATS] t_850: mean=285.134 K, min=257.454, max=303.617
+  → Extracting level 1000 from t
+→ Applying spatial mask
+   [STATS] t_1000: mean=293.721 K, min=265.968, max=314.491
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250/vitu-hist.nc...
+  → Extracting level 500 from u
+→ Applying spatial mask
+   [STATS] u_500: mean=7.73586 m/s, min=-32.238, max=49.9298
+  → Extracting level 700 from u
+→ Applying spatial mask
+   [STATS] u_700: mean=3.454 m/s, min=-25.9615, max=40.4256
+  → Extracting level 850 from u
+→ Applying spatial mask
+   [STATS] u_850: mean=-0.0125717 m/s, min=-22.4735, max=35.5831
+  → Extracting level 1000 from u
+→ Applying spatial mask
+   [STATS] u_1000: mean=-1.78674 m/s, min=-19.6587, max=25.2932
+Loading merged variable file: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250/vitv-hist.nc...
+  → Extracting level 500 from v
+→ Applying spatial mask
+   [STATS] v_500: mean=0.24927 m/s, min=-46.8455, max=42.0239
+  → Extracting level 700 from v
+→ Applying spatial mask
+   [STATS] v_700: mean=0.173027 m/s, min=-31.7117, max=30.8424
+  → Extracting level 850 from v
+→ Applying spatial mask
+   [STATS] v_850: mean=-0.651217 m/s, min=-26.4313, max=28.9306
+  → Extracting level 1000 from v
+→ Applying spatial mask
+   [STATS] v_1000: mean=-2.73554 m/s, min=-21.6264, max=24.1449
+=== Finished loading datasets ===
+Flow Step 4: Standardizing predictors (Baseline: ERA5 Hist)...
+Flow Step 5: Running Inference...
+Flow Step 6: Results saved to /srv/data/mohammad.elaabaribao/work/papers/downscaling/inference/results/1979_2014/cnn_exp3/cnn_lmdz_250_present_true.nc
+--> [SUCCESS] Scenario 'lmdz_250_present' completed.
+=== All Prediction Tasks Completed ===

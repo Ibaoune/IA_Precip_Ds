@@ -68,7 +68,39 @@ class DownscalingDataset(Dataset):
 
         assert self.x_data.sizes["time"] == self.y_data.sizes["time"], \
             "Input and target time dimensions do not match"
-        
+
+    def handle_time_frequency(self, ds, expected="D", resample_method="mean", name="input"):
+        """
+        Ensure dataset has expected daily frequency.
+        If hourly -> resample
+        If freq cannot be inferred -> assume daily
+        """
+        try:
+            freq = xr.infer_freq(ds.time.to_index())
+        except ValueError:
+            freq = None
+
+        if freq is None:
+            print(f"[WARNING] Could not infer {name} data frequency, assuming daily ('D').")
+            return ds
+
+        if freq == expected:
+            print(f"{name.capitalize()} data time frequency: {freq}")
+            return ds
+
+        if freq.endswith("h"):
+            print(f"Resampling {name} data from {freq} to daily.")
+            if resample_method == "mean":
+                return ds.resample(time="1D").mean()
+            elif resample_method == "sum":
+                return ds.resample(time="1D").sum()
+            else:
+                raise ValueError(f"Unknown resample method: {resample_method}")
+
+        raise ValueError(
+            f"{name.capitalize()} data time frequency is {freq}, expected '{expected}'"
+        )
+    
     def _get_inputs(self, variables, levels):
         ds = xr.open_mfdataset(
             self.data_path['input'],
@@ -81,22 +113,12 @@ class DownscalingDataset(Dataset):
         # select variables
         x_data = ds[variables]
         # check time frequency, should be daily
-        try:
-            freq = xr.infer_freq(x_data.time.to_index())
-        except ValueError:
-            print("Could not infer time frequency, trying with first 100 timestamps.")
-            freq = xr.infer_freq(x_data.time[:100].to_index())
-            if freq is None:
-                print("Still could not infer frequency, assuming daily frequency.")
-                freq = 'D'
-        if freq != 'D':
-            if not freq.endswith('h'):
-                raise ValueError(f"Input data time frequency is {freq}, expected 'D'")
-            else:
-                # resample to daily
-                x_data = x_data.resample(time='1D').mean()
-        else:
-            print(f"Input data time frequency: {freq}")
+        x_data = self.handle_time_frequency(
+            x_data,
+            expected="D",
+            resample_method="mean",
+            name="input"
+        )
         # load() all data into memory, remove in case of GPU memory issues
         return x_data.load()
 

@@ -1,0 +1,4 @@
+metric:
+  n_quantiles: 10000
+  name: qqplot
+  threshold: 1

@@ -1,0 +1,15 @@
+# Data and Results
+Dataset/
+morocco_shapefile/
+results/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+../scripts/job_*
+# Logs
+log.txt
+*.out
+*.log
+*.bak

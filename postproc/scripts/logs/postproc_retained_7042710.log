@@ -1,0 +1,11 @@
+Starting SLURM Job: postproc_retained
+Target Configuration: configs/config_retained.yaml
+Date: ن ماي 18 13:20:34 +01 2026
+Host: slurm-compute-h24a5-u30-svn3
+Directory: /var/spool
+==========================================================
+python3: can't open file '/var/spool/src/postproc.py': [Errno 2] No such file or directory
+==========================================================
+Job Completed Successfully!
+Date: ن ماي 18 13:20:37 +01 2026
+==========================================================

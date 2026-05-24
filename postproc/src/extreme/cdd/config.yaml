@@ -1,0 +1,8 @@
+metric:
+  name: cdd
+  plot_seasons:
+  - Annual
+  - JJA
+  - MAM
+  strategy: per_year
+  threshold_mm: 1.0

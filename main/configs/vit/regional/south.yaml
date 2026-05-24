@@ -1,0 +1,76 @@
+dates:
+  test:
+    end: '2020-12-31'
+    start: '2006-01-01'
+  train:
+    end: '2005-12-31'
+    start: '1979-01-01'
+general:
+  experiment: vit_precip_exp21_best_hybrid_south
+  interpolation_type: linear
+  levels:
+  - 500
+  - 700
+  - 850
+  model_type: vit
+  resolution: 2.0
+  src: era5
+  target: mswep
+  variable: precip
+  variables:
+  - z
+  - q
+  - t
+  - u
+  - v
+  verbose: true
+model:
+  vit:
+    emb_size: 64
+    num_heads: 4
+    num_layers: 8
+    patch_size: 4
+paths:
+  era5_predictor_pattern: '{var}_1979-2020_levels.nc'
+  mswep_path: mswep_1979_2020.nc
+  results_dir: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/
+  root_dir: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data
+  shapefile_path: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/shapefiles/Morocco_shpfile/DA_REGIONS_12R.shp
+region:
+  lat_max: 28
+  lat_min: 21
+  lon_max: 0
+  lon_min: -18
+training:
+  LR_scheduler:
+    enable: true
+    factor: 0.5
+    min_lr: 1e-6
+    patience: 5
+  batch_size: 4
+  dropout:
+    enable: true
+    value: 0.2
+  early_stopping:
+    enable: true
+    max: 15
+  epochs: 25
+  gradient_clipping:
+    enable: true
+    value: 1.0
+  group_norm:
+    enable: true
+    num_groups: 32
+  learning_rate: 1e-3
+  loss_type: bernoulli_gamma
+  norm_mode: global
+  optimizer: adamw
+  scheduler:
+    enable: true
+    type: cosine
+  validation:
+    enable: true
+    pecentage: 0.2
+  weight_decay:
+    enable: true
+    value: 1e-3

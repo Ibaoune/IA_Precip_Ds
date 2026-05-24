@@ -1,0 +1,72 @@
+dates:
+  test:
+    end: '2020-12-31'
+    start: '2006-01-01'
+  train:
+    end: '2005-12-31'
+    start: '1979-01-01'
+general:
+  experiment: glm_precip_l2_south
+  interpolation_type: linear
+  levels:
+  - 500
+  - 700
+  - 850
+  - 1000
+  model_type: glm
+  resolution: 2.0
+  src: era5
+  target: mswep
+  variable: precip
+  variables:
+  - z
+  - q
+  - t
+  - u
+  - v
+  verbose: true
+paths:
+  era5_predictor_pattern: '{var}_1979-2020_levels.nc'
+  mswep_path: mswep_1979_2020.nc
+  results_dir: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/
+  root_dir: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data
+  shapefile_path: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/shapefiles/Morocco_shpfile/DA_REGIONS_12R.shp
+region:
+  lat_max: 28
+  lat_min: 21
+  lon_max: 0
+  lon_min: -18
+training:
+  LR_scheduler:
+    enable: false
+    factor: 0.5
+    min_lr: 1e-6
+    patience: 5
+  batch_size: 64
+  dropout:
+    enable: false
+    value: 0.1
+  early_stopping:
+    enable: true
+    max: 15
+  epochs: 10
+  gradient_clipping:
+    enable: false
+    value: 1.0
+  group_norm:
+    enable: false
+    num_groups: 32
+  learning_rate: 1e-3
+  loss_type: bernoulli_gamma
+  norm_mode: gridbox
+  optimizer: adamw
+  scheduler:
+    enable: false
+    type: cosine
+  validation:
+    enable: true
+    pecentage: 0.2
+  weight_decay:
+    enable: true
+    type: l2
+    value: 0.01
