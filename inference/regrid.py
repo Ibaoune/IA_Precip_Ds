@@ -26,7 +26,7 @@ ds_regridded = ds_lmdz.interp(lat=mswep.lat, lon=mswep.lon, method='linear')
 
 # Optionally align time coordinates names if needed
 if 'time_counter' in ds_regridded.coords:
- ds_regridded = ds_regridded.rename({'time_counter': 'time'})
+    ds_regridded = ds_regridded.rename({'time_counter': 'time'})
 
 out_path = "results/output/raw_lmdz35_10km.nc"
 print(f"Saving to {out_path}...")

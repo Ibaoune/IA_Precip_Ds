@@ -4,16 +4,16 @@
 # ==========================================================
 # Script: explore.sh
 # Description:
-# Executes the dataset exploration pipeline to generate
-# preliminary climatology and intensity plots.
+#     Executes the dataset exploration pipeline to generate
+#     preliminary climatology and intensity plots.
 # ==========================================================
 
 # Set project root in PYTHONPATH
 export PYTHONPATH=$PYTHONPATH:$(pwd)
 
 echo "----------------------------------------------------"
-echo " Starting Dataset Exploration Pipeline"
-echo " (Working Root: $(pwd))"
+echo "   Starting Dataset Exploration Pipeline"
+echo "   (Working Root: $(pwd))"
 echo "----------------------------------------------------"
 
 # Activate conda environment
@@ -26,6 +26,6 @@ python3 src/exploration.py --config config_explore.yaml
 
 echo ""
 echo "----------------------------------------------------"
-echo " Exploration Completed!"
-echo " Results Saved in: results/"
+echo "   Exploration Completed!"
+echo "   Results Saved in: results/"
 echo "----------------------------------------------------"

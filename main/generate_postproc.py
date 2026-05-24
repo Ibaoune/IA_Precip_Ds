@@ -13,68 +13,68 @@ learning_rates = ["1e-3", "1e-4", "1e-5"]
 
 # Read custom limits from the existing file
 with open("../postproc/tests/config_vit_hybrids_vs_cnn.yaml", "r") as f:
- vit_config = yaml.safe_load(f)
+    vit_config = yaml.safe_load(f)
 custom_limits = vit_config["custom_limits"]
 
 submit_all_script = open("../postproc/submit_all_postproc.sh", "w")
 submit_all_script.write("#!/bin/bash\n\n")
 
 for exp_num in range(1, 7):
- datasets_list = []
- nc_paths = []
+    datasets_list = []
+    nc_paths = []
 
- for bs in batch_sizes:
- for lr in learning_rates:
- config_filename = f"configs/unet/tests/sweep/test_exp{exp_num}_bs{bs}_lr{lr}.yaml"
- cfg = load_config(train_mode=False, path=config_filename)
- exp_path = build_experiment_path(cfg)
- nc_path = os.path.join(exp_path, "output_data", f"{cfg.model_type}_predictions_era5_to_{cfg.target}.nc")
- 
- datasets_list.append({
- "name": f"bs{bs}_lr{lr}",
- "file_path": nc_path,
- "variable_name": "precipitation"
- })
- nc_paths.append(nc_path)
- 
- config_dict = {
- "experiment": f"unet_exp{exp_num}_sweep_postproc",
- "parameters": {
- "start_date": "2006-01-01",
- "end_date": "2020-12-31",
- "region": "allmorr",
- "regions": ["allmorr"],
- "mask_land": True,
- "only_morocco": True,
- "predictand": "pr",
- "plot_only": False,
- "impose_robust_limits": True,
- "show_title_metadata": True,
- "plot_periods": ["Annual", "DJF", "MAM", "JJA", "SON"] # Adding seasons as it's good practice
- },
- "reference": {
- "name": "mswep",
- "file_path": "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/mswep_1979_2020.nc",
- "variable_name": "precipitation"
- },
- "datasets": datasets_list,
- "postproc": {
- "mean": {"enable": True, "bias": True, "rmse": True, "correlation": True},
- "extreme": {"enable": True, "cdd": True, "qqplot": True, "r01": False, "r99": False, "r95": True, "r99_freq": False, "r95_freq": True, "rocss": False}
- },
- "custom_limits": custom_limits
- }
- 
- yaml_path = f"../postproc/tests/config_unet_exp{exp_num}.yaml"
- with open(yaml_path, "w") as f:
- yaml.dump(config_dict, f, default_flow_style=False, sort_keys=False)
- 
- script_name = f"job_postproc_unet_exp{exp_num}.sh"
- script_path = f"../postproc/{script_name}"
- 
- files_str = "\n".join([f'"{p}"' for p in nc_paths])
- 
- slurm_script = f"""#!/bin/bash
+    for bs in batch_sizes:
+        for lr in learning_rates:
+            config_filename = f"configs/unet/tests/sweep/test_exp{exp_num}_bs{bs}_lr{lr}.yaml"
+            cfg = load_config(train_mode=False, path=config_filename)
+            exp_path = build_experiment_path(cfg)
+            nc_path = os.path.join(exp_path, "output_data", f"{cfg.model_type}_predictions_era5_to_{cfg.target}.nc")
+            
+            datasets_list.append({
+                "name": f"bs{bs}_lr{lr}",
+                "file_path": nc_path,
+                "variable_name": "precipitation"
+            })
+            nc_paths.append(nc_path)
+    
+    config_dict = {
+        "experiment": f"unet_exp{exp_num}_sweep_postproc",
+        "parameters": {
+            "start_date": "2006-01-01",
+            "end_date": "2020-12-31",
+            "region": "allmorr",
+            "regions": ["allmorr"],
+            "mask_land": True,
+            "only_morocco": True,
+            "predictand": "pr",
+            "plot_only": False,
+            "impose_robust_limits": True,
+            "show_title_metadata": True,
+            "plot_periods": ["Annual", "DJF", "MAM", "JJA", "SON"] # Adding seasons as it's good practice
+        },
+        "reference": {
+            "name": "mswep",
+            "file_path": "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/mswep_1979_2020.nc",
+            "variable_name": "precipitation"
+        },
+        "datasets": datasets_list,
+        "postproc": {
+            "mean": {"enable": True, "bias": True, "rmse": True, "correlation": True},
+            "extreme": {"enable": True, "cdd": True, "qqplot": True, "r01": False, "r99": False, "r95": True, "r99_freq": False, "r95_freq": True, "rocss": False}
+        },
+        "custom_limits": custom_limits
+    }
+    
+    yaml_path = f"../postproc/tests/config_unet_exp{exp_num}.yaml"
+    with open(yaml_path, "w") as f:
+        yaml.dump(config_dict, f, default_flow_style=False, sort_keys=False)
+    
+    script_name = f"job_postproc_unet_exp{exp_num}.sh"
+    script_path = f"../postproc/{script_name}"
+    
+    files_str = "\n".join([f'"{p}"' for p in nc_paths])
+    
+    slurm_script = f"""#!/bin/bash
 #SBATCH --job-name=pp_unet_{exp_num}
 #SBATCH --output=logs/postproc_unet_exp{exp_num}_%j.log
 #SBATCH --error=logs/postproc_unet_exp{exp_num}_%j.log
@@ -100,10 +100,10 @@ files=(
 )
 
 for file in "${{files[@]}}"; do
- while [ ! -f "$file" ]; do
- echo "Waiting for $file..."
- sleep 600
- done
+    while [ ! -f "$file" ]; do
+        echo "Waiting for $file..."
+        sleep 600
+    done
 done
 
 echo "All required .nc files found! Starting post-processing."
@@ -113,10 +113,10 @@ echo "======================================"
 echo "Job completed."
 echo "======================================"
 """
- with open(script_path, "w") as f:
- f.write(slurm_script)
- 
- submit_all_script.write(f"sbatch {script_name}\n")
+    with open(script_path, "w") as f:
+        f.write(slurm_script)
+    
+    submit_all_script.write(f"sbatch {script_name}\n")
 
 submit_all_script.close()
 print("Generated 6 configs and 6 SLURM scripts.")

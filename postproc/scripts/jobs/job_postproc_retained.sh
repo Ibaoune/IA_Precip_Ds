@@ -12,11 +12,11 @@
 # Find repository root starting from SLURM_SUBMIT_DIR or current directory
 SEARCH_DIR="${SLURM_SUBMIT_DIR:-$(pwd)}"
 while [ "$SEARCH_DIR" != "/" ]; do
- if [ -f "$SEARCH_DIR/src/postproc.py" ]; then
- cd "$SEARCH_DIR"
- break
- fi
- SEARCH_DIR=$(dirname "$SEARCH_DIR")
+    if [ -f "$SEARCH_DIR/src/postproc.py" ]; then
+        cd "$SEARCH_DIR"
+        break
+    fi
+    SEARCH_DIR=$(dirname "$SEARCH_DIR")
 done
 
 echo "Starting SLURM Job: postproc_retained"

@@ -12,10 +12,14 @@
 #SBATCH --mem=32G
 #SBATCH --account=CLIMAT-7KSIFKVWKUY-DEFAULT-GPU
 
-######################################## # USER SHOULD SET THESE TO yes OR no
-######################################## train="yes"
+########################################
+# USER SHOULD SET THESE TO yes OR no
+########################################
+train="yes"
 validation="yes"
-######################################## # Activate Conda environment
+########################################
+
+# Activate Conda environment
 source ~/.bashrc
 conda activate clean_env_Pytorch
 
@@ -31,36 +35,47 @@ echo "Start time: $(date)"
 echo "Train: $train | Validation: $validation"
 echo "======================================"
 
-######################################## # GPU INFO
-######################################## echo "[INFO] Allocated GPU(s):"
+########################################
+# GPU INFO
+########################################
+echo "[INFO] Allocated GPU(s):"
 nvidia-smi
 
-######################################## # GPU monitoring (background)
-######################################## gpu_log="gpu_usage_${SLURM_JOB_ID}.log"
+########################################
+# GPU monitoring (background)
+########################################
+gpu_log="gpu_usage_${SLURM_JOB_ID}.log"
 nvidia-smi --query-gpu=timestamp,utilization.gpu,utilization.memory,memory.used \
- --format=csv,nounits,noheader \
- --loop=60 > "$gpu_log" &
+           --format=csv,nounits,noheader \
+           --loop=60 > "$gpu_log" &
 
-######################################## # CONFIG PATH (same style as CPU job)
-######################################## CONFIG="../configs/vit/config.yaml"
+########################################
+# CONFIG PATH (same style as CPU job)
+########################################
+CONFIG="../configs/vit/config.yaml"
 
-######################################## # RUN
-######################################## if [[ "$train" == "yes" ]]; then
- echo "[INFO] Running training..."
- python3 -u ../train.py "$CONFIG"
+########################################
+# RUN
+########################################
+
+if [[ "$train" == "yes" ]]; then
+    echo "[INFO] Running training..."
+    python3 -u ../train.py "$CONFIG"
 fi
 
 if [[ "$validation" == "yes" ]]; then
- echo "[INFO] Running validation..."
- python3 -u ../eval.py "$CONFIG"
+    echo "[INFO] Running validation..."
+    python3 -u ../eval.py "$CONFIG"
 fi
 
 if [[ "$train" != "yes" && "$validation" != "yes" ]]; then
- echo "[WARNING] Neither training nor validation selected."
+    echo "[WARNING] Neither training nor validation selected."
 fi
 
-######################################## # END
-######################################## end_time=$(date +%s)
+########################################
+# END
+########################################
+end_time=$(date +%s)
 runtime=$((end_time - start_time))
 
 echo "======================================"

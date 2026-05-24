@@ -33,19 +33,19 @@ nvidia-smi
 
 gpu_log="gpu_usage_cnnexp3_scenario3_east_south_${SLURM_JOB_ID}.log"
 nvidia-smi --query-gpu=timestamp,utilization.gpu,utilization.memory,memory.used \
- --format=csv,nounits,noheader \
- --loop=60 > "$gpu_log" &
+           --format=csv,nounits,noheader \
+           --loop=60 > "$gpu_log" &
 
 CONFIG="/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/configs/cnn/scenario3/cnn_exp3_scenario3_east_south.yaml"
 
 if [[ "$train" == "yes" ]]; then
- echo "[INFO] Running training..."
- python3 -u "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/train.py" "$CONFIG"
+    echo "[INFO] Running training..."
+    python3 -u "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/train.py" "$CONFIG"
 fi
 
 if [[ "$validation" == "yes" ]]; then
- echo "[INFO] Running validation..."
- python3 -u "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/eval.py" "$CONFIG"
+    echo "[INFO] Running validation..."
+    python3 -u "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/eval.py" "$CONFIG"
 fi
 
 end_time=$(date +%s)

@@ -3,7 +3,7 @@ import yaml
 import os
 
 with open('config.yaml', 'r') as f:
- config = yaml.safe_load(f)
+    config = yaml.safe_load(f)
 
 # Update general settings
 config['general']['model_type'] = 'cnn'
@@ -21,14 +21,14 @@ config['prediction']['models_dir'] = "/srv/data/mohammad.elaabaribao/work/papers
 
 scenarios = config['prediction']['scenarios']
 for scenario in scenarios:
- if scenario['name'] == 'era5_present':
- scenario['folder'] = "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data"
- elif scenario['name'] == 'lmdz_35_present':
- scenario['folder'] = "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35"
- scenario['bc_reference_folder'] = "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35"
- elif scenario['name'] == 'lmdz_250_present':
- scenario['folder'] = "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250"
- scenario['bc_reference_folder'] = "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250"
+    if scenario['name'] == 'era5_present':
+        scenario['folder'] = "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data"
+    elif scenario['name'] == 'lmdz_35_present':
+        scenario['folder'] = "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35"
+        scenario['bc_reference_folder'] = "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35"
+    elif scenario['name'] == 'lmdz_250_present':
+        scenario['folder'] = "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250"
+        scenario['bc_reference_folder'] = "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250"
 
 with open('config.yaml', 'w') as f:
- yaml.dump(config, f, sort_keys=False)
+    yaml.dump(config, f, sort_keys=False)
