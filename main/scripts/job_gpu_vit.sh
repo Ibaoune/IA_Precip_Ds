@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 
 #SBATCH --job-name=vit_best_gpu
 #SBATCH --output=vit_best_gpu%j.log
@@ -34,19 +35,19 @@ nvidia-smi
 
 gpu_log="gpu_usage_vit_best_${SLURM_JOB_ID}.log"
 nvidia-smi --query-gpu=timestamp,utilization.gpu,utilization.memory,memory.used \
-           --format=csv,nounits,noheader \
-           --loop=60 > "$gpu_log" &
+ --format=csv,nounits,noheader \
+ --loop=60 > "$gpu_log" &
 
 CONFIG="../configs/vit/config.yaml"
 
 if [[ "$train" == "yes" ]]; then
-    echo "[INFO] Running training..."
-    python3 -u ../train.py "$CONFIG"
+ echo "[INFO] Running training..."
+ python3 -u ../train.py "$CONFIG"
 fi
 
 if [[ "$validation" == "yes" ]]; then
-    echo "[INFO] Running validation..."
-    python3 -u ../eval.py "$CONFIG"
+ echo "[INFO] Running validation..."
+ python3 -u ../eval.py "$CONFIG"
 fi
 
 end_time=$(date +%s)

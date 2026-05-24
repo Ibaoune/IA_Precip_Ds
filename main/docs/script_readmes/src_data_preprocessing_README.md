@@ -3,16 +3,16 @@
 ## Overview
 ==========================================================
  Script: preprocessing.py
- Author: M. El Aabaribaoune
+ Author: M. El Aabaribaoune (@um6p)
  Description:
-     Data preprocessing utilities:
-     - Normalization of predictors
-     - Precipitation unit conversion
-     - Conversion to PyTorch tensors
+ Data preprocessing utilities:
+ - Normalization of predictors
+ - Precipitation unit conversion
+ - Conversion to PyTorch tensors
 
  Notes:
-     - CPU-only preprocessing (GPU handled in training loop)
-     - Model-agnostic
+ - CPU-only preprocessing (GPU handled in training loop)
+ - Model-agnostic
 ==========================================================
 
 ## Functions

@@ -1,3 +1,4 @@
+<!-- Author: M. El Aabaribaoune (@um6p) -->
 # Script Documentation Index
 
 This directory contains auto-generated documentation for every python script in the project.

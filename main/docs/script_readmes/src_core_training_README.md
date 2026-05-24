@@ -3,14 +3,14 @@
 ## Overview
 ==========================================================
  Script: training.py
- Author: M. El Aabaribaoune
+ Author: M. El Aabaribaoune (@um6p)
  Description:
-     Defines the training loop, loss computation, and
-     early stopping for the downscaling model.
+ Defines the training loop, loss computation, and
+ early stopping for the downscaling model.
 
  Design:
-     - Model-agnostic (ViT, CNN, UNet, etc.)
-     - GPU / CPU compatible
+ - Model-agnostic (ViT, CNN, UNet, etc.)
+ - GPU / CPU compatible
 ==========================================================
 
 ## Functions

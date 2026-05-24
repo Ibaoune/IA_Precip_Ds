@@ -1,3 +1,4 @@
+<!-- Author: M. El Aabaribaoune (@um6p) -->
 # Changelog
 
 All notable changes to this project are documented in this file, which is updated after each commit.
@@ -7,8 +8,8 @@ All notable changes to this project are documented in this file, which is update
 ## [Scenario 3 & Loss Masking] - 2026-05-24
 ### Added
 - **Macro-Region Loss Masking (Scenario 3)**: Implemented training models on the full domain while restricting loss calculations to merged sub-domain shapefiles. Built two macro-regions:
-  - **Macro-region A (`north_northeast`)**: Merged North and Northeast shapefiles.
-  - **Macro-region B (`east_south`)**: Merged East and South shapefiles.
+ - **Macro-region A (`north_northeast`)**: Merged North and Northeast shapefiles.
+ - **Macro-region B (`east_south`)**: Merged East and South shapefiles.
 - **Support for Multi-Shapefile Loss Masks**: Enhanced the mask building pipeline in `train.py` to accept lists of shapefiles, automatically load them, concatenate their geometries using `geopandas` and `pandas`, and project/rasterize the dissolved shape onto the target grid.
 - **List-Based Shapefile Parser**: Updated `config.py` to parse list-based shapefile inputs and resolve relative paths correctly. Added checks to prevent redundant suffix appending if the experiment name already ends with the macro-region name.
 - **SLURM Job Generator scripts**: Created `generate_lossmask_setups.py` and `generate_scenario3_setups.py` to automatically compile configurations and generate cluster submission scripts. Generated scripts use absolute paths to avoid SLURM spool folder failures.
@@ -38,8 +39,8 @@ All notable changes to this project are documented in this file, which is update
 ### Added
 - **Regional Prediction Gluing Tool**: Created [glue_regional_predictions.py](file:///srv/data/mohammad.elaabaribao/work/papers/downscaling/main/glue_regional_predictions.py) to automatically load and concatenate `North` ($28^\circ\text{N} \to 37^\circ\text{N}$) and `South` ($21^\circ\text{N} \to 28^\circ\text{N}$) NetCDF predictions along the latitude dimension for deep learning models (CNN Exp3, CNN Exp5, and ViT). This dynamically constructs a seamless, unified Moroccan-domain prediction NetCDF compatible with the main post-processing and metric plotting pipelines.
 - **GLM Regional Split Redundancy Verification**: Formally verified that spatial regional splitting is redundant for Generalized Linear Models (`PixelWiseGLM`). Since the model fits each pixel $(i,j)$ completely independently without spatial weight sharing:
-  $$\text{Model}_{(i, j)} = \text{GLM}(\text{Predictors}_{(i, j)}, \text{Precipitation}_{(i, j)})$$
-  the fitted coefficients in regional runs are mathematically identical to those in the unified run.
+ $$\text{Model}_{(i, j)} = \text{GLM}(\text{Predictors}_{(i, j)}, \text{Precipitation}_{(i, j)})$$
+ the fitted coefficients in regional runs are mathematically identical to those in the unified run.
 ### Changed
 - **Regional Evaluation Strategy**: Excluded GLM regional runs from the spatial slicing comparison to focus purely on the deep learning models (CNN and ViT) where global spatial weights (convolutions and self-attention heads) are shared and heavily impacted by regional training domains.
 
@@ -49,12 +50,12 @@ All notable changes to this project are documented in this file, which is update
 ### Added
 - **Regional Split Evaluation Setup (North vs. South)**: Implemented a robust comparative framework to evaluate spatial training domain impacts on downscaling performance (comparing a single unified Morocco model against regionally specialized ones).
 - **Auto-Generation Pipeline**: Created [generate_regional_setups.py](file:///srv/data/mohammad.elaabaribao/work/papers/downscaling/main/generate_regional_setups.py) to dynamically construct regional divided coordinates:
-  - **North**: $28^\circ\text{N} \to 36^\circ/37^\circ\text{N}$ (covering mountainous Atlas and Mediterranean storms).
-  - **South**: $21^\circ\text{N} \to 28^\circ\text{N}$ (covering hyper-arid Saharan provinces).
+ - **North**: $28^\circ\text{N} \to 36^\circ/37^\circ\text{N}$ (covering mountainous Atlas and Mediterranean storms).
+ - **South**: $21^\circ\text{N} \to 28^\circ\text{N}$ (covering hyper-arid Saharan provinces).
 - **Regional Configurations**: Automatically generated divided YAML files under model-specific subdirectories:
-  - `main/configs/cnn/regional/` (`cnn_exp3_north`, `cnn_exp3_south`, `cnn_exp5_north`, `cnn_exp5_south`)
-  - `main/configs/vit/regional/` (`north`, `south`)
-  - `main/configs/glm/regional/` (`north`, `south`)
+ - `main/configs/cnn/regional/` (`cnn_exp3_north`, `cnn_exp3_south`, `cnn_exp5_north`, `cnn_exp5_south`)
+ - `main/configs/vit/regional/` (`north`, `south`)
+ - `main/configs/glm/regional/` (`north`, `south`)
 - **Regional SLURM Scripts**: Automatically generated 8 optimized SLURM script entries under `main/scripts/regional/` for both standard GPU partitions and compute CPU partitions. All 8 regional training/validation jobs have been successfully submitted to the cluster queue.
 
 ---
@@ -62,16 +63,16 @@ All notable changes to this project are documented in this file, which is update
 ## [3dc7154] - 2026-05-17
 ### Added
 - **Production SLURM Submission Scripts**: Added 4 optimized SLURM job scripts inside `main/scripts/` to train and evaluate production models with the new land-mask loss configurations on the GPU and CPU partitions:
-  - `job_gpu_cnn_exp3.sh`: Runs CNN Exp 3 on GPU.
-  - `job_gpu_cnn_exp5.sh`: Runs CNN Exp 5 on GPU.
-  - `job_gpu_vit.sh`: Runs ViT Best Hybrid on GPU.
-  - `job_cpu_glm.sh`: Runs GLM L2 on CPU with optimized 32 parallel task cores.
+ - `job_gpu_cnn_exp3.sh`: Runs CNN Exp 3 on GPU.
+ - `job_gpu_cnn_exp5.sh`: Runs CNN Exp 5 on GPU.
+ - `job_gpu_vit.sh`: Runs ViT Best Hybrid on GPU.
+ - `job_cpu_glm.sh`: Runs GLM L2 on CPU with optimized 32 parallel task cores.
 - **Land-Sea Masking during Training & Validation**: Integrated spatial land-sea masking into loss calculations for CNN, ViT, and GLM models, optimizing the training purely for land-surface downscaling.
 - **`regionmask` Integration**: Used Natural Earth 1:110m land polygons on target coordinate grids `lon_out` and `lat_out` inside [train.py](file:///srv/data/mohammad.elaabaribao/work/papers/downscaling/main/train.py) to automatically build the spatial mask tensor.
 - **Masked Custom PyTorch Loss Functions**: Updated all major loss functions in [losses.py](file:///srv/data/mohammad.elaabaribao/work/papers/downscaling/main/src/core/losses.py) and [vit_arch.py](file:///srv/data/mohammad.elaabaribao/work/papers/downscaling/main/src/models/vit_arch.py) (including `BernoulliGammaLoss`, `GaussianLoss`, `AsymmetricMSELoss`, `IntensityWeightedMSELoss`, and `HurdleLoss`) to accept an optional `mask` parameter.
 - **Broadcasting & Normalized Loss**: Implemented custom masking multiplication and normalization:
-  $$\text{Loss} = \frac{\sum (\text{Loss}_{\text{element-wise}} \times \text{Mask})}{\text{Batch Size} \times \sum \text{Mask}}$$
-  ignoring ocean cells and maintaining stable, unbiased land gradients.
+ $$\text{Loss} = \frac{\sum (\text{Loss}_{\text{element-wise}} \times \text{Mask})}{\text{Batch Size} \times \sum \text{Mask}}$$
+ ignoring ocean cells and maintaining stable, unbiased land gradients.
 - **GLM Optimization**: Enhanced [glm.py](file:///srv/data/mohammad.elaabaribao/work/papers/downscaling/main/src/models/glm.py) to skip parallel GLM pixel-wise training tasks for ocean points, reducing total tasks from 27,000 to **17,458 land pixels** and speeding up GLM fitting significantly.
 
 ---

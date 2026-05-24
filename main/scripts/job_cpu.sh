@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 
 #SBATCH --job-name=vit_T01
 #SBATCH --output=vit_T01%j.log
@@ -8,14 +9,10 @@
 #SBATCH --mem=128G
 #SBATCH --account=CLIMAT-UM6P-ST-IWRI-7KSIFKVWKUY-DEFAULT-CPU
 
-########################################
-# USER SHOULD SET THESE TO yes OR no
-########################################
-train="yes"
+######################################## # USER SHOULD SET THESE TO yes OR no
+######################################## train="yes"
 validation="yes"
-########################################
-
-# Activate Conda environment
+######################################## # Activate Conda environment
 #source /home/hassan/anaconda3/etc/profile.d/conda.sh
 conda activate clean_env_Pytorch
 
@@ -32,18 +29,18 @@ echo "Train: $train | Validation: $validation"
 echo "======================================"
 
 if [[ "$train" == "yes" ]]; then
-    echo "[INFO] Running training..."
-    python3 -u ../train.py ../configs/vit/config.yaml
+ echo "[INFO] Running training..."
+ python3 -u ../train.py ../configs/vit/config.yaml
 fi
 
 if [[ "$validation" == "yes" ]]; then
-    echo "[INFO] Running validation..."
-    python3 -u ../eval.py ../configs/vit/config.yaml
+ echo "[INFO] Running validation..."
+ python3 -u ../eval.py ../configs/vit/config.yaml
 fi
 
 if [[ "$train" != "yes" && "$validation" != "yes" ]]; then
-    echo "[WARNING] Neither training nor validation selected."
-    echo "Set train=\"yes\" and/or validation=\"yes\"."
+ echo "[WARNING] Neither training nor validation selected."
+ echo "Set train=\"yes\" and/or validation=\"yes\"."
 fi
 
 # Record end time

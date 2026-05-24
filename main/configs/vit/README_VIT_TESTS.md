@@ -1,10 +1,11 @@
+<!-- Author: M. El Aabaribaoune (@um6p) -->
 # Campagne d'Expérimentations et Optimisation du Vision Transformer (ViT) pour la Descente d'Échelle de Précipitations
 
 Ce document répertorie de manière exhaustive les architectures, les corrections théoriques et les 20 configurations d'expérimentation conçues pour évaluer et optimiser le modèle **Vision Transformer (ViT)** sur la tâche de descente d'échelle (downscaling) de précipitations (ERA5 vers MSWEP).
 
 ---
 
-## 🛠️ 1. Évolution Architecturale et Corrections Théoriques
+## 1. Évolution Architecturale et Corrections Théoriques
 
 ### A. Mise à niveau du ViT (`vit_arch.py`)
 L'architecture a été entièrement mise à jour pour s'aligner sur les standards les plus performants :
@@ -21,7 +22,7 @@ Les analyses mathématiques de la fonction de perte `BernoulliGammaLoss` ($E[X] 
 
 ---
 
-## 📊 2. Récapitulatif des 20 Configurations de Test (`configs/vit/tests/`)
+## 2. Récapitulatif des 20 Configurations de Test (`configs/vit/tests/`)
 
 Toutes les configurations utilisent la période d'entraînement **1979-2005** et la période de test **2006-2020**.
 
@@ -56,7 +57,7 @@ Toutes les configurations utilisent la période d'entraînement **1979-2005** et
 
 ---
 
-## 🚀 3. Instructions d'Exécution sur SLURM
+## 3. Instructions d'Exécution sur SLURM
 
 Les expérimentations sont divisées en lots pour faciliter la gestion des ressources sur la partition GPU :
 

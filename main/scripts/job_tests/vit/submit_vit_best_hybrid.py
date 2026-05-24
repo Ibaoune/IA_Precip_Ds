@@ -1,3 +1,4 @@
+# Author: M. El Aabaribaoune (@um6p)
 import os
 import subprocess
 
@@ -42,7 +43,7 @@ echo "======================================"
 
 sh_file = f"run_{job_name}.sh"
 with open(sh_file, "w") as f:
-    f.write(sh_content)
+ f.write(sh_content)
 
 print(f"Generated {sh_file}. Submitting to SLURM...")
 subprocess.run(["sbatch", sh_file])

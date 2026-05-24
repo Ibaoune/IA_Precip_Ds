@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=run_inference
 #SBATCH --output=logs/out_inference_%j.log
 #SBATCH --error=logs/out_inference_%j.log

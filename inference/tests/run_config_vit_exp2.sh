@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=config_vit_exp2
 #SBATCH --output=out_config_vit_exp2_%j.log
 #SBATCH --error=out_config_vit_exp2_%j.log

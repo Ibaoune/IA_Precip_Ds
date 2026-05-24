@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 
 cd sweep_scripts
 sbatch run_exp1_bs64_lr1e-3.sh

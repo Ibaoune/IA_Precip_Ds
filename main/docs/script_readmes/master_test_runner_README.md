@@ -1,3 +1,4 @@
+<!-- Author: M. El Aabaribaoune (@um6p) -->
 # Documentation for `master_test_runner.py`
 
 ## Overview

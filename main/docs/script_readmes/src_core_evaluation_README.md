@@ -3,18 +3,18 @@
 ## Overview
 ==========================================================
  Script: evaluation.py
- Author: M. El Aabaribaoune
+ Author: M. El Aabaribaoune (@um6p)
  Description:
-     Model evaluation and diagnostics.
+ Model evaluation and diagnostics.
 
-     - Loads trained model
-     - Runs inference on test data
-     - Saves predictions to NetCDF
-     - Generates diagnostic plots
+ - Loads trained model
+ - Runs inference on test data
+ - Saves predictions to NetCDF
+ - Generates diagnostic plots
 
  Notes:
-     - GPU-safe (chunked inference)
-     - Model-agnostic (ViT by default)
+ - GPU-safe (chunked inference)
+ - Model-agnostic (ViT by default)
 ==========================================================
 
 ## Functions

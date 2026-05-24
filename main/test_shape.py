@@ -1,3 +1,4 @@
+# Author: M. El Aabaribaoune (@um6p)
 import sys
 from src.core.config import load_config
 from src.data.data_loading import load_datasets

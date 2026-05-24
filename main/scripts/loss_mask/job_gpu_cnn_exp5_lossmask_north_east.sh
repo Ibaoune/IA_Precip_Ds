@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=cnn_exp5_lm_north_east
 #SBATCH --output=cnn_exp5_lm_north_east_%j.log
 #SBATCH --error=cnn_exp5_lm_north_east_%j.log
@@ -32,21 +33,21 @@ nvidia-smi
 
 gpu_log="gpu_usage_cnn_exp5_lm_north_east_${SLURM_JOB_ID}.log"
 nvidia-smi --query-gpu=timestamp,utilization.gpu,utilization.memory,memory.used \
-           --format=csv,nounits,noheader \
-           --loop=60 > "$gpu_log" &
+ --format=csv,nounits,noheader \
+ --loop=60 > "$gpu_log" &
 
 CONFIG="/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/configs/cnn/loss_mask/cnn_exp5_lossmask_north_east.yaml"
 
 cd /srv/data/mohammad.elaabaribao/work/papers/downscaling/main
 
 if [[ "$train" == "yes" ]]; then
-    echo "[INFO] Running training..."
-    python3 -u train.py "$CONFIG"
+ echo "[INFO] Running training..."
+ python3 -u train.py "$CONFIG"
 fi
 
 if [[ "$validation" == "yes" ]]; then
-    echo "[INFO] Running validation..."
-    python3 -u eval.py "$CONFIG"
+ echo "[INFO] Running validation..."
+ python3 -u eval.py "$CONFIG"
 fi
 
 end_time=$(date +%s)

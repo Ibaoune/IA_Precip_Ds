@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=test_exp21_best_hybrid
 #SBATCH --output=test_exp21_best_hybrid_%j.log
 #SBATCH --error=test_exp21_best_hybrid_%j.log

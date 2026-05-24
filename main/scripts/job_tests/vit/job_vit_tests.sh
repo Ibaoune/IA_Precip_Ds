@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 
 #SBATCH --job-name=vit_tests
 #SBATCH --output=vit_tests_%j.log
@@ -22,15 +23,15 @@ TESTS_DIR="../../../configs/vit/tests"
 echo "Starting ViT tests from $TESTS_DIR"
 
 for config in "$TESTS_DIR"/*.yaml; do
-    echo "======================================"
-    echo "Running test for config: $config"
-    echo "======================================"
-    
-    echo "[INFO] Running training..."
-    python3 -u ../../../train.py "$config"
-    
-    echo "[INFO] Running validation..."
-    python3 -u ../../../eval.py "$config"
-    
-    echo "======================================"
+ echo "======================================"
+ echo "Running test for config: $config"
+ echo "======================================"
+ 
+ echo "[INFO] Running training..."
+ python3 -u ../../../train.py "$config"
+ 
+ echo "[INFO] Running validation..."
+ python3 -u ../../../eval.py "$config"
+ 
+ echo "======================================"
 done

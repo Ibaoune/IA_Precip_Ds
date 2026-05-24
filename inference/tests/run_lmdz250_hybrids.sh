@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=ViT_hybrids_LMDZ250
 #SBATCH --output=logs/out_hybrids_lmdz250_%j.log
 #SBATCH --error=logs/out_hybrids_lmdz250_%j.log

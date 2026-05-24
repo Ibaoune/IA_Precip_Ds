@@ -1,13 +1,14 @@
+# Author: M. El Aabaribaoune (@um6p)
 import os
 import subprocess
 
 test_configs = [f"../../../configs/vit/tests/test_exp{i}.yaml" for i in range(11, 21)]
 
 for config_path in test_configs:
-    config_filename = os.path.basename(config_path)
-    job_name = config_filename.replace(".yaml", "")
-    
-    sh_content = f"""#!/bin/bash
+ config_filename = os.path.basename(config_path)
+ job_name = config_filename.replace(".yaml", "")
+ 
+ sh_content = f"""#!/bin/bash
 #SBATCH --job-name={job_name}
 #SBATCH --output={job_name}_%j.log
 #SBATCH --error={job_name}_%j.log
@@ -41,10 +42,10 @@ echo "======================================"
 echo "Job completed."
 echo "======================================"
 """
-    
-    sh_file = f"run_{job_name}.sh"
-    with open(sh_file, "w") as f:
-        f.write(sh_content)
-    
-    print(f"Generated {sh_file}. Submitting to SLURM...")
-    subprocess.run(["sbatch", sh_file])
+ 
+ sh_file = f"run_{job_name}.sh"
+ with open(sh_file, "w") as f:
+ f.write(sh_content)
+ 
+ print(f"Generated {sh_file}. Submitting to SLURM...")
+ subprocess.run(["sbatch", sh_file])

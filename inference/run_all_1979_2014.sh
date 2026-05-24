@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=GLMinfer_1979_2014
 #SBATCH --output=logs/out_infer_1979_2014_%j.log
 #SBATCH --error=logs/out_infer_1979_2014_%j.log

@@ -3,17 +3,17 @@
 ## Overview
 ==========================================================
  Script: utils.py
- Author: M. El Aabaribaoune
+ Author: M. El Aabaribaoune (@um6p)
  Description:
-     Collection of utility and helper functions used across
-     the project, including:
-     - Verbose printing utilities
-     - Dataset spatial masking
-     - Visualization and comparison plots
-     - Loss curve plotting
-     - Experiment metadata formatting
-     - Intelligent experiment path construction
-     - Model saving and loading utilities
+ Collection of utility and helper functions used across
+ the project, including:
+ - Verbose printing utilities
+ - Dataset spatial masking
+ - Visualization and comparison plots
+ - Loss curve plotting
+ - Experiment metadata formatting
+ - Intelligent experiment path construction
+ - Model saving and loading utilities
 
 ==========================================================
 
@@ -72,10 +72,10 @@ Compute monthly Pearson correlation, RMSE, and R² between
 two xarray DataArrays (model predictions and observations).
 
 Returns:
-    months       : array of month indices (1..12)
-    monthly_corr : Pearson correlation per month
-    monthly_rmse : RMSE per month
-    monthly_r2   : R² per month
+ months : array of month indices (1..12)
+ monthly_corr : Pearson correlation per month
+ monthly_rmse : RMSE per month
+ monthly_r2 : R² per month
 
 ### `def get_machine_features(...)`
 Returns a dictionary of relevant machine features (CPU, RAM, GPU).

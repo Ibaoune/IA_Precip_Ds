@@ -1,70 +1,71 @@
+# Author: M. El Aabaribaoune (@um6p)
 general:
-  experiment: glm_precip_l2
-  model_type: glm
-  loss_type: bernoulli_gamma
-  variable: precip
-  target: mswep
-  src: era5
-  interpolation_type: linear
-  variables: ['z', 'q', 't', 'u', 'v']
-  levels: [500, 700, 850, 1000]
-  resolution: 2.0
-  verbose: true
+ experiment: glm_precip_l2
+ model_type: glm
+ loss_type: bernoulli_gamma
+ variable: precip
+ target: mswep
+ src: era5
+ interpolation_type: linear
+ variables: ['z', 'q', 't', 'u', 'v']
+ levels: [500, 700, 850, 1000]
+ resolution: 2.0
+ verbose: true
 training:
-  learning_rate: 1e-3
-  epochs: 100
-  batch_size: 64
-  loss_type: bernoulli_gamma
-  norm_mode: gridbox
-  early_stopping: {enable: true, max: 15}
-  weight_decay: {enable: true, value: 1e-4}
-  optimizer: adamw
+ learning_rate: 1e-3
+ epochs: 100
+ batch_size: 64
+ loss_type: bernoulli_gamma
+ norm_mode: gridbox
+ early_stopping: {enable: true, max: 15}
+ weight_decay: {enable: true, value: 1e-4}
+ optimizer: adamw
 mappings:
-  lmdz_var_map: {z: geop, q: rhum, u: vitu, v: vitv, t: temp}
+ lmdz_var_map: {z: geop, q: rhum, u: vitu, v: vitv, t: temp}
 region:
-  lon_min: -18
-  lon_max: 0
-  lat_min: 21
-  lat_max: 36
+ lon_min: -18
+ lon_max: 0
+ lat_min: 21
+ lat_max: 36
 dates:
-  train: {start: '1980-01-01', end: '2005-12-31'}
-  test: {start: '2006-01-01', end: '2020-12-31'}
-  reference: {start: '1979-01-01', end: '2005-12-31'}
+ train: {start: '1980-01-01', end: '2005-12-31'}
+ test: {start: '2006-01-01', end: '2020-12-31'}
+ reference: {start: '1979-01-01', end: '2005-12-31'}
 paths:
-  lmdz_predictor_pattern: '{folder}/{lmdz_var}-hist.nc'
-  root_dir: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data
-  era5_predictor_pattern: '{var}_1979-2020_levels.nc'
-  mswep_path: mswep_1979_2020.nc
-  shapefile_path: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/shapefiles/Morocco_shpfile/DA_REGIONS_12R.shp
-  results_dir: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/
-  model_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/glm/glm_precip_l2/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_10ep_wd/models/glm_precip.pkl
+ lmdz_predictor_pattern: '{folder}/{lmdz_var}-hist.nc'
+ root_dir: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data
+ era5_predictor_pattern: '{var}_1979-2020_levels.nc'
+ mswep_path: mswep_1979_2020.nc
+ shapefile_path: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/shapefiles/Morocco_shpfile/DA_REGIONS_12R.shp
+ results_dir: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/
+ model_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/glm/glm_precip_l2/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_10ep_wd/models/glm_precip.pkl
 prediction:
-  train_config_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/glm/glm_precip_l2/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_10ep_wd/config.txt
-  model_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/glm/glm_precip_l2/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_10ep_wd/models/glm_precip.pkl
-  bc_reference_folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250
-  models_dir: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/glm/
-  output_dir: results/1979_2014/glm_precip_l2
-  scenarios:
-  - name: era5_present
-    enable: true
-    src: era5
-    start: '1979-01-01'
-    end: '2014-12-31'
-    bias_correction: false
-    folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data
-  - name: lmdz_35_present
-    enable: true
-    src: lmdz
-    start: '1979-01-01'
-    end: '2014-12-31'
-    bias_correction: true
-    folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35
-    bc_reference_folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35
-  - name: lmdz_250_present
-    enable: true
-    src: lmdz
-    start: '1979-01-01'
-    end: '2014-12-31'
-    bias_correction: true
-    folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250
-    bc_reference_folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250
+ train_config_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/glm/glm_precip_l2/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_10ep_wd/config.txt
+ model_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/glm/glm_precip_l2/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_10ep_wd/models/glm_precip.pkl
+ bc_reference_folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250
+ models_dir: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/glm/
+ output_dir: results/1979_2014/glm_precip_l2
+ scenarios:
+ - name: era5_present
+ enable: true
+ src: era5
+ start: '1979-01-01'
+ end: '2014-12-31'
+ bias_correction: false
+ folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data
+ - name: lmdz_35_present
+ enable: true
+ src: lmdz
+ start: '1979-01-01'
+ end: '2014-12-31'
+ bias_correction: true
+ folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35
+ bc_reference_folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r35
+ - name: lmdz_250_present
+ enable: true
+ src: lmdz
+ start: '1979-01-01'
+ end: '2014-12-31'
+ bias_correction: true
+ folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250
+ bc_reference_folder: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/LMDZ/r250

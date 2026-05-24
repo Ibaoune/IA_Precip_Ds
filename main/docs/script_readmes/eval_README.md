@@ -3,14 +3,14 @@
 ## Overview
 ==========================================================
  Script: eval.py
- Author: M. El Aabaribaoune
+ Author: M. El Aabaribaoune (@um6p)
  Description:
-     Main evaluation entry point.
+ Main evaluation entry point.
 
-     - Loads configuration
-     - Loads test data
-     - Preprocesses inputs
-     - Runs model evaluation and saves outputs
+ - Loads configuration
+ - Loads test data
+ - Preprocesses inputs
+ - Runs model evaluation and saves outputs
 ==========================================================
 
 ## Functions

@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=insitu_plot
 #SBATCH --output=out_insitu_%j.log
 #SBATCH --error=out_insitu_%j.log

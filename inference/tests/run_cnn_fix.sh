@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=cnn_lmdz250_fix
 #SBATCH --output=logs/out_cnn_fix_%j.log
 #SBATCH --error=logs/out_cnn_fix_%j.log

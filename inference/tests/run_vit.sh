@@ -1,4 +1,5 @@
 #!/bin/bash
+# Author: M. El Aabaribaoune (@um6p)
 #SBATCH --job-name=vit_pred
 #SBATCH --output=out_vit_%j.log
 #SBATCH --error=out_vit_%j.log
