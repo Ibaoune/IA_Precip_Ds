@@ -1,4 +1,8 @@
-# Author: M. El Aabaribaoune (@um6p)
+"""
+Author: M. El Aabaribaoune (@um6p)
+Description: Computes and plots standard mean state metrics (bias, rmse, correlation).
+"""
+
 import os
 import sys
 import warnings
@@ -7,7 +11,6 @@ import pandas as pd
 import xarray as xr
 from pathlib import Path
 
-# Add project root to sys.path to allow importing utils
 root_path = str(Path(__file__).resolve().parents[3])
 if root_path not in sys.path:
     sys.path.append(root_path)
@@ -176,10 +179,10 @@ def main():
             comparison_dict[name] = mean_ds + ref_period_mean
 
         # Plot 1: Mean Comparison
-        utils.plot_spatial_maps(comparison_dict, "mean", period=period, 
-                                   save_path=os.path.join(period_fig_dir, f"spatial_mean_comparison_{period}.png"), 
-                                   title=f"{period} Mean Precipitation Comparison ({params['predictand'].upper()})",
-                                   unit="mm/day", nrows=nrows)
+        # utils.plot_spatial_maps(comparison_dict, "mean", period=period, 
+        #                            save_path=os.path.join(period_fig_dir, f"spatial_mean_comparison_{period}.png"), 
+        #                            title=f"{period} Mean Precipitation Comparison ({params['predictand'].upper()})",
+        #                            unit="mm/day", nrows=nrows)
         
         # Plot 2: Bias Error map
         utils.plot_spatial_maps(error_dict, "bias", period=period, 
@@ -188,8 +191,8 @@ def main():
                                    unit="mm/day", nrows=nrows)
 
         # Plot 3: Distribution Boxplot
-        box_path = os.path.join(period_fig_dir, f"bias_boxplot_{period}.png")
-        utils.plot_metric_boxplot(model_paths_period, "bias", period=period, save_path=box_path)
+        # box_path = os.path.join(period_fig_dir, f"bias_boxplot_{period}.png")
+        # utils.plot_metric_boxplot(model_paths_period, "bias", period=period, save_path=box_path)
     
     # Temporal evolution makes more sense to keep in annual or root? 
     # Let's put Annual one in root or 'all'
@@ -199,7 +202,7 @@ def main():
             d['name'].upper(): os.path.join(DATA_RESULTS_DIR, f"{d['name']}_{general_suffix}_strategy_{strategy}_corr_{corr_strategy}_Annual.nc")
             for d in datasets_to_evaluate
         }
-        utils.plot_temporal_evolution(model_paths_annual, "bias", period="Annual", save_path=evol_path, unit="mm/day")
+        # utils.plot_temporal_evolution(model_paths_annual, "bias", period="Annual", save_path=evol_path, unit="mm/day")
 
     
     print("\n=== PIPELINE TESTS ===")

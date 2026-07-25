@@ -42,7 +42,7 @@ def main():
     ) = load_datasets(cfg)
 
     _, x_test_tensor, _, y_test_tensor = preprocess_data(
-        cfg, X, y_train, y_test
+        cfg, X, y_train, y_test, time_train=time_train, time_test=time_test
     )
 
      

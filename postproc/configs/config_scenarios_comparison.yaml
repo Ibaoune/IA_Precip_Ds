@@ -1,0 +1,175 @@
+# Author: M. El Aabaribaoune (@um6p)
+experiment: "scenarios_comparison"
+parameters:
+  start_date: "2006-01-01"
+  end_date: "2020-12-31"
+  region: "allmorr"
+  regions:
+    - "allmorr"
+    - "north"
+    - "north_east"
+    - "south"
+    - "east"
+  mask_land: true
+  only_morocco: true
+  predictand: "pr"
+  plot_only: false
+  impose_robust_limits: true
+  show_title_metadata: true
+  customize_colorbars: true
+  plot_periods:
+    - Annual
+    - DJF
+    - MAM
+    - JJA
+    - SON
+reference:
+  name: "mswep"
+  file_path: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/mswep_1979_2020.nc"
+  variable_name: "precipitation"
+datasets:
+  # --- Scenario 1: Unified ---
+  - name: "Unet_Scenario1"
+    file_path: "../main/results/tests/cnn/cnn_exp3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/cnn_predictions_era5_to_mswep.nc"
+    variable_name: "precipitation"
+  - name: "CNN_Scenario1"
+    file_path: "../main/results/tests/cnn/cnn_exp5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/cnn_predictions_era5_to_mswep.nc"
+    variable_name: "precipitation"
+  - name: "ViT_Scenario1"
+    file_path: "../main/results/tests/vit/vit_precip_exp21_best_hybrid/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/vit_predictions_era5_to_mswep.nc"
+    variable_name: "precipitation"
+
+  # --- Scenario 2: Loss Mask Glued ---
+  - name: "Unet_Scenario2"
+    file_path: "../main/results/cnn_exp3_lossmask_glued/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/cnn_predictions_era5_to_mswep.nc"
+    variable_name: "precipitation"
+  - name: "CNN_Scenario2"
+    file_path: "../main/results/cnn_exp5_lossmask_glued/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/cnn_predictions_era5_to_mswep.nc"
+    variable_name: "precipitation"
+  - name: "ViT_Scenario2"
+    file_path: "../main/results/vit_precip_exp21_best_hybrid_lossmask_glued/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/vit_predictions_era5_to_mswep.nc"
+    variable_name: "precipitation"
+
+  # --- Scenario 3: Merged Loss Mask Glued ---
+  - name: "Unet_Scenario3"
+    file_path: "../main/results/cnnexp3_scenario3_glued/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/cnn_predictions_era5_to_mswep.nc"
+    variable_name: "precipitation"
+  - name: "CNN_Scenario3"
+    file_path: "../main/results/cnnexp5_scenario3_glued/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/cnn_predictions_era5_to_mswep.nc"
+    variable_name: "precipitation"
+  - name: "ViT_Scenario3"
+    file_path: "../main/results/vit_scenario3_glued/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/vit_predictions_era5_to_mswep.nc"
+    variable_name: "precipitation"
+
+postproc:
+  mean:
+    enable: true
+    bias: true
+    rmse: false
+    correlation: false
+  extreme:
+    enable: false
+    cdd: true
+    qqplot: false
+    r01: false
+    r99: false
+    r95: false
+    r99_freq: false
+    r95_freq: true
+    rocss: false
+
+custom_limits:
+  bias:
+    spatial: [-3.5, -2, -1, -0.5, -0.2, -0.1, 0, 0.1, 0.2, 0.5, 1, 2, 3.5]
+    boxplot: [-3.5, 3.5]
+    temporal: [-3.5, 3.5]
+  rmse:
+    spatial: [0, 0.1,0.2,0.3,0.4,0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]
+    boxplot: [0, 4]
+    temporal: [0, 4]
+  mean:
+    spatial: [0, 0.1,0.2,0.3,0.4,0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]
+    boxplot: [0, 4]
+    temporal: [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]
+  cdd:
+    spatial: [0, 10, 20, 30, 40, 60, 80, 100,200]
+    boxplot: [0, 200]
+    temporal: [0, 200]
+  r95_freq:
+    spatial: [0, 2, 4, 6, 8, 10, 15]
+    boxplot: [0, 15]
+    temporal: [0, 15]
+  correlation:
+    spatial: [-1, -0.8, -0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6, 0.8, 1]
+    boxplot: [-1, 1]
+    temporal: [-1, 1]
+
+visualisation:
+
+  # =========================
+  # PROFESSIONAL PALETTE
+  # =========================
+  model_colors:
+
+    # UNet → Deep Greens
+    Unet_Scenario1: "#1B4332"
+    Unet_Scenario2: "#2D6A4F"
+    Unet_Scenario3: "#40916C"
+
+    # CNN → Scientific Blues
+    CNN_Scenario1: "#1D3557"
+    CNN_Scenario2: "#3A5A8A"
+    CNN_Scenario3: "#5B8CC0"
+
+    # ViT → Controlled Reds
+    ViT_Scenario1: "#7F0000"
+    ViT_Scenario2: "#B22222"
+    ViT_Scenario3: "#D97706"
+
+  # =========================
+  # LINE STYLES
+  # =========================
+  model_linestyles:
+
+    # Scenario 1 → Solid
+    Unet_Scenario1: "-"
+    CNN_Scenario1: "-"
+    ViT_Scenario1: "-"
+
+    # Scenario 2 → Dashed
+    Unet_Scenario2: "--"
+    CNN_Scenario2: "--"
+    ViT_Scenario2: "--"
+
+    # Scenario 3 → Dash-dot
+    Unet_Scenario3: "-."
+    CNN_Scenario3: "-."
+    ViT_Scenario3: "-."
+
+  # =========================
+  # MARKERS
+  # =========================
+  model_markers:
+
+    # UNet
+    Unet_Scenario1: "o"
+    Unet_Scenario2: "s"
+    Unet_Scenario3: "^"
+
+    # CNN
+    CNN_Scenario1: "o"
+    CNN_Scenario2: "s"
+    CNN_Scenario3: "^"
+
+    # ViT
+    ViT_Scenario1: "o"
+    ViT_Scenario2: "s"
+    ViT_Scenario3: "^"
+
+  # =========================
+  # GLOBAL STYLE
+  # =========================
+  line_width: 2.5
+  marker_size: 7
+  grid_alpha: 0.25
+

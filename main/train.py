@@ -44,10 +44,11 @@ def main():
     datasets = load_datasets(cfg)
     X, y_train, y_test = datasets[0], datasets[1], datasets[2]
     lon_out, lat_out = datasets[5], datasets[6]
+    time_train, time_test = datasets[7], datasets[8]
 
     # Preprocess data returns: x_train_tensor, x_test_tensor, y_train_tensor, y_test_tensor
     x_train_tensor, _, y_train_tensor, _ = preprocess_data(
-        cfg, X, y_train, y_test
+        cfg, X, y_train, y_test, time_train=time_train, time_test=time_test
     )
 
     # GPU ADAPTATION: Ensure tensors are on the correct device.

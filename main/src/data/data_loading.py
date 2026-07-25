@@ -282,6 +282,18 @@ def load_datasets(cfg):
                 curr_lev_dim = next((d for d in ["presnivs", "plev", "level"] if d in ds_full.dims), "level")
                 curr_time_dim = next((d for d in ["time_counter", "time"] if d in ds_full.dims), "time")
 
+                is_single_level = var.lower() in ["msl", "mslp", "sp"]
+                
+                if is_single_level:
+                    vprint(f"  → Extracting single-level variable {var}")
+                    ds = use.mask_dataset(ds_full, slice(cfg.lon_min, cfg.lon_max), slice(cfg.lat_min, cfg.lat_max))
+                    actual_var = next((v for v in ds.data_vars if v.lower() == lmdz_var.lower()), list(ds.data_vars)[0])
+                    arr = ds[actual_var].squeeze()
+                    p_arr = _process_level_array(cfg, arr, var, "sfc", curr_time_dim, curr_lev_dim)
+                    if p_arr is not None: data_arrays.append(p_arr)
+                    ds_full.close()
+                    continue
+
                 # For LMDZ 'q' (rhum = relative humidity), open temperature file for conversion
                 temp_ds_masked = None
                 temp_actual_var = None
@@ -356,11 +368,55 @@ def load_datasets(cfg):
 
 
 
+    # 3) Handle Topography explicitly
+    topo_arr = None
+    if "topo" in [v.lower() for v in variables]:
+        topo_path = "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/shared/TEAM/Intern_Hamza/elevation.tif"
+        vprint(f"Loading topography file: {topo_path}...")
+        if os.path.exists(topo_path):
+            try:
+                ds_topo = xr.open_dataset(topo_path, engine="rasterio")
+                arr_topo = ds_topo["band_data"].squeeze()
+                arr_topo = arr_topo.rename({"y": "lat", "x": "lon"})
+                
+                lat_slice = slice(cfg.lat_max, cfg.lat_min) if arr_topo.lat[0] > arr_topo.lat[-1] else slice(cfg.lat_min, cfg.lat_max)
+                arr_topo = arr_topo.sel(lat=lat_slice, lon=slice(cfg.lon_min, cfg.lon_max))
+                
+                arr_topo = interpolate_to_target_resolution(
+                    arr_topo, 
+                    resolution=cfg.resolution, 
+                    method=cfg.interpolation_type,
+                    bounds=(cfg.lon_min, cfg.lon_max, cfg.lat_min, cfg.lat_max)
+                )
+                
+                topo_arr = arr_topo
+                vprint("  → Topography loaded successfully.")
+            except Exception as e:
+                vprint(f"  ERROR loading topo: {e}")
+        else:
+            vprint(f"  → FILE NOT FOUND: {topo_path}")
+
     if not data_arrays:
         raise ValueError("No predictor files loaded")
 
     X = xr.concat(data_arrays, dim="level", coords="minimal")
     X = X.transpose("time", "level", "lat", "lon")
+    
+    if topo_arr is not None:
+        # Expand topo to match X's time dimension
+        topo_expanded = topo_arr.expand_dims({"time": X.time, "level": ["topo_0"]})
+        
+        # Force strict coordinate alignment to avoid floating point mismatches during concat
+        topo_expanded = topo_expanded.assign_coords({
+            "lat": X.lat,
+            "lon": X.lon
+        })
+        
+        topo_expanded = topo_expanded.transpose("time", "level", "lat", "lon")
+        
+        # Concat with X
+        X = xr.concat([X, topo_expanded], dim="level", coords="minimal")
+
 
     if cfg.src == "era5":
         vprint("Checking time resolution...")
@@ -379,6 +435,38 @@ def load_datasets(cfg):
         time_test_out = x_test.time.values
     if time_train_out is None:
         time_train_out = x_train.time.values
+
+    # Find common times to avoid shape mismatches (e.g. MSWEP missing 2020-12-31)
+    # Floor to 'D' because ERA5 is often 12:00:00 while MSWEP is 00:00:00
+    import pandas as pd
+    
+    if time_train_out is not None and len(time_train_out) > 0:
+        x_dates = pd.to_datetime(x_train.time.values).floor('D')
+        y_dates = pd.to_datetime(time_train_out).floor('D')
+        common_train = np.intersect1d(x_dates, y_dates)
+        
+        idx_x = np.in1d(x_dates, common_train)
+        x_train = x_train.isel(time=idx_x)
+        
+        idx_y = np.in1d(y_dates, common_train)
+        if y_train is not None:
+            y_train = y_train[idx_y]
+        time_train_out = time_train_out[idx_y]
+        vprint(f"Aligned training data to {len(common_train)} common days.")
+
+    if time_test_out is not None and len(time_test_out) > 0:
+        x_dates = pd.to_datetime(x_test.time.values).floor('D')
+        y_dates = pd.to_datetime(time_test_out).floor('D')
+        common_test = np.intersect1d(x_dates, y_dates)
+        
+        idx_x = np.in1d(x_dates, common_test)
+        x_test = x_test.isel(time=idx_x)
+        
+        idx_y = np.in1d(y_dates, common_test)
+        if y_test is not None:
+            y_test = y_test[idx_y]
+        time_test_out = time_test_out[idx_y]
+        vprint(f"Aligned testing data to {len(common_test)} common days.")
     
     # Fill dummy tensors if missing
     if y_train is None:

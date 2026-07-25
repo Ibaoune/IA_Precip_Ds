@@ -68,11 +68,11 @@ plots:
  show_suffix_components_in_title: true
 
 paths:
- root_dir: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data"
+ root_dir: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/reanalysis/era5"
  results_dir: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/"
  shapefile_path: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/shapefiles/Morocco_shpfile/DA_REGIONS_12R.shp"
- era5_predictor_pattern: "{var}_1979-2020_levels.nc"
- mswep_path: "mswep_1979_2020.nc"
+ era5_predictor_pattern: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/reanalysis/era5/{var}_1979-2020_levels.nc"
+ mswep_path: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/reanalysis/era5//home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/obs/mswep/mswep_1979_2020.nc"
 """
 
 experiments = {

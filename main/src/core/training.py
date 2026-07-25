@@ -139,6 +139,43 @@ def _build_model(cfg, x_train, y_train):
             out_channels=out_channels,
             output_shape=(y_train.shape[-2], y_train.shape[-1])
         )
+    elif cfg.model_type.startswith("unet_exp"):
+        import src.models.unet_experiments as unet_exps
+        import torch.nn as nn
+        class WrappedUNetExp(nn.Module):
+            def __init__(self):
+                super().__init__()
+                exp_num = int(cfg.model_type.split("unet_exp")[-1])
+                ExpClass = getattr(unet_exps, f"UNet_Config{exp_num}")
+                self.unet = ExpClass(
+                    in_channels=x_train.shape[1], 
+                    out_channels=out_channels, 
+                    output_shape=(y_train.shape[-2], y_train.shape[-1])
+                )
+            def forward(self, x):
+                return self.unet(x)
+        return WrappedUNetExp()
+    elif cfg.model_type.startswith("vit_exp"):
+        import src.models.vit_experiments as vit_exps
+        import torch.nn as nn
+        class WrappedViTExp(nn.Module):
+            def __init__(self):
+                super().__init__()
+                exp_num = int(cfg.model_type.split("vit_exp")[-1])
+                ExpClass = getattr(vit_exps, f"ViT_Exp{exp_num}")
+                self.vit = ExpClass(
+                    in_channels=x_train.shape[1],
+                    emb_size=cfg.emb_size,
+                    patch_size=cfg.patch_size,
+                    num_layers=cfg.num_layers,
+                    num_heads=cfg.num_heads,
+                    dropout=getattr(cfg, "training_dropout_value", cfg.dropout),
+                    out_channels=out_channels,
+                    output_shape=(y_train.shape[-2], y_train.shape[-1])
+                )
+            def forward(self, x):
+                return self.vit(x)
+        return WrappedViTExp()
     else:
         raise NotImplementedError(f"Model type {cfg.model_type} not supported yet")
 

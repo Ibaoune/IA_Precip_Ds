@@ -1,4 +1,8 @@
-# Author: M. El Aabaribaoune (@um6p)
+"""
+Author: M. El Aabaribaoune (@um6p)
+Description: Main orchestrator script for the post-processing and evaluation pipeline.
+"""
+
 import os
 import yaml
 import subprocess
@@ -83,7 +87,7 @@ def main():
                         # Run calculation
                         if not plot_only:
                             if calc_script and os.path.exists(calc_script):
-                                run_command(["python3", calc_script])
+                                run_command([sys.executable, calc_script])
                             elif calc_script:
                                 print(f"   Warning: Script not found: {calc_script}")
                         else:
@@ -91,7 +95,7 @@ def main():
                         
                         # Run plotting
                         if plot_script and os.path.exists(plot_script):
-                            run_command(["python3", plot_script])
+                            run_command([sys.executable, plot_script])
                         elif plot_script:
                             print(f"   Warning: Script not found: {plot_script}")
             else:

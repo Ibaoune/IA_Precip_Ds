@@ -1,4 +1,8 @@
-# Author: M. El Aabaribaoune (@um6p)
+"""
+Author: M. El Aabaribaoune (@um6p)
+Description: Utility functions for data processing, statistical analysis, and plotting.
+"""
+
 import os
 import pandas as pd
 import xarray as xr

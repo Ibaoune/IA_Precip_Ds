@@ -1,0 +1,558 @@
+experiment: eval_unet_experiments
+parameters:
+  start_date: '2006-01-01'
+  end_date: '2020-12-31'
+  region: allmorr
+  regions:
+  - allmorr
+  mask_land: true
+  only_morocco: true
+  predictand: pr
+  plot_only: false
+  impose_robust_limits: true
+  show_title_metadata: true
+  customize_colorbars: true
+  plot_periods:
+  - Annual
+reference:
+  name: MSWEP
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/lit_version/data/mswep_1979_2020.nc
+  variable_name: precipitation
+datasets:
+- name: CNN_Base
+  file_path: ../main/results/cnn/retained/cnn_exp5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/cnn_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp1_v2_bg_bs512_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp1_v2_bg_bs512_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_v2_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp4_coordconv_mse_bs64_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp4_coordconv_mse_bs64_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp5_coordconv_cosine_bs64_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp5_coordconv_cosine_bs64_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp4_coordconv_mse_bs1024_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp4_coordconv_mse_bs1024_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp3_attention_bg_bs512_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp3_attention_bg_bs512_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/attention_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp6_doury_asymmetric_bs1024_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp6_doury_asymmetric_bs1024_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_asymmetric_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp5_coordconv_cosine_bs1024_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp5_coordconv_cosine_bs1024_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp3_attention_bg_bs512_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp3_attention_bg_bs512_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/attention_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp3_attention_bg_bs1024_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp3_attention_bg_bs1024_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/attention_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp3_attention_bg_bs64_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp3_attention_bg_bs64_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/attention_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp3_attention_bg_bs1024_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp3_attention_bg_bs1024_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/attention_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp1_v2_bg_bs64_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp1_v2_bg_bs64_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_v2_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp3_attention_bg_bs128_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp3_attention_bg_bs128_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/attention_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp1_v2_bg_bs512_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp1_v2_bg_bs512_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_v2_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp1_v2_bg_bs1024_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp1_v2_bg_bs1024_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_v2_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp5_coordconv_cosine_bs512_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp5_coordconv_cosine_bs512_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp6_doury_asymmetric_bs512_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp6_doury_asymmetric_bs512_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_asymmetric_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp4_coordconv_mse_bs1024_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp4_coordconv_mse_bs1024_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp6_doury_asymmetric_bs512_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp6_doury_asymmetric_bs512_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_asymmetric_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp5_coordconv_cosine_bs512_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp5_coordconv_cosine_bs512_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp3_attention_bg_bs64_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp3_attention_bg_bs64_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/attention_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp2_coordconv_bg_bs128_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp2_coordconv_bg_bs128_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp4_coordconv_mse_bs128_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp4_coordconv_mse_bs128_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp1_v2_bg_bs128_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp1_v2_bg_bs128_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_v2_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp5_coordconv_cosine_bs128_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp5_coordconv_cosine_bs128_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp2_coordconv_bg_bs64_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp2_coordconv_bg_bs64_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp5_coordconv_cosine_bs64_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp5_coordconv_cosine_bs64_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp6_doury_asymmetric_bs128_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp6_doury_asymmetric_bs128_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_asymmetric_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp1_v2_bg_bs1024_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp1_v2_bg_bs1024_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_v2_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp4_coordconv_mse_bs512_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp4_coordconv_mse_bs512_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp2_coordconv_bg_bs512_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp2_coordconv_bg_bs512_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp2_coordconv_bg_bs64_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp2_coordconv_bg_bs64_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp2_coordconv_bg_bs64_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp2_coordconv_bg_bs64_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp2_coordconv_bg_bs512_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp2_coordconv_bg_bs512_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp6_doury_asymmetric_bs128_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp6_doury_asymmetric_bs128_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_asymmetric_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp6_doury_asymmetric_bs1024_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp6_doury_asymmetric_bs1024_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_asymmetric_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp5_coordconv_cosine_bs128_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp5_coordconv_cosine_bs128_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp1_v2_bg_bs64_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp1_v2_bg_bs64_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_v2_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp6_doury_asymmetric_bs512_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp6_doury_asymmetric_bs512_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_asymmetric_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp4_coordconv_mse_bs1024_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp4_coordconv_mse_bs1024_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp5_coordconv_cosine_bs1024_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp5_coordconv_cosine_bs1024_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp4_coordconv_mse_bs512_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp4_coordconv_mse_bs512_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp4_coordconv_mse_bs64_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp4_coordconv_mse_bs64_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp3_attention_bg_bs128_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp3_attention_bg_bs128_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/attention_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp2_coordconv_bg_bs1024_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp2_coordconv_bg_bs1024_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp6_doury_asymmetric_bs64_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp6_doury_asymmetric_bs64_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_asymmetric_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp6_doury_asymmetric_bs1024_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp6_doury_asymmetric_bs1024_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_asymmetric_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp2_coordconv_bg_bs128_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp2_coordconv_bg_bs128_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp5_coordconv_cosine_bs512_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp5_coordconv_cosine_bs512_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp2_coordconv_bg_bs1024_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp2_coordconv_bg_bs1024_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp6_doury_asymmetric_bs64_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp6_doury_asymmetric_bs64_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_asymmetric_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp1_v2_bg_bs128_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp1_v2_bg_bs128_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_v2_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp1_v2_bg_bs1024_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp1_v2_bg_bs1024_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_v2_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp5_coordconv_cosine_bs128_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp5_coordconv_cosine_bs128_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp4_coordconv_mse_bs128_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp4_coordconv_mse_bs128_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp2_coordconv_bg_bs1024_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp2_coordconv_bg_bs1024_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp3_attention_bg_bs64_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp3_attention_bg_bs64_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/attention_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp6_doury_asymmetric_bs64_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp6_doury_asymmetric_bs64_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_asymmetric_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp1_v2_bg_bs64_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp1_v2_bg_bs64_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_v2_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp5_coordconv_cosine_bs64_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp5_coordconv_cosine_bs64_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp1_v2_bg_bs128_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp1_v2_bg_bs128_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_v2_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp3_attention_bg_bs128_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp3_attention_bg_bs128_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/attention_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp4_coordconv_mse_bs512_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp4_coordconv_mse_bs512_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp5_coordconv_cosine_bs1024_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp5_coordconv_cosine_bs1024_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp6_doury_asymmetric_bs128_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp6_doury_asymmetric_bs128_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_asymmetric_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp3_attention_bg_bs512_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp3_attention_bg_bs512_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/attention_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp4_coordconv_mse_bs128_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp4_coordconv_mse_bs128_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp4_coordconv_mse_bs64_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp4_coordconv_mse_bs64_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp1_v2_bg_bs512_lr1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp1_v2_bg_bs512_lr1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_v2_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp3_attention_bg_bs1024_lr1e-5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp3_attention_bg_bs1024_lr1e-5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_1e-05_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/attention_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp2_coordconv_bg_bs512_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp2_coordconv_bg_bs512_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp2_coordconv_bg_bs128_lr1e-3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_hyperparams/unet_exp2_coordconv_bg_bs128_lr1e-3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp1_v2_bg
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_advanced_arch/unet_exp1_v2_bg/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_1983_12_31/test_1984_01_01_1984_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_v2_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp2_coordconv_bg
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_advanced_arch/unet_exp2_coordconv_bg/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_1983_12_31/test_1984_01_01_1984_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp9_doury_bg
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_advanced_arch/unet_exp9_doury_bg/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_1983_12_31/test_1984_01_01_1984_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_best_combined
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_advanced_arch/unet_best_combined/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp3_attention_bg
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_advanced_arch/unet_exp3_attention_bg/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_1983_12_31/test_1984_01_01_1984_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_gn/output_data/attention_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp11_lr_5e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_advanced_arch/unet_exp11_lr_5e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_1983_12_31/test_1984_01_01_1984_12_31/gridbox_0.0005_hurdle_loss_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp4_coordconv_mse
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_advanced_arch/unet_exp4_coordconv_mse/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_1983_12_31/test_1984_01_01_1984_12_31/gridbox_0.0005_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp8_doury_hurdle
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_advanced_arch/unet_exp8_doury_hurdle/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_1983_12_31/test_1984_01_01_1984_12_31/gridbox_0.001_hurdle_loss_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp5_coordconv_cosine
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_advanced_arch/unet_exp5_coordconv_cosine/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_1983_12_31/test_1984_01_01_1984_12_31/gridbox_0.001_bernoulli_gamma_150ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp10_lr_1e-2
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_advanced_arch/unet_exp10_lr_1e-2/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_1983_12_31/test_1984_01_01_1984_12_31/gridbox_0.01_hurdle_loss_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp12_lr_1e-4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_advanced_arch/unet_exp12_lr_1e-4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_1983_12_31/test_1984_01_01_1984_12_31/gridbox_0.0001_hurdle_loss_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp7_doury_weighted
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_advanced_arch/unet_exp7_doury_weighted/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_1983_12_31/test_1984_01_01_1984_12_31/gridbox_0.0005_intensity_weighted_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp6_doury_asymmetric
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_advanced_arch/unet_exp6_doury_asymmetric/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_1983_12_31/test_1984_01_01_1984_12_31/gridbox_0.0005_asymmetric_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/doury_unet_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp2
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_architecture/unet_exp2/unet_exp2/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/unet_exp2_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp3
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_architecture/unet_exp3/unet_exp3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/unet_exp3_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp5
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_architecture/unet_exp5/unet_exp5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/unet_exp5_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp6
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_architecture/unet_exp6/unet_exp6/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/unet_exp6_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp1
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_architecture/unet_exp1/unet_exp1/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/unet_exp1_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp9
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_architecture/unet_exp9/unet_exp9/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/unet_exp9_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp10
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_architecture/unet_exp10/unet_exp10/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/unet_exp10_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp8
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_architecture/unet_exp8/unet_exp8/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/unet_exp8_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp4
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_architecture/unet_exp4/unet_exp4/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/unet_exp4_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+- name: unet_exp7
+  file_path: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_architecture/unet_exp7/unet_exp7/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/unet_exp7_predictions_era5_to_mswep.nc
+  variable_name: precipitation
+postproc:
+  mean:
+    enable: true
+    bias: true
+    rmse: false
+    correlation: false
+  extreme:
+    enable: false
+    cdd: true
+    cdd_thresholds:
+    - 1.0
+    qqplot: false
+    r01: false
+    r99: false
+    r95: true
+    r99_freq: false
+    r95_freq: false
+    rocss: false
+visualisation:
+  model_colors:
+    MSWEP: '#000000'
+    CNN_Base: '#808080'
+    UNet_Exp1: '#E63946'
+    UNet_Exp2: '#F4A261'
+    UNet_Exp3: '#E76F51'
+    UNet_Exp4: '#2A9D8F'
+    UNet_Exp5: '#264653'
+    UNet_Exp6: '#457B9D'
+    UNet_Exp7: '#1D3557'
+    UNet_Exp8: '#8AB17D'
+    UNet_Exp9: '#FFB703'
+    UNet_Exp10: '#FB8500'
+  metrics:
+    mean:
+      colormaps:
+        spatial: custom_precip
+        difference: custom_bias
+      limits:
+        spatial:
+        - 0
+        - 0.1
+        - 0.3
+        - 0.5
+        - 1
+        - 1.5
+        - 2
+        - 2.5
+        - 3
+        - 3.5
+        - 4
+        - 4.5
+        - 5
+        boxplot:
+        - 0
+        - 6
+        temporal:
+        - 0
+        - 6
+    bias:
+      colormaps:
+        spatial: custom_bias
+        difference: custom_bias
+      limits:
+        spatial:
+        - -5
+        - -4
+        - -3
+        - -2
+        - -1
+        - -0.5
+        - -0.2
+        - -0.1
+        - 0
+        - 0.1
+        - 0.2
+        - 0.5
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        boxplot:
+        - -2.5
+        - 2.5
+        temporal:
+        - -2.5
+        - 2.5
+    rmse:
+      colormaps:
+        spatial: custom_precip
+        difference: custom_bias
+      limits:
+        spatial:
+        - 0
+        - 0.1
+        - 0.3
+        - 0.5
+        - 1
+        - 1.5
+        - 2
+        boxplot:
+        - 0
+        - 2
+        temporal:
+        - 0
+        - 2
+    cdd:
+      colormaps:
+        spatial: YlOrBr
+        difference: custom_bias
+      limits:
+        spatial:
+        - 0
+        - 10
+        - 20
+        - 30
+        - 40
+        - 60
+        - 80
+        - 100
+        - 150
+        - 200
+        - 250
+        - 300
+        - 400
+        difference:
+        - -100
+        - -80
+        - -60
+        - -40
+        - -20
+        - 0
+        - 20
+        - 40
+        - 60
+        - 80
+        - 100
+        boxplot:
+        - 0
+        - 400
+        temporal:
+        - 0
+        - 400
+    r95:
+      colormaps:
+        spatial: custom_precip
+        difference: custom_bias
+      limits:
+        spatial:
+        - 0
+        - 0.1
+        - 0.3
+        - 0.5
+        - 1
+        - 1.5
+        - 2
+        - 2.5
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        - 9
+        - 10
+        difference:
+        - -5
+        - -4
+        - -3
+        - -2
+        - -1
+        - -0.5
+        - -0.2
+        - -0.1
+        - 0
+        - 0.1
+        - 0.2
+        - 0.5
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        boxplot:
+        - 0
+        - 10
+        temporal:
+        - 0
+        - 10
+    r95_freq:
+      colormaps:
+        spatial: custom_freq
+        difference: custom_bias
+      limits:
+        spatial:
+        - 0
+        - 2
+        - 4
+        - 6
+        - 8
+        - 10
+        - 15
+        difference:
+        - -10
+        - -8
+        - -6
+        - -4
+        - -2
+        - -1
+        - 0
+        - 1
+        - 2
+        - 4
+        - 6
+        - 8
+        - 10
+        boxplot:
+        - 0
+        - 15
+        temporal:
+        - 0
+        - 15
+    correlation:
+      colormaps:
+        spatial: RdBu_r
+        difference: custom_bias
+      limits:
+        spatial:
+        - -1
+        - -0.8
+        - -0.6
+        - -0.4
+        - -0.2
+        - 0
+        - 0.2
+        - 0.4
+        - 0.6
+        - 0.8
+        - 1
+        boxplot:
+        - -1
+        - 1
+        temporal:
+        - -1
+        - 1
+    default:
+      colormaps:
+        spatial: viridis
+        difference: custom_bias

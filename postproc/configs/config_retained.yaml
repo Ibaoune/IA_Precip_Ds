@@ -2,7 +2,7 @@
 experiment: "retained_models_evaluation_2006_2020"
 parameters:
   start_date: "2006-01-01"
-  end_date: "2020-12-31"
+  end_date: "2020-12-30"
   region: "allmorr"
   regions:
     - "allmorr"
@@ -22,31 +22,31 @@ parameters:
 
 reference:
   name: "mswep"
-  file_path: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/mswep_1979_2020.nc"
+  file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/lit_version/data/mswep_1979_2020.nc"
   variable_name: "precipitation"
 
 datasets:
   - name: "GLM"
-    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/glm/glm_precip_l2/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_10ep_wd/output_data/glm_predictions_era5_to_mswep.nc"
+    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/glm/retained/glm_precip_l2/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_10ep_wd/output_data/glm_predictions_era5_to_mswep.nc"
     variable_name: "precipitation"
   - name: "CNN"
-    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/cnn/cnn_exp5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/cnn_predictions_era5_to_mswep.nc"
+    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/cnn/retained/cnn_exp5/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/cnn_predictions_era5_to_mswep.nc"
     variable_name: "precipitation"
-  - name: "UNET"
-    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/cnn/cnn_exp3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/cnn_predictions_era5_to_mswep.nc"
+  - name: "U-Net"
+    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/retained/unet_exp4_coordconv_mse/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_mse_150ep_lr_sched_wd_gc_dropout_gn/output_data/unet_coordconv_predictions_era5_to_mswep.nc"
     variable_name: "precipitation"
   - name: "ViT"
-    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/retained/vit/vit_precip_exp21_best_hybrid/region_lat_21.0_36.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/vit_predictions_era5_to_mswep.nc"
+    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/vit/retained/vit_precip_exp21_best_hybrid/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/vit_predictions_era5_to_mswep.nc"
     variable_name: "precipitation"
 
 postproc:
   mean:
     enable: true
     bias: true
-    rmse: true
-    correlation: true
+    rmse: false
+    correlation: false
   extreme:
-    enable: true
+    enable: false
     cdd: true
     cdd_thresholds: [1.0, 0.5]
     qqplot: false

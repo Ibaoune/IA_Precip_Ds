@@ -1,4 +1,8 @@
-# Author: M. El Aabaribaoune (@um6p)
+"""
+Author: M. El Aabaribaoune (@um6p)
+Description: Part of the post-processing and evaluation pipeline for the downscaling project.
+"""
+
 import yaml
 with open("config.yaml", "r") as f:
     cfg = yaml.safe_load(f)

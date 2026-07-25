@@ -1,4 +1,8 @@
-# Author: M. El Aabaribaoune (@um6p)
+"""
+Author: M. El Aabaribaoune (@um6p)
+Description: Utility functions for data processing, statistical analysis, and plotting.
+"""
+
 import os
 import numpy as np
 import pandas as pd
@@ -276,6 +280,42 @@ def get_custom_model_colors():
             print(f"Warning loading model_colors config: {e}")
     return {}
 
+def get_custom_model_linestyles():
+    """
+    Retrieves the custom model linestyles dict from config if customize_colorbars is enabled.
+    """
+    config_path = os.environ.get("POSTPROC_MASTER_CONFIG", os.path.join(PROJECT_ROOT, "config.yaml"))
+    if os.path.exists(config_path):
+        import yaml
+        try:
+            with open(config_path, 'r') as f:
+                cfg = yaml.safe_load(f)
+                if cfg and cfg.get('parameters', {}).get('customize_colorbars', False):
+                    vis_cfg = cfg.get('visualisation', {})
+                    if 'model_linestyles' in vis_cfg:
+                        return vis_cfg['model_linestyles']
+                    # Fallback to old root key for compatibility
+                    return cfg.get('model_linestyles', {})
+        except Exception as e:
+            print(f"Warning loading model linestyles config: {e}")
+    return {}
+
+def get_visualisation_config():
+    """
+    Retrieves the visualisation dict from config if customize_colorbars is enabled.
+    """
+    config_path = os.environ.get("POSTPROC_MASTER_CONFIG", os.path.join(PROJECT_ROOT, "config.yaml"))
+    if os.path.exists(config_path):
+        import yaml
+        try:
+            with open(config_path, 'r') as f:
+                cfg = yaml.safe_load(f)
+                if cfg and cfg.get('parameters', {}).get('customize_colorbars', False):
+                    return cfg.get('visualisation', {})
+        except Exception as e:
+            print(f"Warning loading visualisation config: {e}")
+    return {}
+
 def get_results_dir(config, metric_name, root_path):
     """
     Construct results path based on the requested structure.
@@ -534,6 +574,18 @@ def plot_spatial_maps(data_dict, metric_name, period="Annual", shapefile=None, s
     """
     Creates a high-quality spatial comparison plot for multiple models following scientific visualization rules.
     """
+    keys = list(data_dict.keys())
+    if len(keys) > 6:
+        ref_key = keys[0]
+        model_keys = keys[1:]
+        for i in range(0, len(model_keys), 5):
+            chunk_keys = [ref_key] + model_keys[i:i+5]
+            chunk_dict = {k: data_dict[k] for k in chunk_keys}
+            chunk_save = f"{os.path.splitext(save_path)[0]}_part{i//5 + 1}{os.path.splitext(save_path)[1]}" if save_path else None
+            chunk_title = f"{title} (Part {i//5 + 1})" if title else None
+            plot_spatial_maps(chunk_dict, metric_name, period, shapefile, chunk_save, chunk_title, levels, unit, nrows, region)
+        return
+
     if region is None:
         region = get_current_region()
     if shapefile is None or shapefile == DEFAULT_SHAPEFILE:
@@ -1138,6 +1190,17 @@ def plot_temporal_evolution(model_paths, metric_name, period="Annual", shapefile
     Plots a multi-line graph showing regional average evolution over time.
     Uses dynamic high-contrast colors, linestyles, and markers to distinguish many models.
     """
+    keys = list(model_paths.keys())
+    if len(keys) > 6:
+        ref_key = keys[0]
+        model_keys = keys[1:]
+        for i in range(0, len(model_keys), 5):
+            chunk_keys = [ref_key] + model_keys[i:i+5]
+            chunk_dict = {k: model_paths[k] for k in chunk_keys}
+            chunk_save = f"{os.path.splitext(save_path)[0]}_part{i//5 + 1}{os.path.splitext(save_path)[1]}" if save_path else None
+            plot_temporal_evolution(chunk_dict, metric_name, period, shapefile, chunk_save, unit)
+        return
+
     current_region = get_current_region()
     if shapefile is None or shapefile == DEFAULT_SHAPEFILE:
         shapefile = get_shapefile(current_region)
@@ -1170,13 +1233,22 @@ def plot_temporal_evolution(model_paths, metric_name, period="Annual", shapefile
             local_max = max(local_max, np.nanmax(means))
                 
             custom_model_colors = get_custom_model_colors()
+            custom_model_linestyles = get_custom_model_linestyles()
+            vis_cfg = get_visualisation_config()
+            custom_model_markers = vis_cfg.get('model_markers', {})
+            
+            line_width = vis_cfg.get('line_width', 2)
+            marker_size = vis_cfg.get('marker_size', 5)
+            
             display_name = get_display_name(model_name)
             color = custom_model_colors.get(display_name, custom_model_colors.get(model_name, custom_model_colors.get(model_name.upper(), GLOBAL_MODEL_COLORS.get(display_name, GLOBAL_MODEL_COLORS.get(model_name.upper(), colors[i % len(colors)])))))
-            linestyle = linestyles[i % len(linestyles)]
-            marker = markers[i % len(markers)]
             
-            plt.plot(time_axis, means, label=display_name, marker=marker, markersize=5, 
-                     linestyle=linestyle, linewidth=2, color=color, alpha=0.85)
+            linestyle = custom_model_linestyles.get(display_name, custom_model_linestyles.get(model_name, custom_model_linestyles.get(model_name.upper(), linestyles[i % len(linestyles)])))
+            
+            marker = custom_model_markers.get(display_name, custom_model_markers.get(model_name, custom_model_markers.get(model_name.upper(), markers[i % len(markers)])))
+            
+            plt.plot(time_axis, means, label=display_name, marker=marker, markersize=marker_size, 
+                     linestyle=linestyle, linewidth=line_width, color=color, alpha=0.85)
     
     custom_limits = get_custom_limits(metric_name, 'temporal')
     if custom_limits is not None:
@@ -1195,7 +1267,10 @@ def plot_temporal_evolution(model_paths, metric_name, period="Annual", shapefile
     title_str += get_title_metadata(metric_name, period)
     plt.title(title_str, fontsize=11, fontweight='bold', pad=15)
     
-    plt.grid(True, linestyle='--', alpha=0.5)
+    vis_cfg = get_visualisation_config()
+    grid_alpha = vis_cfg.get('grid_alpha', 0.5)
+    
+    plt.grid(True, linestyle='--', alpha=grid_alpha)
     plt.legend(bbox_to_anchor=(1.04, 1), loc='upper left', frameon=True, fontsize=8, ncol=1 if num_models <= 12 else 2)
     plt.tight_layout()
     
@@ -1211,6 +1286,17 @@ def plot_metric_boxplot(model_paths, metric_name, period="Annual", shapefile=Non
     Visualizes the statistical distribution (spread) of metric values across time and space.
     Rotates x-axis ticks to prevent overlap when plotting many models.
     """
+    keys = list(model_paths.keys())
+    if len(keys) > 6:
+        ref_key = keys[0]
+        model_keys = keys[1:]
+        for i in range(0, len(model_keys), 5):
+            chunk_keys = [ref_key] + model_keys[i:i+5]
+            chunk_dict = {k: model_paths[k] for k in chunk_keys}
+            chunk_save = f"{os.path.splitext(save_path)[0]}_part{i//5 + 1}{os.path.splitext(save_path)[1]}" if save_path else None
+            plot_metric_boxplot(chunk_dict, metric_name, period, shapefile, chunk_save)
+        return
+
     import seaborn as sns
     all_data = []
     if shapefile is None or shapefile == DEFAULT_SHAPEFILE:
@@ -1300,6 +1386,17 @@ def plot_monthly_cycle(datasets_dict, region=None, shapefile=None, save_path=Non
     """
     Plots the climatological annual cycle (monthly averages).
     """
+    keys = list(datasets_dict.keys())
+    if len(keys) > 6:
+        ref_key = keys[0]
+        model_keys = keys[1:]
+        for i in range(0, len(model_keys), 5):
+            chunk_keys = [ref_key] + model_keys[i:i+5]
+            chunk_dict = {k: datasets_dict[k] for k in chunk_keys}
+            chunk_save = f"{os.path.splitext(save_path)[0]}_part{i//5 + 1}{os.path.splitext(save_path)[1]}" if save_path else None
+            plot_monthly_cycle(chunk_dict, region, shapefile, chunk_save)
+        return
+
     if region is None:
         region = get_current_region()
     if shapefile is None or shapefile == DEFAULT_SHAPEFILE:
@@ -1359,6 +1456,17 @@ def plot_intensity_distribution_log(datasets_dict, region=None, shapefile=None, 
     Plots the Probability Density Function (PDF) of daily precipitation intensities 
     using a logarithmic scale for both X and Y axes.
     """
+    keys = list(datasets_dict.keys())
+    if len(keys) > 6:
+        ref_key = keys[0]
+        model_keys = keys[1:]
+        for i in range(0, len(model_keys), 5):
+            chunk_keys = [ref_key] + model_keys[i:i+5]
+            chunk_dict = {k: datasets_dict[k] for k in chunk_keys}
+            chunk_save = f"{os.path.splitext(save_path)[0]}_part{i//5 + 1}{os.path.splitext(save_path)[1]}" if save_path else None
+            plot_intensity_distribution_log(chunk_dict, region, shapefile, chunk_save, threshold)
+        return
+
     if region is None:
         region = get_current_region()
     if shapefile is None or shapefile == DEFAULT_SHAPEFILE:
@@ -1419,6 +1527,17 @@ def plot_intensity_distribution_linear(datasets_dict, region=None, shapefile=Non
     Plots the Probability Density Function (PDF) of daily precipitation intensities 
     using Kernel Density Estimation (KDE) and linear axes (Matches pdf.py style).
     """
+    keys = list(datasets_dict.keys())
+    if len(keys) > 6:
+        ref_key = keys[0]
+        model_keys = keys[1:]
+        for i in range(0, len(model_keys), 5):
+            chunk_keys = [ref_key] + model_keys[i:i+5]
+            chunk_dict = {k: datasets_dict[k] for k in chunk_keys}
+            chunk_save = f"{os.path.splitext(save_path)[0]}_part{i//5 + 1}{os.path.splitext(save_path)[1]}" if save_path else None
+            plot_intensity_distribution_linear(chunk_dict, region, shapefile, chunk_save, threshold)
+        return
+
     from scipy.stats import gaussian_kde
     if region is None:
         region = get_current_region()

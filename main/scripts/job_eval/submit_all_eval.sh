@@ -1,0 +1,22 @@
+#!/bin/bash
+sbatch run_eval_unet_exp1.sh
+sbatch run_eval_unet_exp2.sh
+sbatch run_eval_unet_exp3.sh
+sbatch run_eval_unet_exp4.sh
+sbatch run_eval_unet_exp5.sh
+sbatch run_eval_unet_exp6.sh
+sbatch run_eval_unet_exp7.sh
+sbatch run_eval_unet_exp8.sh
+sbatch run_eval_unet_exp9.sh
+sbatch run_eval_unet_exp10.sh
+sbatch run_eval_vit_exp1.sh
+sbatch run_eval_vit_exp2.sh
+sbatch run_eval_vit_exp3.sh
+sbatch run_eval_vit_exp4.sh
+sbatch run_eval_vit_exp5.sh
+sbatch run_eval_vit_exp6.sh
+sbatch run_eval_vit_exp7.sh
+sbatch run_eval_vit_exp8.sh
+sbatch run_eval_unet_retained.sh
+sbatch run_eval_vit_retained.sh
+sbatch run_eval_cnn_retained.sh

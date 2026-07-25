@@ -54,7 +54,7 @@ for exp_num in range(1, 7):
         },
         "reference": {
             "name": "mswep",
-            "file_path": "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/mswep_1979_2020.nc",
+            "file_path": "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/reanalysis/era5/mswep_1979_2020.nc",
             "variable_name": "precipitation"
         },
         "datasets": datasets_list,

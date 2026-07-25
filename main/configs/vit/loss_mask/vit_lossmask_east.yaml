@@ -1,4 +1,3 @@
-# Author: M. El Aabaribaoune (@um6p)
 dates:
   test:
     end: '2020-12-31'
@@ -7,7 +6,7 @@ dates:
     end: '2005-12-31'
     start: '1979-01-01'
 general:
-  experiment: vit_precip_exp21_best_hybrid
+  experiment: vit_lossmask_east
   interpolation_type: linear
   levels:
   - 500
@@ -32,10 +31,10 @@ model:
     num_layers: 8
     patch_size: 4
 paths:
-  era5_predictor_pattern: '{var}_1979-2020_levels.nc'
-  mswep_path: mswep_1979_2020.nc
+  era5_predictor_pattern: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/reanalysis/era5/{var}_1979-2020_levels.nc
+  mswep_path: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/reanalysis/era5//home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/obs/mswep/mswep_1979_2020.nc
   results_dir: /srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/
-  root_dir: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data
+  root_dir: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/reanalysis/era5
   shapefile_path: /home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/shapefiles/Morocco_shpfile/DA_REGIONS_12R.shp
 region:
   lat_max: 36

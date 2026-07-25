@@ -81,20 +81,39 @@ def _convert_units(arr, units, variable, label):
     _print_stats(f"{label} converted", arr, units)
     return arr, units
 
-def preprocess_data(cfg, X, y_train, y_test):
+def preprocess_data(cfg, X, y_train, y_test, time_train=None, time_test=None):
     vprint("=== Preprocessing data ===")
 
     if X is None:
         raise ValueError("Input dataset X is missing.")
 
     # Extract predictor arrays
-    x_train_np = X.sel(
+    x_train_ds = X.sel(
         time=slice(cfg.start_date_train, cfg.end_date_train)
-    ).values
-
-    x_test_np = X.sel(
+    )
+    x_test_ds = X.sel(
         time=slice(cfg.start_date_test, cfg.end_date_test)
-    ).values
+    )
+
+    import pandas as pd
+    import numpy as np
+
+    if time_train is not None and len(time_train) > 0:
+        x_dates = pd.to_datetime(x_train_ds.time.values).floor('D')
+        y_dates = pd.to_datetime(time_train).floor('D')
+        common_train = np.intersect1d(x_dates, y_dates)
+        idx_x = np.in1d(x_dates, common_train)
+        x_train_ds = x_train_ds.isel(time=idx_x)
+
+    if time_test is not None and len(time_test) > 0:
+        x_dates = pd.to_datetime(x_test_ds.time.values).floor('D')
+        y_dates = pd.to_datetime(time_test).floor('D')
+        common_test = np.intersect1d(x_dates, y_dates)
+        idx_x = np.in1d(x_dates, common_test)
+        x_test_ds = x_test_ds.isel(time=idx_x)
+
+    x_train_np = x_train_ds.values
+    x_test_np = x_test_ds.values
 
     # Normalization
     vprint(f"Applying normalization mode: {cfg.norm_mode}")

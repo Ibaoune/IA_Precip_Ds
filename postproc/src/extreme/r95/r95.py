@@ -1,4 +1,8 @@
-# Author: M. El Aabaribaoune (@um6p)
+"""
+Author: M. El Aabaribaoune (@um6p)
+Description: Computes and plots extreme precipitation indices.
+"""
+
 import os
 import sys
 import warnings
@@ -6,7 +10,6 @@ import numpy as np
 import xarray as xr
 from pathlib import Path
 
-# Add project root to sys.path
 root_path = str(Path(__file__).resolve().parents[3])
 if root_path not in sys.path:
     sys.path.append(root_path)

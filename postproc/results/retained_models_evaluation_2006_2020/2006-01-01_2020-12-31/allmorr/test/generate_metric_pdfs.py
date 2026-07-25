@@ -1,14 +1,10 @@
+"""
+Author: M. El Aabaribaoune (@um6p)
+Description: Part of the post-processing and evaluation pipeline for the downscaling project.
+"""
+
+
 #!/usr/bin/env python3
-"""
-Generate one PDF per metric from evaluation figures.
-
-Reads pdf_config.yaml to determine which metrics, seasons, and experiments
-to include. Figures are ordered: Annual → DJF → JJA → MAM → SON (configurable).
-
-Usage:
-    python generate_metric_pdfs.py                          # uses pdf_config.yaml in CWD
-    python generate_metric_pdfs.py --config my_config.yaml  # custom config path
-"""
 
 import os
 import sys

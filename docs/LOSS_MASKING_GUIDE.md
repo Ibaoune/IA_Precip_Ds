@@ -20,6 +20,29 @@ To resolve this, we train the models on the **entire Moroccan domain** but mask 
 
 ---
 
+## Experimental Scenarios
+
+To robustly evaluate the impact of spatial loss-masking, the experiments are divided into three core scenarios:
+
+### **Scenario 1: Unified Model**
+* **Approach**: A single model is trained globally over the entire Moroccan land domain.
+* **Loss Calculation**: The loss function is computed evenly over all land pixels in the output grid.
+* **Purpose**: Serves as the baseline control setup to evaluate whether forcing models to focus on local regional dynamics yields improvements over global learning.
+
+### **Scenario 2: Fine-Grained Regional Loss Masking (Glued)**
+* **Approach**: 4 distinct, independent models are trained—one for each specific sub-region (`north`, `north_east`, `east`, `south`).
+* **Loss Calculation**: During backpropagation, the loss is exclusively masked to the target sub-region.
+* **Inference**: The final national prediction map is constructed by "gluing" (compositing) the localized outputs from the 4 models together.
+* **Purpose**: Tests if highly specialized, locally-tuned parameter weights outperform the unified baseline.
+
+### **Scenario 3: Macro-Region Loss Masking (Glued)**
+* **Approach**: 2 distinct, independent models are trained for larger macro-regions (`north_northeast`, `east_south`), representing broader hydro-climatic regimes.
+* **Loss Calculation**: The loss is masked to the merged geometry of the associated sub-regions.
+* **Inference**: The final national prediction map is constructed by gluing the outputs of the 2 macro-models.
+* **Purpose**: Tests the hypothesis that models need a slightly larger regional context (a macro-regime) to learn stable features without succumbing to edge-effects of overly constrained sub-regions.
+
+---
+
 ## Supported Regions & Macro-Regions
 
 The system reads shapefiles directly from the `postproc/shape_files/` directory.

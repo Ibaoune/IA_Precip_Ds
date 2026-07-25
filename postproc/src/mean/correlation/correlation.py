@@ -1,4 +1,8 @@
-# Author: M. El Aabaribaoune (@um6p)
+"""
+Author: M. El Aabaribaoune (@um6p)
+Description: Computes and plots standard mean state metrics (bias, rmse, correlation).
+"""
+
 import os
 import sys
 import warnings
@@ -7,7 +11,6 @@ import xarray as xr
 from pathlib import Path
 from scipy.stats import pearsonr
 
-# Add project root to sys.path to allow importing utils
 root_path = str(Path(__file__).resolve().parents[3])
 if root_path not in sys.path:
     sys.path.append(root_path)
