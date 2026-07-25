@@ -1,4 +1,8 @@
-# Author: M. El Aabaribaoune (@um6p)
+"""
+Author: M. El Aabaribaoune (@um6p)
+Description: Model definitions and architecture for inference.
+"""
+
 import numpy as np
 import statsmodels.api as sm
 import os

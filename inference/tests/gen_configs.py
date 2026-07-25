@@ -1,4 +1,8 @@
-# Author: M. El Aabaribaoune (@um6p)
+"""
+Author: M. El Aabaribaoune (@um6p)
+Description: Part of the downscaling inference engine.
+"""
+
 import yaml
 import os
 

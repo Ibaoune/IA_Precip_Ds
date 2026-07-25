@@ -1,4 +1,8 @@
-# Author: M. El Aabaribaoune (@um6p)
+"""
+Author: M. El Aabaribaoune (@um6p)
+Description: Applies Scaling Delta Mapping (SDM) bias correction to GCM predictors.
+"""
+
 import gc
 import xarray as xr
 import numpy as np

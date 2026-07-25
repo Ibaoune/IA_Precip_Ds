@@ -1,16 +1,40 @@
-vit/results/
-*/data
-lit_version/logs
-lit_version/data_stats
-lit_version/results
-lit_version/check_ncFiles_structure.py
-lit_version/figures/
-lit_version/merge.py
-lit_version/slurm
-*/*.log
-lit_version/job*.sh
-plot.py
+# Outputs and Results
+results/
+main/results/
 postproc/results/
-*.nc
-postproc/*.csv
 inference/results/
+postproc/insitu/results/
+
+# Logs
+logs/
+*.log
+*.out
+*.err
+
+# Data and Datasets
+datasets/
+data/
+shape_files/
+*.nc
+*.hdf5
+*.h5
+*.tif
+*.tiff
+*.grib
+*.grb
+
+# Figures and Plots
+*.png
+*.pdf
+*.jpg
+*.jpeg
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual Environments
+venv/
+env/
+.conda/

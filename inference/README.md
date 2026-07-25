@@ -1,86 +1,52 @@
 <!-- Author: M. El Aabaribaoune (@um6p) -->
-# Moteur d'Inférence Unifié (Downscaling)
+# Unified Inference Engine (Downscaling)
 
-Ce dossier contient le moteur d'inférence universel et robuste pour déployer l'ensemble de vos modèles de descente d'échelle (ViT, CNN, UNet, GLM).
+This directory contains the universal and robust inference engine used to deploy all trained downscaling models (ViT, CNN, UNet, GLM).
 
-Le pipeline prend les poids entraînés sur la tâche historique (ERA5 vers MSWEP) et les applique sur de nouvelles périodes ou sur des projections climatiques de Modèles de Circulation Générale (GCMs, ex. LMDZ à différentes résolutions).
-
----
-
-## Fonctionnalités Clés et Robustesse
-
-1. **Chargement Automatique de l'Architecture (`train_config_path`) :**
- Il vous suffit de renseigner le chemin vers le fichier `config.txt` issu de l'entraînement de votre modèle. Le script `predict.py` importe automatiquement les bons hyperparamètres (type de modèle, loss, dimensions de la grille, type d'interpolation).
-
-2. **Alignement Spatial Automatique :**
- Le moteur lit les bornes spatiales (`lon_min/max`, `lat_min/max`) directement depuis la configuration d'entraînement du modèle. Cela garantit une correspondance parfaite des dimensions de la grille et évite tout conflit NetCDF.
-
-3. **Correction de Biais Avancée (SDM) :**
- Lors du passage aux données GCM (LMDZ r35 ou r250), le module applique la méthode *Scaling Delta Mapping* pour corriger les biais systématiques des prédicteurs GCM par rapport à la climatologie historique d'ERA5 avant l'inférence.
-
-4. **Contrôle Granulaire par Scénario (`enable: true/false`) :**
- Vous pouvez activer ou désactiver individuellement chaque jeu de données (ERA5, LMDZ r35, LMDZ r250) d'un simple flag dans la configuration.
+The pipeline takes the weights trained on the historical task (ERA5 to MSWEP) and applies them to new periods or to climate projections from General Circulation Models (GCMs, e.g., LMDZ at different resolutions).
 
 ---
 
-## Structure du Fichier de Configuration de Référence (`config.yaml`)
+## Key Features & Robustness
 
-Le fichier `config.yaml` sert de modèle maître pour tous vos tests. La section la plus importante est `prediction` :
+1. **Automatic Architecture Loading (`train_config_path`):**
+   Simply provide the path to the `config.txt` file from the model's training directory. The `predict.py` script automatically imports the correct hyperparameters (model type, loss, grid dimensions, interpolation type).
 
-```yaml
-prediction:
- # 1. Pointez vers la configuration d'entraînement du modèle cible
- train_config_path: ../main/results/tests/glm/glm_precip_l2/.../config.txt
- 
- # 2. Dossier de sortie pour ce modèle
- output_dir: results/output/glm_precip_l2
+2. **Automatic Spatial Alignment:**
+   The engine reads spatial boundaries (`lon_min/max`, `lat_min/max`) directly from the model's training configuration. This guarantees a perfect grid match and avoids NetCDF dimensional conflicts.
 
- # 3. Liste des scénarios à prédire
- scenarios:
- - name: era5_present
- enable: true # Mettez 'false' pour ignorer ce jeu de données
- src: era5
- start: '2006-01-01'
- end: '2014-12-31'
- bias_correction: false
- folder: /home/.../era5ztquv/1979_2020/all_data
+3. **Advanced Bias Correction (SDM):**
+   When predicting on GCM data (LMDZ r35 or r250), the module applies the *Scaling Delta Mapping* method to correct systematic biases in GCM predictors against historical ERA5 climatology prior to inference.
 
- - name: lmdz_35_present
- enable: true
- src: lmdz
- start: '2006-01-01'
- end: '2014-12-31'
- bias_correction: true
- folder: /home/.../LMDZ/r35
- bc_reference_folder: /home/.../LMDZ/r35
-
- - name: lmdz_250_present
- enable: true
- src: lmdz
- start: '2006-01-01'
- end: '2014-12-31'
- bias_correction: true
- folder: /home/.../LMDZ/r250
- bc_reference_folder: /home/.../LMDZ/r250
-```
+4. **Granular Scenario Control (`enable: true/false`):**
+   You can easily enable or disable individual datasets (ERA5, LMDZ r35, LMDZ r250) using a simple flag in the configuration.
 
 ---
 
-## Lancement d'une Inférence
+## Directory Architecture
 
-Pour exécuter une inférence avec votre configuration (`config.yaml`), soumettez simplement le script unifié :
+To maintain a clean and modular environment, the code has been reorganized as follows:
+
+* **`src/`**: Contains the core Python inference logic.
+  * `predict.py`: Main execution script.
+  * `bias_correction.py`: Implements SDM for GCM predictors.
+  * `data_loading.py`, `interpolation.py`, `preprocessing.py`, `regrid.py`, `utils.py`: Core utility modules for data manipulation.
+  * `models/`: Subdirectory containing model architecture definitions.
+* **`scripts/`**: Contains job submission scripts and auxiliary utilities.
+  * `run_inference.sh`, `run_all_1979_2014.sh`: SLURM scripts to execute inference jobs.
+  * `utils/`: Contains helper scripts like `generate_configs.py` and `update_config.py`.
+* **`logs/`**: Stores all SLURM log files (`out_*.log`) generated during job execution.
+* **`results/`**: The output directory where the final generated `.nc` prediction files are saved.
+* **`tests/`**: Contains legacy configurations and specialized inference test scripts.
+
+---
+
+## Launching an Inference Job
+
+To run an inference pipeline using your configuration (e.g., `config.yaml`), submit the unified bash script:
 
 ```bash
-sbatch run_inference.sh
+sbatch scripts/run_inference.sh
 ```
 
-Les journaux d'exécution seront automatiquement sauvegardés dans le dossier `logs/`.
-
----
-
-## Organisation et Nettoyage (`tests/` & `logs/`)
-
-Pour garder la racine claire et propre :
-* **`tests/`** : Regroupe l'ensemble des anciennes configurations et scripts d'inférence spécifiques.
-* **`logs/`** : Stocke tous les fichiers journaux (`out_*.log`) générés par SLURM.
-
+Execution logs will be automatically saved in the `logs/` directory, and output NetCDF files will be routed to your configured `output_dir` (usually under `results/`).

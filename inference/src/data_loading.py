@@ -1,22 +1,8 @@
 """
-==========================================================
- Script: data_loading.py
- Author: M. El Aabaribaoune (@um6p)
- Description:
-     Unified data loader for downscaling experiments.
-
-     - Loads predictors (ERA5 or LMDZ)
-     - Loads precipitation targets (MSWEP or LMDZ35)
-     - Applies spatial masking
-     - Handles daily / sub-daily temporal resolution
-     - Returns tensors and coordinate metadata
-
- Notes:
-     - Model-agnostic (ViT, CNN, UNet, RF...)
-     - GPU-ready but does NOT force GPU allocation
-     - Logging via vprint only
-==========================================================
+Author: M. El Aabaribaoune (@um6p)
+Description: Handles loading NetCDF predictor datasets and ground truth targets.
 """
+
 
 import os
 import numpy as np

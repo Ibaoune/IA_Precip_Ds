@@ -1,13 +1,8 @@
 """
-==========================================================
- Script: config.py
- Author: M. El Aabaribaoune (@um6p)
- Description:
-     Loads configuration from YAML and exposes attributes
-     as a simple namespace with robust type casting
-     (int / float / bool / string safe).
-==========================================================
+Author: M. El Aabaribaoune (@um6p)
+Description: Part of the downscaling inference engine.
 """
+
 
 import yaml
 import torch

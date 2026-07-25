@@ -1,5 +1,9 @@
 #!/bin/bash
+# ==============================================================================
 # Author: M. El Aabaribaoune (@um6p)
+# Description: Job submission script for running inference on the SLURM cluster.
+# ==============================================================================
+
 #SBATCH --job-name=run_inference
 #SBATCH --output=logs/out_inference_%j.log
 #SBATCH --error=logs/out_inference_%j.log
@@ -12,4 +16,4 @@ source ~/.bashrc
 conda activate clean_env_Pytorch
 
 echo "Running inference with config.yaml..."
-python3 -u predict.py config.yaml
+python3 -u src/predict.py config.yaml

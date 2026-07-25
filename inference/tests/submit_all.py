@@ -1,4 +1,8 @@
-# Author: M. El Aabaribaoune (@um6p)
+"""
+Author: M. El Aabaribaoune (@um6p)
+Description: Part of the downscaling inference engine.
+"""
+
 import os
 import subprocess
 
@@ -20,10 +24,3 @@ conda activate clean_env_Pytorch
 
 echo "Running {config}..."
 python3 -u predict.py {config}
-"""
-    sh_file = f"run_{job_name}.sh"
-    with open(sh_file, "w") as f:
-        f.write(sh_content)
-    
-    print(f"Submitting {sh_file}...")
-    subprocess.run(["sbatch", sh_file])

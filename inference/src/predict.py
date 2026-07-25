@@ -1,4 +1,8 @@
-# Author: M. El Aabaribaoune (@um6p)
+"""
+Author: M. El Aabaribaoune (@um6p)
+Description: Main inference script for generating downscaled predictions from trained models.
+"""
+
 import gc
 import os
 import sys

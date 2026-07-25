@@ -1,5 +1,9 @@
 #!/bin/bash
+# ==============================================================================
 # Author: M. El Aabaribaoune (@um6p)
+# Description: Part of the downscaling inference engine.
+# ==============================================================================
+
 #SBATCH --job-name=unet_pred
 #SBATCH --output=out_unet_%j.log
 #SBATCH --error=out_unet_%j.log

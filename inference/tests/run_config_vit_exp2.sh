@@ -1,5 +1,9 @@
 #!/bin/bash
+# ==============================================================================
 # Author: M. El Aabaribaoune (@um6p)
+# Description: Part of the downscaling inference engine.
+# ==============================================================================
+
 #SBATCH --job-name=config_vit_exp2
 #SBATCH --output=out_config_vit_exp2_%j.log
 #SBATCH --error=out_config_vit_exp2_%j.log

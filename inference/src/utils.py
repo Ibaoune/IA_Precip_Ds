@@ -1,15 +1,8 @@
 """
-==========================================================
- Script: utils.py
- Author: M. El Aabaribaoune (@um6p)
- Description:
-     Collection of utility and helper functions for prediction.
-     - Verbose printing utilities
-     - Dataset spatial masking
-     - Model loading utilities
-     - Model architecture builder
-==========================================================
+Author: M. El Aabaribaoune (@um6p)
+Description: Utility functions for inference, config generation, and data manipulation.
 """
+
 
 import os
 import sys

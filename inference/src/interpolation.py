@@ -1,12 +1,8 @@
-# Author: M. El Aabaribaoune (@um6p)
 """
-==========================================================
- Script: interpolation.py
- Description:
-     Contains functions to interpolate predictor datasets
-     (e.g., ERA5 or LMDZ) to a 2-degree grid.
-==========================================================
+Author: M. El Aabaribaoune (@um6p)
+Description: Part of the downscaling inference engine.
 """
+
 
 import numpy as np
 import xarray as xr

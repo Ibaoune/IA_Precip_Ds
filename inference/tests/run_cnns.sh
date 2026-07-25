@@ -1,5 +1,9 @@
 #!/bin/bash
+# ==============================================================================
 # Author: M. El Aabaribaoune (@um6p)
+# Description: Part of the downscaling inference engine.
+# ==============================================================================
+
 #SBATCH --job-name=cnns_lmdz250
 #SBATCH --output=logs/out_cnns_lmdz250_%j.log
 #SBATCH --error=logs/out_cnns_lmdz250_%j.log

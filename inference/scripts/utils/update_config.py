@@ -1,4 +1,8 @@
-# Author: M. El Aabaribaoune (@um6p)
+"""
+Author: M. El Aabaribaoune (@um6p)
+Description: Utility functions for inference, config generation, and data manipulation.
+"""
+
 import yaml
 import os
 
