@@ -38,3 +38,20 @@ __pycache__/
 venv/
 env/
 .conda/
+
+# Ignore all experimental configs except retained
+main/configs/cnn/*
+!main/configs/cnn/retained/
+!main/configs/cnn/retained/*
+
+main/configs/glm/*
+!main/configs/glm/retained/
+!main/configs/glm/retained/*
+
+main/configs/vit/*
+!main/configs/vit/retained/
+!main/configs/vit/retained/*
+
+main/configs/unet/*
+!main/configs/unet/retained/
+!main/configs/unet/retained/*
