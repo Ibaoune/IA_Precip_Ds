@@ -59,3 +59,4 @@ main/configs/unet/*
 # Ignore postproc non-retained scripts/configs
 postproc/configs/others/
 postproc/scripts/jobs/others/
+postproc/scripts/others/
