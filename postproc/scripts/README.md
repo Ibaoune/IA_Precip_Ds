@@ -9,7 +9,6 @@ This directory acts as the structural hub for the post-processing and evaluation
 ### Tracked Directories
 - **`jobs/`**: The core directory containing the SLURM batch submission scripts used to execute post-processing tasks on the High-Performance Computing (HPC) cluster. The definitive, active job script for the final retained architectures (`job_final_retained_models.sh`) is located here.
 - **`utils/`**: Contains shared utility modules and helper functions imported by the main Python post-processing engine located in `src/` (e.g., custom colorbars, spatial mapping tools, specific metric calculators).
-- **`logs/`**: The designated output directory for SLURM `.out` and `.err` log files generated during the execution of the jobs.
 
 ### Ignored Directories (Archived)
 - **`others/`**: Contains all obsolete, experimental, and preliminary scripts that were historically located at the root of `scripts/` (such as `evaluate.sh`, `explore.sh`, `generate_region_pdfs.py`, and `setup_and_run_experiments_postproc.py`). These files are intentionally untracked by Git to maintain a pristine, publication-ready repository, but physically remain on the disk for local reference.
