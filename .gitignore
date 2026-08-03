@@ -55,3 +55,7 @@ main/configs/vit/*
 main/configs/unet/*
 !main/configs/unet/retained/
 !main/configs/unet/retained/*
+
+# Ignore postproc non-retained scripts/configs
+postproc/configs/others/
+postproc/scripts/jobs/others/
