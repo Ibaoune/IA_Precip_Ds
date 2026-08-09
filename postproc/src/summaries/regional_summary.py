@@ -17,7 +17,7 @@ import regionmask
 from pathlib import Path
 
 # ── import project utils ────────────────────────────────────────────────────
-ROOT = str(Path(__file__).resolve().parent.parent)
+ROOT = str(Path(__file__).resolve().parent.parent.parent)
 sys.path.insert(0, os.path.join(ROOT, "src"))
 import utils
 

@@ -36,10 +36,10 @@ from src.utils import get_shapefile, BIAS_RDBU_WHITE
 
 # --- Configuration ---
 PRED_ROOT = "/srv/data/mohammad.elaabaribao/work/papers/downscaling/inference/results/1979_2014"
-DATASETS_DIR = "/srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/datasets"
-MSWEP_PATH = "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/era5ztquv/1979_2020/all_data/mswep_1979_2020.nc"
+DATASETS_DIR = "/srv/data/mohammad.elaabaribao/work/papers/downscaling/data/datasets/datasets"
+MSWEP_PATH = "/srv/lustre01/project/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/obs/mswep/mswep_1979_2020.nc"
 
-OUT_DIR = "results/figures/lmdz_paper"
+OUT_DIR = "results/inference_retained/figures/lmdz_paper"
 os.makedirs(OUT_DIR, exist_ok=True)
 
 MODEL_ORDER = ["MSWEP", "LMDZ250", "LMDZ35", "U-Net", "CNN", "ViT"]
@@ -92,7 +92,7 @@ def load_10km_data():
     
     lmdz250_10km = xr.open_dataset(os.path.join(DATASETS_DIR, "raw_lmdz250_10km.nc"))[["precipitation"]]
     lmdz35_10km = xr.open_dataset(os.path.join(DATASETS_DIR, "raw_lmdz35_10km.nc"))[["precipitation"]]
-    unet_10km = xr.open_dataset(os.path.join(PRED_ROOT, "cnn_exp3/cnn_lmdz_250_present_true.nc"))[["precipitation"]]
+    unet_10km = xr.open_dataset(os.path.join(PRED_ROOT, "unet_exp32_parallel/unet_exp32_parallel_lmdz_250_present_true.nc"))[["precipitation"]]
     cnn_10km = xr.open_dataset(os.path.join(PRED_ROOT, "cnn_exp5/cnn_lmdz_250_present_true.nc"))[["precipitation"]]
     vit_10km = xr.open_dataset(os.path.join(PRED_ROOT, "vit_precip_exp21_best_hybrid/vit_lmdz_250_present_true.nc"))[["precipitation"]]
     

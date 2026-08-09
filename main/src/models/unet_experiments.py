@@ -273,3 +273,749 @@ class UNet_Config10(nn.Module):
 
         outputs = torch.cat(params, dim=1)
         return outputs
+
+
+# ---------------------------------------------------------
+# Hybrid Helper: Baseline CNN Branch
+# ---------------------------------------------------------
+class BaselineCNNBranch(nn.Module):
+    def __init__(self, in_channels, out_channels, output_shape, input_spatial_shape=(9, 10)):
+        super().__init__()
+        self.output_shape = output_shape
+        self.out_channels = out_channels
+        self.conv1 = nn.Conv2d(in_channels, 50, kernel_size=3, padding=1)
+        self.conv2 = nn.Conv2d(50, 25, kernel_size=3, padding=1)
+        self.conv3 = nn.Conv2d(25, 1, kernel_size=3, padding=1)
+        self.flatten = nn.Flatten()
+        
+        fc_input_size = 1 * input_spatial_shape[0] * input_spatial_shape[1]
+        
+        self.fc_layers = nn.ModuleList([
+            nn.Linear(fc_input_size, output_shape[0] * output_shape[1]) 
+            for _ in range(out_channels)
+        ])
+
+    def forward(self, x):
+        batch_size = x.size(0)
+        x = F.relu(self.conv1(x))
+        x = F.relu(self.conv2(x))
+        x = F.relu(self.conv3(x))
+        x = self.flatten(x)
+        
+        params = []
+        for fc in self.fc_layers:
+            p = fc(x)
+            params.append(p.view(batch_size, 1, self.output_shape[0], self.output_shape[1]))
+            
+        return torch.cat(params, dim=1)
+
+# ---------------------------------------------------------
+# Config 23: Parallel CNN + UNet (The Hybrid)
+# ---------------------------------------------------------
+class UNet_Config23(nn.Module):
+    """
+    Two branches: one exact CNN for global mean bias, one standard U-Net for spatial extremes.
+    """
+    def __init__(self, in_channels, out_channels, output_shape, input_spatial_shape=(9, 10)):
+        super().__init__()
+        self.add_coords = AddCoords()
+        in_c = in_channels + 2
+        
+        # Branch 1: CNN
+        self.cnn_branch = BaselineCNNBranch(in_c, out_channels, output_shape, input_spatial_shape)
+        
+        # Branch 2: Standard U-Net (similar to Config 17)
+        self.enc1 = nn.Sequential(nn.Conv2d(in_c, 50, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.pool1 = nn.MaxPool2d(2, 2)
+        self.enc2 = nn.Sequential(nn.Conv2d(50, 50, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.pool2 = nn.MaxPool2d(2, 2)
+        
+        self.bot = nn.Sequential(
+            nn.Conv2d(50, 50, kernel_size=3, padding=1), nn.ReLU(inplace=True),
+            nn.Conv2d(50, 50, kernel_size=3, padding=1), nn.ReLU(inplace=True)
+        )
+        
+        self.up1 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.dec1 = nn.Sequential(nn.Conv2d(100, 25, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        self.up2 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.dec2 = nn.Sequential(nn.Conv2d(75, 25, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        self.final_unet = nn.Conv2d(25, out_channels, kernel_size=1)
+        self.output_shape = output_shape
+        
+    def _match_size(self, x, shape):
+        if x.shape[-2:] != shape:
+            return F.interpolate(x, size=shape, mode='bilinear', align_corners=True)
+        return x
+
+    def forward(self, x):
+        x = self.add_coords(x)
+        
+        # Branch 1
+        cnn_out = self.cnn_branch(x)
+        
+        # Branch 2
+        e1 = self.enc1(x)
+        e2 = self.enc2(self.pool1(e1))
+        b = self.bot(self.pool2(e2))
+        
+        d1 = self.up1(b)
+        d1 = self._match_size(d1, e2.shape[-2:])
+        d1 = self.dec1(torch.cat([d1, e2], dim=1))
+        
+        d2 = self.up2(d1)
+        d2 = self._match_size(d2, e1.shape[-2:])
+        d2 = self.dec2(torch.cat([d2, e1], dim=1))
+        
+        unet_out = self.final_unet(d2)
+        unet_out = self._match_size(unet_out, self.output_shape)
+        
+        # Sum both outputs
+        return cnn_out + unet_out
+
+# ---------------------------------------------------------
+# Config 24: UNet with FC Bottleneck
+# ---------------------------------------------------------
+class UNet_Config24(nn.Module):
+    """
+    A U-Net where the bottleneck passes through a Linear layer, 
+    allowing for a global shift to be learned at the lowest resolution.
+    """
+    def __init__(self, in_channels, out_channels, output_shape, input_spatial_shape=(9, 10)):
+        super().__init__()
+        self.add_coords = AddCoords()
+        in_c = in_channels + 2
+        self.output_shape = output_shape
+        
+        self.enc1 = nn.Sequential(nn.Conv2d(in_c, 64, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.pool1 = nn.MaxPool2d(2, 2)
+        self.enc2 = nn.Sequential(nn.Conv2d(64, 128, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.pool2 = nn.MaxPool2d(2, 2)
+        
+        self.bot_conv1 = nn.Conv2d(128, 64, kernel_size=3, padding=1)
+        
+        # Calculate bottleneck size
+        h, w = input_spatial_shape
+        h, w = h // 4, w // 4
+        self.bot_h, self.bot_w = h, w
+        self.flatten = nn.Flatten()
+        
+        self.bot_fc = nn.Sequential(
+            nn.Linear(64 * h * w, 512),
+            nn.ReLU(inplace=True),
+            nn.Linear(512, 128 * h * w),
+            nn.ReLU(inplace=True)
+        )
+        
+        self.up1 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.dec1 = nn.Sequential(nn.Conv2d(128 + 128, 64, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        self.up2 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.dec2 = nn.Sequential(nn.Conv2d(64 + 64, 32, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        self.final = nn.Conv2d(32, out_channels, kernel_size=1)
+        
+    def _match_size(self, x, shape):
+        if x.shape[-2:] != shape:
+            return F.interpolate(x, size=shape, mode='bilinear', align_corners=True)
+        return x
+
+    def forward(self, x):
+        x = self.add_coords(x)
+        e1 = self.enc1(x)
+        e2 = self.enc2(self.pool1(e1))
+        
+        b = F.relu(self.bot_conv1(self.pool2(e2)))
+        b_flat = self.flatten(b)
+        b_fc = self.bot_fc(b_flat)
+        b_reshaped = b_fc.view(x.size(0), 128, self.bot_h, self.bot_w)
+        
+        d1 = self.up1(b_reshaped)
+        d1 = self._match_size(d1, e2.shape[-2:])
+        d1 = self.dec1(torch.cat([d1, e2], dim=1))
+        
+        d2 = self.up2(d1)
+        d2 = self._match_size(d2, e1.shape[-2:])
+        d2 = self.dec2(torch.cat([d2, e1], dim=1))
+        
+        out = self.final(d2)
+        return self._match_size(out, self.output_shape)
+
+# ---------------------------------------------------------
+# Config 25: Global Average Pooling Bias Corrector
+# ---------------------------------------------------------
+class UNet_Config25(nn.Module):
+    """
+    Standard U-Net but adds a parallel branch that applies GAP + MLP to output a global spatial bias map.
+    """
+    def __init__(self, in_channels, out_channels, output_shape):
+        super().__init__()
+        self.add_coords = AddCoords()
+        in_c = in_channels + 2
+        self.output_shape = output_shape
+        
+        # Standard UNet
+        self.enc1 = nn.Sequential(nn.Conv2d(in_c, 64, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.pool1 = nn.MaxPool2d(2, 2)
+        self.enc2 = nn.Sequential(nn.Conv2d(64, 128, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.pool2 = nn.MaxPool2d(2, 2)
+        
+        self.bot = nn.Sequential(
+            nn.Conv2d(128, 256, kernel_size=3, padding=1), nn.ReLU(inplace=True),
+            nn.Conv2d(256, 128, kernel_size=3, padding=1), nn.ReLU(inplace=True)
+        )
+        
+        self.up1 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.dec1 = nn.Sequential(nn.Conv2d(256, 64, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        self.up2 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.dec2 = nn.Sequential(nn.Conv2d(128, 32, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        self.final = nn.Conv2d(32, out_channels, kernel_size=1)
+        
+        # GAP Bias Corrector
+        self.gap = nn.AdaptiveAvgPool2d(1)
+        self.fc_bias = nn.Sequential(
+            nn.Linear(in_c, 256),
+            nn.ReLU(inplace=True),
+            nn.Linear(256, out_channels * output_shape[0] * output_shape[1])
+        )
+
+    def _match_size(self, x, shape):
+        if x.shape[-2:] != shape:
+            return F.interpolate(x, size=shape, mode='bilinear', align_corners=True)
+        return x
+
+    def forward(self, x):
+        x = self.add_coords(x)
+        
+        # U-Net path
+        e1 = self.enc1(x)
+        e2 = self.enc2(self.pool1(e1))
+        b = self.bot(self.pool2(e2))
+        
+        d1 = self.up1(b)
+        d1 = self._match_size(d1, e2.shape[-2:])
+        d1 = self.dec1(torch.cat([d1, e2], dim=1))
+        
+        d2 = self.up2(d1)
+        d2 = self._match_size(d2, e1.shape[-2:])
+        d2 = self.dec2(torch.cat([d2, e1], dim=1))
+        
+        unet_out = self.final(d2)
+        unet_out = self._match_size(unet_out, self.output_shape)
+        
+        # Bias path
+        gap_feat = self.gap(x).view(x.size(0), -1)
+        bias_out = self.fc_bias(gap_feat)
+        bias_out = bias_out.view(x.size(0), -1, self.output_shape[0], self.output_shape[1])
+        
+        return unet_out + bias_out
+
+# ---------------------------------------------------------
+# Config 26: CNN-Guided UNet Decoder
+# ---------------------------------------------------------
+class UNet_Config26(nn.Module):
+    """
+    Uses the exact CNN 3-layer architecture as the encoder (no pooling), 
+    and a decoder to project it directly to the output resolution.
+    """
+    def __init__(self, in_channels, out_channels, output_shape):
+        super().__init__()
+        self.add_coords = AddCoords()
+        in_c = in_channels + 2
+        self.output_shape = output_shape
+        
+        # Encoder (CNN structure)
+        self.enc1 = nn.Sequential(nn.Conv2d(in_c, 50, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.enc2 = nn.Sequential(nn.Conv2d(50, 25, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.enc3 = nn.Sequential(nn.Conv2d(25, 25, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        self.bot = nn.Sequential(
+            nn.Conv2d(25, 50, kernel_size=3, padding=2, dilation=2), nn.ReLU(inplace=True)
+        )
+        
+        self.dec1 = nn.Sequential(nn.Conv2d(75, 50, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.dec2 = nn.Sequential(nn.Conv2d(100, 25, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        self.final = nn.Conv2d(25, out_channels, kernel_size=1)
+        
+    def _match_size(self, x, shape):
+        if x.shape[-2:] != shape:
+            return F.interpolate(x, size=shape, mode='bilinear', align_corners=True)
+        return x
+
+    def forward(self, x):
+        x = self.add_coords(x)
+        e1 = self.enc1(x)
+        e2 = self.enc2(e1)
+        e3 = self.enc3(e2)
+        
+        b = self.bot(e3)
+        b = self._match_size(b, self.output_shape)
+        e2_proj = self._match_size(e2, self.output_shape)
+        e1_proj = self._match_size(e1, self.output_shape)
+        
+        d1 = self.dec1(torch.cat([b, e2_proj], dim=1))
+        d2 = self.dec2(torch.cat([d1, e1_proj], dim=1))
+        
+        out = self.final(d2)
+        return out
+
+# ---------------------------------------------------------
+# Config 27: Deep Parallel Hybrid (CNN-Dense + UNet-Dilated)
+# ---------------------------------------------------------
+class UNet_Config27(nn.Module):
+    """
+    Combines Dilated UNet (Config 18) and CNN with a learnable gate.
+    """
+    def __init__(self, in_channels, out_channels, output_shape, input_spatial_shape=(9, 10)):
+        super().__init__()
+        self.add_coords = AddCoords()
+        in_c = in_channels + 2
+        self.output_shape = output_shape
+        
+        # Branch 1: CNN
+        self.cnn_branch = BaselineCNNBranch(in_c, out_channels, output_shape, input_spatial_shape)
+        
+        # Branch 2: Dilated U-Net
+        self.enc1 = nn.Sequential(nn.Conv2d(in_c, 64, kernel_size=3, padding=1), nn.ELU(inplace=True))
+        self.pool1 = nn.MaxPool2d(2, 2)
+        self.enc2 = nn.Sequential(nn.Conv2d(64, 128, kernel_size=3, padding=1), nn.ELU(inplace=True))
+        self.pool2 = nn.MaxPool2d(2, 2)
+        
+        self.bot = nn.Sequential(
+            nn.Conv2d(128, 256, kernel_size=3, padding=2, dilation=2), nn.ELU(inplace=True),
+            nn.Conv2d(256, 128, kernel_size=3, padding=2, dilation=2), nn.ELU(inplace=True)
+        )
+        
+        self.up1 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.dec1 = nn.Sequential(nn.Conv2d(256, 64, kernel_size=3, padding=1), nn.ELU(inplace=True))
+        
+        self.up2 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.dec2 = nn.Sequential(nn.Conv2d(128, 32, kernel_size=3, padding=1), nn.ELU(inplace=True))
+        
+        self.final_unet = nn.Conv2d(32, out_channels, kernel_size=1)
+        
+        # Learnable gating for combining them
+        self.gate = nn.Parameter(torch.tensor([0.5]))
+
+    def _match_size(self, x, shape):
+        if x.shape[-2:] != shape:
+            return F.interpolate(x, size=shape, mode='bilinear', align_corners=True)
+        return x
+
+    def forward(self, x):
+        x = self.add_coords(x)
+        
+        cnn_out = self.cnn_branch(x)
+        
+        e1 = self.enc1(x)
+        e2 = self.enc2(self.pool1(e1))
+        b = self.bot(self.pool2(e2))
+        
+        d1 = self.up1(b)
+        d1 = self._match_size(d1, e2.shape[-2:])
+        d1 = self.dec1(torch.cat([d1, e2], dim=1))
+        
+        d2 = self.up2(d1)
+        d2 = self._match_size(d2, e1.shape[-2:])
+        d2 = self.dec2(torch.cat([d2, e1], dim=1))
+        
+        unet_out = self.final_unet(d2)
+        unet_out = self._match_size(unet_out, self.output_shape)
+        
+        gate = torch.sigmoid(self.gate)
+        return gate * cnn_out + (1 - gate) * unet_out
+
+
+# =========================================================
+# EXPERIMENTS 28-31: CNN_Exp5 BASED U-NET ARCHITECTURES
+# =========================================================
+
+# ---------------------------------------------------------
+# Config 28: Variant 1 (Strict CNN_Exp5 Base U-Net)
+# ---------------------------------------------------------
+class UNet_Config28(nn.Module):
+    """
+    Variant 1: Strict CNN_Exp5 Base U-Net
+    """
+    def __init__(self, in_channels, out_channels, output_shape, input_spatial_shape=(9, 10)):
+        super().__init__()
+        self.output_shape = output_shape
+        self.add_coords = AddCoords()
+        in_c = in_channels + 2
+        
+        # Encoder (50 -> 25)
+        self.enc1 = nn.Sequential(nn.Conv2d(in_c, 50, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.pool1 = nn.MaxPool2d(2, 2)
+        
+        self.enc2 = nn.Sequential(nn.Conv2d(50, 25, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.pool2 = nn.MaxPool2d(2, 2)
+        
+        # Bottleneck
+        self.bot = nn.Sequential(nn.Conv2d(25, 25, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        # Decoder
+        self.up1 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.dec1 = nn.Sequential(nn.Conv2d(50, 50, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        self.up2 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.dec2 = nn.Sequential(nn.Conv2d(100, 25, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        self.final = nn.Conv2d(25, out_channels, kernel_size=1)
+        
+    def _match_size(self, x, shape):
+        if x.shape[-2:] != shape:
+            return F.interpolate(x, size=shape, mode='bilinear', align_corners=True)
+        return x
+
+    def forward(self, x):
+        x = self.add_coords(x)
+        e1 = self.enc1(x)
+        e2 = self.enc2(self.pool1(e1))
+        b = self.bot(self.pool2(e2))
+        
+        d1 = self.up1(b)
+        d1 = self._match_size(d1, e2.shape[-2:])
+        d1 = self.dec1(torch.cat([d1, e2], dim=1))
+        
+        d2 = self.up2(d1)
+        d2 = self._match_size(d2, e1.shape[-2:])
+        d2 = self.dec2(torch.cat([d2, e1], dim=1))
+        
+        out = self.final(d2)
+        return self._match_size(out, self.output_shape)
+
+# ---------------------------------------------------------
+# Config 29: Variant 2 (Dense Bottleneck CNN_Exp5 U-Net)
+# ---------------------------------------------------------
+class UNet_Config29(nn.Module):
+    """
+    Variant 2: Dense Bottleneck CNN_Exp5 U-Net
+    """
+    def __init__(self, in_channels, out_channels, output_shape, input_spatial_shape=(9, 10)):
+        super().__init__()
+        self.output_shape = output_shape
+        self.add_coords = AddCoords()
+        in_c = in_channels + 2
+        
+        self.enc1 = nn.Sequential(nn.Conv2d(in_c, 50, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.pool1 = nn.MaxPool2d(2, 2)
+        
+        self.enc2 = nn.Sequential(nn.Conv2d(50, 25, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.pool2 = nn.MaxPool2d(2, 2)
+        
+        h, w = input_spatial_shape
+        bot_h, bot_w = max(1, h // 4), max(1, w // 4)
+        self.bot_h, self.bot_w = bot_h, bot_w
+        
+        self.flatten = nn.Flatten()
+        self.bot_fc = nn.Sequential(
+            nn.Linear(25 * bot_h * bot_w, 128),
+            nn.ReLU(inplace=True),
+            nn.Linear(128, 25 * bot_h * bot_w),
+            nn.ReLU(inplace=True)
+        )
+        
+        self.up1 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.dec1 = nn.Sequential(nn.Conv2d(50, 50, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        self.up2 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.dec2 = nn.Sequential(nn.Conv2d(100, 25, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        self.final = nn.Conv2d(25, out_channels, kernel_size=1)
+        
+    def _match_size(self, x, shape):
+        if x.shape[-2:] != shape:
+            return F.interpolate(x, size=shape, mode='bilinear', align_corners=True)
+        return x
+
+    def forward(self, x):
+        x = self.add_coords(x)
+        e1 = self.enc1(x)
+        e2 = self.enc2(self.pool1(e1))
+        
+        b = self.pool2(e2)
+        b_flat = self.flatten(b)
+        b_fc = self.bot_fc(b_flat)
+        b = b_fc.view(x.size(0), 25, self.bot_h, self.bot_w)
+        
+        d1 = self.up1(b)
+        d1 = self._match_size(d1, e2.shape[-2:])
+        d1 = self.dec1(torch.cat([d1, e2], dim=1))
+        
+        d2 = self.up2(d1)
+        d2 = self._match_size(d2, e1.shape[-2:])
+        d2 = self.dec2(torch.cat([d2, e1], dim=1))
+        
+        out = self.final(d2)
+        return self._match_size(out, self.output_shape)
+
+# ---------------------------------------------------------
+# Config 30: Variant 3 (Residual CNN_Exp5 U-Net)
+# ---------------------------------------------------------
+class ResBlockCNN(nn.Module):
+    def __init__(self, in_c, out_c):
+        super().__init__()
+        self.conv1 = nn.Conv2d(in_c, out_c, kernel_size=3, padding=1)
+        self.relu = nn.ReLU(inplace=True)
+        self.conv2 = nn.Conv2d(out_c, out_c, kernel_size=3, padding=1)
+        self.skip = nn.Conv2d(in_c, out_c, kernel_size=1) if in_c != out_c else nn.Identity()
+        
+    def forward(self, x):
+        res = self.skip(x)
+        x = self.relu(self.conv1(x))
+        x = self.conv2(x)
+        return F.relu(x + res, inplace=True)
+
+class UNet_Config30(nn.Module):
+    """
+    Variant 3: Residual CNN_Exp5 U-Net
+    """
+    def __init__(self, in_channels, out_channels, output_shape, input_spatial_shape=(9, 10)):
+        super().__init__()
+        self.output_shape = output_shape
+        self.add_coords = AddCoords()
+        in_c = in_channels + 2
+        
+        self.enc1 = ResBlockCNN(in_c, 50)
+        self.pool1 = nn.MaxPool2d(2, 2)
+        
+        self.enc2 = ResBlockCNN(50, 25)
+        self.pool2 = nn.MaxPool2d(2, 2)
+        
+        self.bot = ResBlockCNN(25, 25)
+        
+        self.up1 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.dec1 = ResBlockCNN(50, 50)
+        
+        self.up2 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.dec2 = ResBlockCNN(100, 25)
+        
+        self.final = nn.Conv2d(25, out_channels, kernel_size=1)
+        
+    def _match_size(self, x, shape):
+        if x.shape[-2:] != shape:
+            return F.interpolate(x, size=shape, mode='bilinear', align_corners=True)
+        return x
+
+    def forward(self, x):
+        x = self.add_coords(x)
+        e1 = self.enc1(x)
+        e2 = self.enc2(self.pool1(e1))
+        b = self.bot(self.pool2(e2))
+        
+        d1 = self.up1(b)
+        d1 = self._match_size(d1, e2.shape[-2:])
+        d1 = self.dec1(torch.cat([d1, e2], dim=1))
+        
+        d2 = self.up2(d1)
+        d2 = self._match_size(d2, e1.shape[-2:])
+        d2 = self.dec2(torch.cat([d2, e1], dim=1))
+        
+        out = self.final(d2)
+        return self._match_size(out, self.output_shape)
+
+# ---------------------------------------------------------
+# Config 31: Variant 4 (Attention Gates CNN_Exp5 U-Net)
+# ---------------------------------------------------------
+class AttentionGate(nn.Module):
+    def __init__(self, F_g, F_l, F_int):
+        super().__init__()
+        self.W_g = nn.Sequential(nn.Conv2d(F_g, F_int, kernel_size=1), nn.BatchNorm2d(F_int))
+        self.W_x = nn.Sequential(nn.Conv2d(F_l, F_int, kernel_size=1), nn.BatchNorm2d(F_int))
+        self.psi = nn.Sequential(nn.Conv2d(F_int, 1, kernel_size=1), nn.BatchNorm2d(1), nn.Sigmoid())
+        self.relu = nn.ReLU(inplace=True)
+        
+    def forward(self, g, x):
+        g1 = self.W_g(g)
+        x1 = self.W_x(x)
+        psi = self.relu(g1 + x1)
+        psi = self.psi(psi)
+        return x * psi
+
+class UNet_Config31(nn.Module):
+    """
+    Variant 4: Attention Gates CNN_Exp5 U-Net
+    """
+    def __init__(self, in_channels, out_channels, output_shape, input_spatial_shape=(9, 10)):
+        super().__init__()
+        self.output_shape = output_shape
+        self.add_coords = AddCoords()
+        in_c = in_channels + 2
+        
+        self.enc1 = nn.Sequential(nn.Conv2d(in_c, 50, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.pool1 = nn.MaxPool2d(2, 2)
+        
+        self.enc2 = nn.Sequential(nn.Conv2d(50, 25, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.pool2 = nn.MaxPool2d(2, 2)
+        
+        self.bot = nn.Sequential(nn.Conv2d(25, 25, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        self.up1 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.att1 = AttentionGate(F_g=25, F_l=25, F_int=12)
+        self.dec1 = nn.Sequential(nn.Conv2d(50, 50, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        self.up2 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.att2 = AttentionGate(F_g=50, F_l=50, F_int=25)
+        self.dec2 = nn.Sequential(nn.Conv2d(100, 25, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        self.final = nn.Conv2d(25, out_channels, kernel_size=1)
+        
+    def _match_size(self, x, shape):
+        if x.shape[-2:] != shape:
+            return F.interpolate(x, size=shape, mode='bilinear', align_corners=True)
+        return x
+
+    def forward(self, x):
+        x = self.add_coords(x)
+        e1 = self.enc1(x)
+        e2 = self.enc2(self.pool1(e1))
+        b = self.bot(self.pool2(e2))
+        
+        d1 = self.up1(b)
+        d1 = self._match_size(d1, e2.shape[-2:])
+        e2_att = self.att1(g=d1, x=e2)
+        d1 = self.dec1(torch.cat([d1, e2_att], dim=1))
+        
+        d2 = self.up2(d1)
+        d2 = self._match_size(d2, e1.shape[-2:])
+        e1_att = self.att2(g=d2, x=e1)
+        d2 = self.dec2(torch.cat([d2, e1_att], dim=1))
+        
+        out = self.final(d2)
+        return self._match_size(out, self.output_shape)
+
+
+# =========================================================
+# EXPERIMENTS 32-33: ANTI-BIAS HYBRID ARCHITECTURES
+# =========================================================
+
+# ---------------------------------------------------------
+# Config 32: Variant 5 (Parallel CNN_Exp5 + U-Net)
+# ---------------------------------------------------------
+class UNet_Config32(nn.Module):
+    """
+    Two branches: one exact CNN_Exp5 for global mean bias, one U-Net for spatial extremes/residuals.
+    """
+    def __init__(self, in_channels, out_channels, output_shape, input_spatial_shape=(9, 10)):
+        super().__init__()
+        self.output_shape = output_shape
+        self.add_coords = AddCoords()
+        in_c = in_channels + 2
+        
+        # Branch 1: CNN_Exp5 (Handles Bias/Mean)
+        self.cnn_branch = BaselineCNNBranch(in_c, out_channels, output_shape, input_spatial_shape)
+        
+        # Branch 2: U-Net (Handles Extremes/Residuals)
+        self.enc1 = nn.Sequential(nn.Conv2d(in_c, 50, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.pool1 = nn.MaxPool2d(2, 2)
+        
+        self.enc2 = nn.Sequential(nn.Conv2d(50, 25, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.pool2 = nn.MaxPool2d(2, 2)
+        
+        self.bot = nn.Sequential(nn.Conv2d(25, 25, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        self.up1 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.dec1 = nn.Sequential(nn.Conv2d(50, 50, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        self.up2 = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.dec2 = nn.Sequential(nn.Conv2d(100, 25, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        
+        self.final_unet = nn.Conv2d(25, out_channels, kernel_size=1)
+        
+    def _match_size(self, x, shape):
+        if x.shape[-2:] != shape:
+            return F.interpolate(x, size=shape, mode='bilinear', align_corners=True)
+        return x
+
+    def forward(self, x):
+        x = self.add_coords(x)
+        
+        # Branch 1: Global map
+        cnn_out = self.cnn_branch(x)
+        
+        # Branch 2: Local residual map
+        e1 = self.enc1(x)
+        e2 = self.enc2(self.pool1(e1))
+        b = self.bot(self.pool2(e2))
+        
+        d1 = self.up1(b)
+        d1 = self._match_size(d1, e2.shape[-2:])
+        d1 = self.dec1(torch.cat([d1, e2], dim=1))
+        
+        d2 = self.up2(d1)
+        d2 = self._match_size(d2, e1.shape[-2:])
+        d2 = self.dec2(torch.cat([d2, e1], dim=1))
+        
+        unet_out = self.final_unet(d2)
+        unet_out = self._match_size(unet_out, self.output_shape)
+        
+        # Sum both maps
+        return cnn_out + unet_out
+
+# ---------------------------------------------------------
+# Config 33: Variant 6 (DenseDecoder U-Net)
+# ---------------------------------------------------------
+class UNet_Config33(nn.Module):
+    """
+    DenseDecoder: U-Net Encoder -> FC layer projecting directly to 160x170 -> Convolutions for refinement
+    """
+    def __init__(self, in_channels, out_channels, output_shape, input_spatial_shape=(9, 10)):
+        super().__init__()
+        self.output_shape = output_shape
+        self.add_coords = AddCoords()
+        in_c = in_channels + 2
+        
+        self.enc1 = nn.Sequential(nn.Conv2d(in_c, 50, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.pool1 = nn.MaxPool2d(2, 2)
+        
+        self.enc2 = nn.Sequential(nn.Conv2d(50, 25, kernel_size=3, padding=1), nn.ReLU(inplace=True))
+        self.pool2 = nn.MaxPool2d(2, 2)
+        
+        h, w = input_spatial_shape
+        bot_h, bot_w = max(1, h // 4), max(1, w // 4)
+        out_h, out_w = output_shape
+        
+        self.flatten = nn.Flatten()
+        
+        # Dense Bottleneck -> Directly to Full Resolution Output Shape!
+        self.dense_dec = nn.Sequential(
+            nn.Linear(25 * bot_h * bot_w, 256),
+            nn.ReLU(inplace=True),
+            nn.Linear(256, 25 * out_h * out_w),
+            nn.ReLU(inplace=True)
+        )
+        
+        self.refine = nn.Sequential(
+            nn.Conv2d(25 + 50 + 25, 25, kernel_size=3, padding=1), # dense_map(25) + e1(50) + e2(25)
+            nn.ReLU(inplace=True),
+            nn.Conv2d(25, out_channels, kernel_size=1)
+        )
+
+    def _match_size(self, x, shape):
+        if x.shape[-2:] != shape:
+            return F.interpolate(x, size=shape, mode='bilinear', align_corners=True)
+        return x
+
+    def forward(self, x):
+        x = self.add_coords(x)
+        e1 = self.enc1(x)
+        e2 = self.enc2(self.pool1(e1))
+        
+        b = self.pool2(e2)
+        b_flat = self.flatten(b)
+        
+        dense_map = self.dense_dec(b_flat)
+        dense_map = dense_map.view(x.size(0), 25, self.output_shape[0], self.output_shape[1])
+        
+        # Upsample e1 and e2 to full resolution to act as skip connections
+        e1_up = self._match_size(e1, self.output_shape)
+        e2_up = self._match_size(e2, self.output_shape)
+        
+        concat = torch.cat([dense_map, e1_up, e2_up], dim=1)
+        
+        out = self.refine(concat)
+        return out

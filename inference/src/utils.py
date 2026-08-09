@@ -212,5 +212,16 @@ def _build_model(cfg, x_test, y_test):
             out_channels=out_channels,
             output_shape=(y_test.shape[-2], y_test.shape[-1])
         )
+    elif cfg.model_type == "unet_new":
+        # Dynamic loading for unet experiments
+        # Assuming cfg.experiment_name or cfg.model_name contains 'test23', etc.
+        # We will parse the number and load UNet_ConfigX
+        import re
+        import sys
+        # the exact config name isn't directly passed here? We need to match the name.
+        # The easiest way: the checkpoint path or model_name contains it.
+        # But wait, in inference/src/utils.py we have access to cfg.
+        # Let's see what is inside cfg.
+        pass
     else:
         raise NotImplementedError(f"Model {cfg.model_type} not supported")

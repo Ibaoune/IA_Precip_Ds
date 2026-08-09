@@ -12,6 +12,9 @@ The project is divided into the following main directories. **Click on any direc
 ### 1. [`main/`](main/README.md) - Training & Evaluation Engine
 The core workspace for defining, training, and evaluating deep learning and statistical models.
 - **Supported Models**: Convolutional Neural Networks (CNN), U-Net, Vision Transformers (ViT), and Generalized Linear Models (GLM).
+- **Configuration Conventions**:
+  - `configs/<model>/retained/`: Contains the finalized, selected architectures. Each model directory includes a specific README detailing its parameters, design choices, and operation.
+  - `configs/<model>/others/`: Stores past experiments, sub-region trainings, and hyperparameter trials. Kept for scientific traceability and will be progressively cleaned.
 - **Features**: Highly modular PyTorch-based training loops, robust config-driven execution, and automated batch test runners (`master_test_runner.py`).
 
 ### 2. [`inference/`](inference/README.md) - Unified Inference Engine
@@ -19,7 +22,11 @@ A robust deployment engine to apply trained models onto historical datasets or f
 - **Features**: Automatic spatial alignment, scaling delta mapping (SDM) for GCM bias correction, and parallel SLURM execution across multiple scenarios (e.g., `era5_present`, `lmdz_35_present`, `lmdz_250_present`).
 
 ### 3. [`postproc/`](postproc/README.md) - Climate Metrics & Post-Processing
-A comprehensive evaluation suite to calculate climatological metrics and visualize model performance.
+A comprehensive evaluation suite to calculate climatological metrics and visualize model performance, organized to mirror the training logic.
+- **Organization**:
+  - `results/retained/` (e.g. `GLM_CNN_Unet_Vit_retained/`): Post-processing outputs aligned with the retained training configurations, ensuring a perfectly clear and reproducible end-to-end workflow.
+  - `results/others/`: Results from experimental runs and legacy models, preserved for traceability.
+  - `scripts/`: Modular scripts for evaluation tasks.
 - **Metrics**: Computes bias, RMSE, correlation, and extreme indices (CDD, R95, R99, etc.).
 - **Visualizations**: Automatically generates spatial maps, temporal evolution line charts, and boxplots across dynamically defined sub-regions of Morocco.
 
@@ -53,6 +60,15 @@ conda activate clean_env_Pytorch
 1. **Train a Model**: Navigate to `main/`, configure your YAML file, and run `python train.py configs/<model>/config.yaml`.
 2. **Run Inference**: Navigate to `inference/`, configure your target datasets in `config.yaml`, and run `sbatch run_inference.sh`.
 3. **Analyze Results**: Navigate to `postproc/`, configure `config.yaml` to point to your new inference outputs, and run `sbatch job_postproc.sh` to generate metric plots.
+
+---
+
+## Roadmap & Next Steps
+
+To continue improving the clarity, maintainability, and reproducibility of the workflow, the upcoming phases are:
+1. **Regional Retraining**: Retrain the retained architectures minimizing the loss function on specific sub-regions. While early implementations exist in the `others` directories, they will be properly refactored to fit the clean `retained` organization.
+2. **Post-Processing Alignment**: Further adapt the post-processing pipeline to follow the exact same documentation and structuring logic, ensuring the full pipeline (training → inference → post-processing) remains completely transparent and reproducible.
+3. **LMDZ Inference Integration**: Finalize the LMDZ model inference using *only* the retained architectures. Previous exploratory scripts in `others` will be rebuilt cleanly into the new repository structure.
 
 ---
 *Developed for climate modeling research over Morocco.*
