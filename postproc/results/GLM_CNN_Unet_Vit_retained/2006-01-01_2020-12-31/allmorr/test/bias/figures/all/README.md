@@ -1,3 +1,4 @@
+<!-- Author: M. El Aabaribaoune (@um6p) -->
 # Documentation des Figures : Biais & Moyenne
 
 Ce répertoire contient les figures de haute qualité évaluant les modèles de descente d'échelle (downscaling) par rapport aux observations (MSWEP) pour la période annuelle (`Annual`).
@@ -14,7 +15,7 @@ Les prédictions journalières originales sont issues des inférences du modèle
 - `ViT` : `main/results/vit/retained/.../vit_predictions_era5_to_mswep.nc`
 
 **2. Calcul des Métriques (Post-Processing) :**
-Ces données brutes ont ensuite été traitées par le framework d'évaluation (`eval.py` / `Bias.py` configurés par `configs/config_final_retained_models.yaml`). Le traitement a appliqué les étapes suivantes :
+Ces données brutes ont ensuite été traitées par le framework d'évaluation (orchestrateur `postproc/eval.py` exécutant `postproc/src/mean/bias/Bias.py`, avec les paramètres définis dans `postproc/configs/config_final_retained_models.yaml`). Le traitement a appliqué les étapes suivantes :
 - **Extraction temporelle** : Filtrage strict sur la période de test indépendante `[2006-01-01, 2020-12-31]`.
 - **Masquage spatial** : Application d'un masque terre/mer et des frontières pour se restreindre uniquement au domaine terrestre du Maroc (`region: allmorr`, `mask_land: true`, `only_morocco: true`).
 - **Agrégation** : Calcul des moyennes temporelles climatologiques et des erreurs (Biais) à l'échelle annuelle (`Annual`).

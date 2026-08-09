@@ -179,10 +179,10 @@ def main():
             comparison_dict[name] = mean_ds + ref_period_mean
 
         # Plot 1: Mean Comparison
-        # utils.plot_spatial_maps(comparison_dict, "mean", period=period, 
-        #                            save_path=os.path.join(period_fig_dir, f"spatial_mean_comparison_{period}.png"), 
-        #                            title=f"{period} Mean Precipitation Comparison ({params['predictand'].upper()})",
-        #                            unit="mm/day", nrows=nrows)
+        utils.plot_spatial_maps(comparison_dict, "mean", period=period, 
+                                   save_path=os.path.join(period_fig_dir, f"mean_precipitation_{period}.png"), 
+                                   title=f"{period} Mean Precipitation Comparison ({params['predictand'].upper()})",
+                                   unit="mm/day", nrows=nrows)
         
         # Plot 2: Bias Error map
         utils.plot_spatial_maps(error_dict, "bias", period=period, 

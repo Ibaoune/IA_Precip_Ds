@@ -598,12 +598,12 @@ def plot_spatial_maps(data_dict, metric_name, period="Annual", shapefile=None, s
     
     n_models = len(data_dict)
     ncols = int(np.ceil(n_models / nrows))
-    fig = plt.figure(figsize=(5 * ncols, 7 * nrows), dpi=300)
-    
-    # Title hierarchy (Rule 4.1)
+    # Improved dimensions for paper-ready figures
+    fig = plt.figure(figsize=(7 * ncols, 7 * nrows), dpi=300)
+    # Title hierarchy (Rule 4.1) - Increased sizes
     fig_title = title if title else f"{metric_name.upper()} Spatial Distribution ({period})"
     fig_title += get_title_metadata(metric_name, period)
-    plt.suptitle(fig_title, fontsize=12, fontweight='bold', y=0.98)
+    # plt.suptitle(fig_title, fontsize=22, fontweight='bold', y=0.98) # Removed per user request to avoid clutter
 
     # Calculate local range
     all_vals = np.concatenate([d.values.flatten() for d in data_dict.values()])
@@ -835,8 +835,8 @@ def plot_spatial_maps(data_dict, metric_name, period="Annual", shapefile=None, s
         gl = ax.gridlines(draw_labels=True, linestyle='--', alpha=0.4)
         gl.top_labels = False
         gl.right_labels = False
-        gl.xlabel_style = {'size': 9}
-        gl.ylabel_style = {'size': 9}
+        gl.xlabel_style = {'size': 12}
+        gl.ylabel_style = {'size': 12}
         
         # Summary statistics in title (Min, Mean, Max)
         spatial_min = float(data.min())
@@ -844,7 +844,7 @@ def plot_spatial_maps(data_dict, metric_name, period="Annual", shapefile=None, s
         spatial_max = float(data.max())
         display_name = get_display_name(model_name)
         title_str = f"{display_name}\nMin: {spatial_min:.2f} | Mean: {spatial_mean:.2f} | Max: {spatial_max:.2f} {unit}"
-        ax.set_title(title_str, fontsize=10, pad=10, fontweight='semibold')
+        ax.set_title(title_str, fontsize=16, pad=15, fontweight='semibold')
         ax.set_extent([bounds[0], bounds[2], bounds[1], bounds[3]])
 
     # Shared colorbar (Rule 3.1)
@@ -857,8 +857,8 @@ def plot_spatial_maps(data_dict, metric_name, period="Annual", shapefile=None, s
         cbar = fig.colorbar(im, cax=cbar_ax, orientation='horizontal', extend='both', ticks=levels)
         plt.subplots_adjust(bottom=0.2 / nrows, top=0.88, wspace=0.15)
     
-    cbar.set_label(f"{metric_name.upper()} ({unit})", fontsize=11, fontweight='bold')
-    cbar.ax.tick_params(labelsize=9)
+    cbar.set_label(f"{metric_name.upper()} ({unit})", fontsize=16, fontweight='bold')
+    cbar.ax.tick_params(labelsize=14)
     
     if save_path:
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
