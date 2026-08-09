@@ -61,8 +61,13 @@ for name, path in model_paths.items():
 fig_freq = plt.figure(figsize=(24, 7), dpi=300)
 gs_freq = gridspec.GridSpec(1, 5, figure=fig_freq, wspace=0.0)
 
-freq_levels = [0, 2, 4, 6, 8, 10, 15]
-cmap_freq = mcolors.LinearSegmentedColormap.from_list("custom_freq", ["white", "lightyellow", "gold", "darkorange", "crimson", "purple", "darkmagenta"], N=256)
+freq_levels = [0, 0.5, 1, 2, 4, 6, 8, 10, 15]
+# 8 bins. We need 9 colors total (including max extension)
+base_cmap_freq = mcolors.LinearSegmentedColormap.from_list(
+    "custom_freq", ["white", "lightyellow", "gold", "darkorange", "crimson", "purple", "darkmagenta"], N=256)
+colors_freq = [base_cmap_freq(i / 8) for i in range(9)]
+colors_freq[0] = (1.0, 1.0, 1.0, 1.0) # [0, 0.5] is white
+cmap_freq = mcolors.ListedColormap(colors_freq)
 norm_freq = mcolors.BoundaryNorm(freq_levels, ncolors=cmap_freq.N, extend='max')
 
 axes_freq = []
@@ -89,9 +94,9 @@ for i, (name, data) in enumerate(freq_dict.items()):
     min_val, mean_val, max_val = float(np.nanmin(vals)), float(np.nanmean(vals)), float(np.nanmax(vals))
     
     display_name = name_display.get(name, name)
-    ax.set_title(f"{display_name}\n", fontsize=15, fontweight='bold', pad=15)
+    ax.set_title(f"{display_name}\n", fontsize=18, fontweight='bold', pad=15)
     ax.text(0.5, 1.03, f"Min: {min_val:.1f}  |  Mean: {mean_val:.1f}  |  Max: {max_val:.1f}", 
-            transform=ax.transAxes, ha='center', va='bottom', fontsize=12, color='#333333')
+            transform=ax.transAxes, ha='center', va='bottom', fontsize=14, color='#333333')
     
     ax.set_extent([bounds[0], bounds[2], bounds[1], bounds[3]])
 
@@ -110,8 +115,12 @@ fig_bias = plt.figure(figsize=(24, 7), dpi=300)
 gs_bias = gridspec.GridSpec(1, 4, figure=fig_bias, wspace=0.0)
 
 bias_levels = [-10, -8, -6, -4, -2, -1, 0, 1, 2, 4, 6, 8, 10]
-BIAS_RDBU_WHITE = ["#b2182b", "#d6604d", "#f4a582", "#fddbc7", "#ffffff", "#ffffff", "#d1e5f0", "#92c5de", "#4393c3", "#2166ac"]
-cmap_bias = mcolors.LinearSegmentedColormap.from_list("custom_bias", BIAS_RDBU_WHITE, N=len(bias_levels) + 1)
+# 12 bins. We need 14 colors total (including min and max extensions)
+base_cmap_bias = plt.get_cmap("RdBu", 14)
+colors_bias = [base_cmap_bias(i) for i in range(14)]
+colors_bias[6] = (1.0, 1.0, 1.0, 1.0) # [-1, 0] is white
+colors_bias[7] = (1.0, 1.0, 1.0, 1.0) # [0, 1] is white
+cmap_bias = mcolors.ListedColormap(colors_bias)
 norm_bias = mcolors.BoundaryNorm(bias_levels, ncolors=cmap_bias.N, extend='both')
 
 axes_error = []
@@ -137,9 +146,9 @@ for i, (name, data) in enumerate(error_dict.items()):
     min_val, mean_val, max_val = float(np.nanmin(vals)), float(np.nanmean(vals)), float(np.nanmax(vals))
     
     display_name = name_display.get(name, name)
-    ax.set_title(f"{display_name} - MSWEP\n", fontsize=15, fontweight='bold', pad=15)
+    ax.set_title(f"{display_name} - MSWEP\n", fontsize=18, fontweight='bold', pad=15)
     ax.text(0.5, 1.03, f"Min: {min_val:.1f}  |  Mean: {mean_val:.1f}  |  Max: {max_val:.1f}", 
-            transform=ax.transAxes, ha='center', va='bottom', fontsize=12, color='#333333')
+            transform=ax.transAxes, ha='center', va='bottom', fontsize=14, color='#333333')
             
     ax.set_extent([bounds[0], bounds[2], bounds[1], bounds[3]])
 
