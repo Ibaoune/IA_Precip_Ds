@@ -194,15 +194,17 @@ def main():
                     va='center', ha='right', weight='bold', fontsize=13)
 
         # Metric family headers above the heatmap
-        ax.text(1.5, -0.5, 'Error (RMSE)',         ha='center', va='center', fontsize=13, weight='bold')
-        ax.text(4.5, -0.5, 'Temporal correlation', ha='center', va='center', fontsize=13, weight='bold')
-        ax.text(7.5, -0.5, 'Absolute bias',        ha='center', va='center', fontsize=13, weight='bold')
+        ax.text(1.5, -0.4, 'Error (RMSE)',         ha='center', va='center', fontsize=13, weight='bold')
+        ax.text(1.5, -0.15, 'Global - Regional (mm/day)', ha='center', va='center', fontsize=10, style='italic', color='#555555')
+        
+        ax.text(4.5, -0.4, 'Temporal correlation', ha='center', va='center', fontsize=13, weight='bold')
+        ax.text(4.5, -0.15, 'Regional - Global',          ha='center', va='center', fontsize=10, style='italic', color='#555555')
+        
+        ax.text(7.5, -0.4, 'Absolute bias',        ha='center', va='center', fontsize=13, weight='bold')
+        ax.text(7.5, -0.15, '|Global| - |Regional| (mm/day)', ha='center', va='center', fontsize=10, style='italic', color='#555555')
 
         colorbar = ax.collections[0].colorbar
-        colorbar.set_label(
-            'Skill change (Positive = improvement by regionalisation; Negative = degradation)',
-            size=11, weight='bold'
-        )
+        colorbar.set_label('Skill Change', size=13, weight='bold')
 
         # plt.title("Skill Change: Unified-Loss → Regionalized-Loss Training\n(Mean Precipitation Metrics)",
         #           fontsize=15, weight='bold', pad=30)
