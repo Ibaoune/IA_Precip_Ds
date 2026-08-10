@@ -57,9 +57,9 @@ fig = plt.figure(figsize=(24, 15), dpi=300)
 gs = gridspec.GridSpec(2, 20, figure=fig, hspace=0.45, wspace=0.0)
 
 # --- Row 1: CDD Comparison ---
-freq_levels = [0, 10, 20, 30, 40, 60, 80, 100, 150, 200, 250, 300, 400]
-base_cmap_freq = plt.get_cmap("YlOrBr", 13)
-colors_freq = [base_cmap_freq(i) for i in range(13)]
+freq_levels = [0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 250]
+base_cmap_freq = plt.get_cmap("YlOrBr", 12)
+colors_freq = [base_cmap_freq(i) for i in range(12)]
 cmap_freq = mcolors.ListedColormap(colors_freq)
 norm_freq = mcolors.BoundaryNorm(freq_levels, ncolors=cmap_freq.N, extend='max')
 

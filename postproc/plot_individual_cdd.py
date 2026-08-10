@@ -61,9 +61,9 @@ for name, path in model_paths.items():
 fig_freq = plt.figure(figsize=(24, 7), dpi=300)
 gs_freq = gridspec.GridSpec(1, 5, figure=fig_freq, wspace=0.0)
 
-freq_levels = [0, 10, 20, 30, 40, 60, 80, 100, 150, 200, 250, 300, 400]
-base_cmap_freq = plt.get_cmap("YlOrBr", 13)
-colors_freq = [base_cmap_freq(i) for i in range(13)]
+freq_levels = [0, 20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 250]
+base_cmap_freq = plt.get_cmap("YlOrBr", 12)
+colors_freq = [base_cmap_freq(i) for i in range(12)]
 cmap_freq = mcolors.ListedColormap(colors_freq)
 norm_freq = mcolors.BoundaryNorm(freq_levels, ncolors=cmap_freq.N, extend='max')
 
