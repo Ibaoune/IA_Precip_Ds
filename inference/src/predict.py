@@ -171,7 +171,7 @@ def perform_single_prediction(cfg, scenario=None, abs_results_dir=None):
 
     ds_pred = xr.Dataset(
         {"precipitation": (["time", "lat", "lon"], preds_np)},
-        coords={"time": time_test, "lat": lat_out, "lon": lon_out}
+        coords={"time": X_std.time.values, "lat": lat_out, "lon": lon_out}
     )
     ds_pred["precipitation"].attrs["units"] = "mm/day"
     ds_pred.to_netcdf(out_nc)
