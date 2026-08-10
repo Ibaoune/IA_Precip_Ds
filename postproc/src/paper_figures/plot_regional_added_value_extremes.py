@@ -164,8 +164,8 @@ def main():
 
         ax.set_yticks(np.arange(0.5, len(row_labels) + 0.5, 1))
         ax.set_yticklabels(['Annual', 'DJF', 'JJA'] * len(REGIONS), rotation=0, fontsize=12)
-        ax.set_title(title, fontsize=15, weight='bold', pad=30)
-        ax.text(0.5, 1.05, subtitle, transform=ax.transAxes, ha='center', va='bottom', fontsize=10, style='italic', color='#555555')
+        ax.set_title(title, fontsize=15, weight='bold', pad=40)
+        ax.text(0.5, 1.02, subtitle, transform=ax.transAxes, ha='center', va='bottom', fontsize=10, style='italic', color='#555555')
         ax.set_ylabel("")
         ax.set_xlabel("")
         ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=13)
