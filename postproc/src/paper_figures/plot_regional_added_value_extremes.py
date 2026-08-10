@@ -48,13 +48,34 @@ REGION_DISPLAY = {'north': 'North', 'north_east': 'North-East', 'east': 'East', 
 # Helper
 # ---------------------------------------------------------------------------
 def extract_metric(path, col_name, season):
+    import xarray as xr
     try:
         df = pd.read_csv(path, index_col=0)
-        return df.loc[season, col_name]
+        if season in df.index:
+            return df.loc[season, col_name]
+    except Exception:
+        pass
+
+    try:
+        dir_name = os.path.dirname(path)
+        base_name = os.path.basename(path).replace("seasonal_metrics_", "").replace(".csv", "")
+        parts = base_name.split("_pr_")
+        model_part = parts[0]
+        
+        nc_files = [f for f in os.listdir(dir_name) if f.startswith(model_part + "_pr_") and f.endswith(f"_{season}.nc")]
+        if nc_files:
+            nc_path = os.path.join(dir_name, nc_files[0])
+            ds = xr.open_dataset(nc_path)
+            var_map = {'R95P': 'r95p', 'CDD': 'cdd'}
+            var_name = var_map.get(col_name)
+            if var_name in ds:
+                return float(ds[var_name].mean().values)
     except Exception as e:
-        if os.path.exists(path):
-            print(f"  [WARN] Failed to extract '{col_name}' from {path}: {e}")
-        return np.nan
+        pass
+
+    if os.path.exists(path):
+        print(f"  [WARN] Failed to extract '{col_name}' for '{season}' from {path}")
+    return np.nan
 
 
 # ---------------------------------------------------------------------------
@@ -132,7 +153,7 @@ def main():
     print(df_cdd.to_string())
 
     # -----------------------------------------------------------------------
-    def format_axes(ax, df, title, vmax):
+    def format_axes(ax, df, title, subtitle, vmax):
         sns.heatmap(
             df, cmap='RdBu', center=0, vmin=-vmax, vmax=vmax,
             annot=df, fmt=".2f", annot_kws={"size": 12},
@@ -143,7 +164,8 @@ def main():
 
         ax.set_yticks(np.arange(0.5, len(row_labels) + 0.5, 1))
         ax.set_yticklabels(['Annual', 'DJF', 'JJA'] * len(REGIONS), rotation=0, fontsize=12)
-        ax.set_title(title, fontsize=15, weight='bold', pad=15)
+        ax.set_title(title, fontsize=15, weight='bold', pad=30)
+        ax.text(0.5, 1.05, subtitle, transform=ax.transAxes, ha='center', va='bottom', fontsize=10, style='italic', color='#555555')
         ax.set_ylabel("")
         ax.set_xlabel("")
         ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=13)
@@ -152,8 +174,8 @@ def main():
         fig, axes = plt.subplots(1, 2, figsize=(16, 8))
         sns.set(style='white', font_scale=1.1)
 
-        format_axes(axes[0], df_r95, "a) R95 event frequency – skill change", vmax_r95)
-        format_axes(axes[1], df_cdd, "b) CDD – skill change",                 vmax_cdd)
+        format_axes(axes[0], df_r95, "a) R95 event frequency – skill change", "|Global Error| - |Regional Error| (events/year)", vmax_r95)
+        format_axes(axes[1], df_cdd, "b) CDD – skill change", "|Global Error| - |Regional Error| (days)", vmax_cdd)
 
         # Region labels on the left of panel A
         for i, reg in enumerate(REGIONS):
@@ -170,11 +192,10 @@ def main():
         cb1 = fig.colorbar(sm1, cax=cbar_ax1, orientation='horizontal')
         cb2 = fig.colorbar(sm2, cax=cbar_ax2, orientation='horizontal')
         for cb in [cb1, cb2]:
-            cb.set_label('Skill change (Positive = improvement; Negative = degradation)',
-                         size=11, weight='bold')
+            cb.set_label('Skill Change', size=13, weight='bold')
 
-        fig.suptitle("Skill Change in Wet and Dry Extremes\n(Unified-Loss → Regionalized-Loss Training)",
-                     fontsize=16, weight='bold', y=0.98)
+        # fig.suptitle("Skill Change in Wet and Dry Extremes\n(Unified-Loss → Regionalized-Loss Training)",
+        #              fontsize=16, weight='bold', y=0.98)
 
         for ext in ['png', 'pdf']:
             out = os.path.join(BASE_RESULTS_DIR, f"regional_added_value_extremes_heatmap_{suffix}.{ext}")
