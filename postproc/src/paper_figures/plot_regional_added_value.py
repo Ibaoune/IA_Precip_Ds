@@ -57,13 +57,36 @@ REGION_DISPLAY = {'north': 'North', 'north_east': 'North-East', 'east': 'East', 
 # Helper
 # ---------------------------------------------------------------------------
 def extract_metric(path, col_name, season):
+    import xarray as xr
     try:
         df = pd.read_csv(path, index_col=0)
-        return df.loc[season, col_name]
+        if season in df.index:
+            return df.loc[season, col_name]
+    except Exception:
+        pass
+
+    # Fallback to NetCDF file if the CSV does not have the season (e.g., Annual)
+    try:
+        dir_name = os.path.dirname(path)
+        base_name = os.path.basename(path).replace("seasonal_metrics_", "").replace(".csv", "")
+        parts = base_name.split("_pr_")
+        model_part = parts[0]
+        
+        # Find the corresponding NetCDF file
+        nc_files = [f for f in os.listdir(dir_name) if f.startswith(model_part + "_pr_") and f.endswith(f"_{season}.nc")]
+        if nc_files:
+            nc_path = os.path.join(dir_name, nc_files[0])
+            ds = xr.open_dataset(nc_path)
+            var_map = {'RMSE': 'rmse', 'BIAS': 'bias', 'CORR': 'corr'}
+            var_name = var_map.get(col_name)
+            if var_name in ds:
+                return float(ds[var_name].mean().values)
     except Exception as e:
-        if os.path.exists(path):
-            print(f"  [WARN] Failed to extract '{col_name}' from {path}: {e}")
-        return np.nan
+        pass
+
+    if os.path.exists(path):
+        print(f"  [WARN] Failed to extract '{col_name}' for '{season}' from {path}")
+    return np.nan
 
 
 # ---------------------------------------------------------------------------
@@ -181,8 +204,8 @@ def main():
             size=11, weight='bold'
         )
 
-        plt.title("Skill Change: Unified-Loss → Regionalized-Loss Training\n(Mean Precipitation Metrics)",
-                  fontsize=15, weight='bold', pad=30)
+        # plt.title("Skill Change: Unified-Loss → Regionalized-Loss Training\n(Mean Precipitation Metrics)",
+        #           fontsize=15, weight='bold', pad=30)
         plt.ylabel("")
         plt.xlabel("")
         plt.xticks(rotation=45, ha='right')
