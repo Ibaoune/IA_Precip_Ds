@@ -36,7 +36,7 @@ mpl.rcParams.update({
     'figure.dpi': 300
 })
 
-from src.utils import (
+from utils import (
     get_shapefile, BIAS_RDBU_WHITE
 )
 
@@ -114,7 +114,7 @@ def load_10km_data():
     
     lmdz250_10km = xr.open_dataset(os.path.join(DATASETS_DIR, "raw_lmdz250_10km.nc"))[["precipitation"]]
     lmdz35_10km = xr.open_dataset(os.path.join(DATASETS_DIR, "raw_lmdz35_10km.nc"))[["precipitation"]]
-    unet_10km = xr.open_dataset(os.path.join(PRED_ROOT, "unet_exp32_parallel/unet_exp32_parallel_lmdz_250_present_true.nc"))[["precipitation"]]
+    unet_10km = xr.open_dataset(os.path.join(PRED_ROOT, "unet_exp35_1x1_hybrid/unet_exp35_lmdz_250_present_true.nc"))[["precipitation"]]
     cnn_10km = xr.open_dataset(os.path.join(PRED_ROOT, "cnn_exp5/cnn_lmdz_250_present_true.nc"))[["precipitation"]]
     vit_10km = xr.open_dataset(os.path.join(PRED_ROOT, "vit_precip_exp21_best_hybrid/vit_lmdz_250_present_true.nc"))[["precipitation"]]
     
@@ -276,7 +276,7 @@ def plot_figure_4():
     lmdz35_native = load_standardized_lmdz(LMDZ35_NATIVE_PATH)
     lmdz250_native = load_standardized_lmdz(LMDZ250_NATIVE_PATH)
     
-    unet_10km = xr.open_dataset(os.path.join(PRED_ROOT, "unet_exp32_parallel/unet_exp32_parallel_lmdz_250_present_true.nc"))[["precipitation"]].sel(time=slice("1979-01-01", "2014-12-31"))
+    unet_10km = xr.open_dataset(os.path.join(PRED_ROOT, "unet_exp32_parallel/unet_exp32_lmdz_250_present_true.nc"))[["precipitation"]].sel(time=slice("1979-01-01", "2014-12-31"))
     cnn_10km = xr.open_dataset(os.path.join(PRED_ROOT, "cnn_exp5/cnn_lmdz_250_present_true.nc"))[["precipitation"]].sel(time=slice("1979-01-01", "2014-12-31"))
     vit_10km = xr.open_dataset(os.path.join(PRED_ROOT, "vit_precip_exp21_best_hybrid/vit_lmdz_250_present_true.nc"))[["precipitation"]].sel(time=slice("1979-01-01", "2014-12-31"))
 
@@ -417,7 +417,10 @@ def compute_regional_metrics(data):
             
             results[reg][model]["Bias"] = float((ts_mod.mean() - ref_mean.mean()).values)
             results[reg][model]["RMSE"] = float(np.sqrt(((ts_mod - ref_mean)**2).mean()).values)
-            results[reg][model]["Correlation"] = float(np.corrcoef(ts_mod.values.flatten(), ref_mean.values.flatten())[0,1])
+            v_mod = ts_mod.values.flatten()
+            v_ref = ref_mean.values.flatten()
+            min_len = min(len(v_mod), len(v_ref))
+            results[reg][model]["Correlation"] = float(np.corrcoef(v_mod[:min_len], v_ref[:min_len])[0,1])
             f_mod = (ts_mod > p95).sum().values / len(ts_mod) * 365.25
             results[reg][model]["R95 Error"] = float(f_mod - f_ref)
             results[reg][model]["CDD Error"] = float(calc_cdd(ts_mod) - ref_cdd)

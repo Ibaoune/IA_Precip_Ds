@@ -12,7 +12,7 @@ import numpy as np
 import xarray as xr
 
 # Add main directory to sys.path so pickle can resolve 'src' modules
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../main")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../main")))
 
 
 # Verbose Printing Utility
@@ -212,14 +212,23 @@ def _build_model(cfg, x_test, y_test):
             out_channels=out_channels,
             output_shape=(y_test.shape[-2], y_test.shape[-1])
         )
-    elif cfg.model_type == "unet_exp32":
-        from models.unet_experiments import UNet_Config32
-        out_channels = 3 if cfg.loss_type == "bernoulli_gamma" else 1
-        return UNet_Config32(
-            in_channels=x_test.shape[1],
-            out_channels=out_channels,
-            output_shape=(y_test.shape[-2], y_test.shape[-1]),
-            input_spatial_shape=(x_test.shape[-2], x_test.shape[-1])
-        )
+    elif cfg.model_type.startswith("unet_exp"):
+        import src.models.unet_experiments as unet_exps
+        import torch.nn as nn
+        class WrappedUNetExp(nn.Module):
+            def __init__(self):
+                super().__init__()
+                exp_num = int(cfg.model_type.split("unet_exp")[-1])
+                ExpClass = getattr(unet_exps, f"UNet_Config{exp_num}")
+                out_channels = 3 if cfg.loss_type == "bernoulli_gamma" else 1
+                self.unet = ExpClass(
+                    in_channels=x_test.shape[1],
+                    out_channels=out_channels,
+                    output_shape=(y_test.shape[-2], y_test.shape[-1]),
+                    input_spatial_shape=(x_test.shape[-2], x_test.shape[-1])
+                )
+            def forward(self, x):
+                return self.unet(x)
+        return WrappedUNetExp()
     else:
         raise NotImplementedError(f"Model {cfg.model_type} not supported")
