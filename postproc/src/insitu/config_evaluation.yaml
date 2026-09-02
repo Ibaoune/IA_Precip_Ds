@@ -1,0 +1,63 @@
+# Author: M. El Aabaribaoune (@um6p)
+# ==============================================================================
+# In-Situ Weather Station Post-Processing Configuration
+# ==============================================================================
+
+# Name of the active experiment/evaluation run (for output labeling)
+experiment: "insitu_comparison"
+
+# Output paths
+output:
+  dir: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/postproc/results/insitu_comparison/figures"
+
+# Core parameters for evaluation period and station selection
+parameters:
+  start_date: "2006-01-01"
+  end_date: "2020-12-31"
+  # Target meteorological stations to process
+  stations:
+    - "CASABLANCA"
+    - "TANGER"
+    - "FES"
+    - "OUJDA"
+    - "OUARZAZATE"
+    - "DAKHLA"
+    - "MARRAKECH"
+
+# Meteorological observation data sources
+observations:
+  # Raw source file containing station data
+  excel_path: "/home/mohammad.elaabaribao/lustre/climat-um6p-st-iwri-7ksifkvwkuy/users/mohammad.elaabaribao/data/insitu/ABH_stations_plusziz_and_abhbc1.csv"
+  # Fast-loading compiled CSV cache
+  cache_path: "data/stations_cache.csv"
+  # List of all available stations
+  station_list_path: "data/station_list.txt"
+
+# Reference dataset (e.g. MSWEP observational product)
+reference:
+  name: "mswep"
+  file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/lit_version/data/mswep_1979_2020.nc"
+  variable_name: "precipitation"
+
+# Retained models/downscaled prediction datasets to evaluate
+# NOTE: paths must match config_final_retained_models.yaml exactly
+datasets:
+  - name: "GLM"
+    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/glm/retained/glm_precip_l2/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_10ep_wd/output_data/glm_predictions_era5_to_mswep.nc"
+    variable_name: "precipitation"
+  - name: "CNN"
+    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/cnn/tests/tests_architecture/cnn_exp3/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/cnn_predictions_era5_to_mswep.nc"
+    variable_name: "precipitation"
+  - name: "Unet"
+    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/unet/tests/tests_advanced_arch/unet_exp32_parallel/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/gridbox_0.0001_bernoulli_gamma_200ep_wd_gc_dropout_cosine_gn/output_data/unet_exp32_predictions_era5_to_mswep.nc"
+    variable_name: "precipitation"
+  - name: "Vit"
+    file_path: "/srv/data/mohammad.elaabaribao/work/papers/downscaling/main/results/vit/retained/vit_precip_exp21_best_hybrid/region_lat_21.0_37.0_lon_-18.0_0.0/train_1979_01_01_2005_12_31/test_2006_01_01_2020_12_31/global_0.001_bernoulli_gamma_25ep_lr_sched_wd_gc_dropout_cosine_gn/output_data/vit_predictions_era5_to_mswep.nc"
+    variable_name: "precipitation"
+
+# Metric specific configurations
+metric:
+  # Wet-day threshold (mm/day) for QQ-plot quantile selection
+  threshold: 1.0
+  # Number of quantiles to compute
+  n_quantiles: 1000
