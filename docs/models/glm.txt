@@ -84,17 +84,3 @@ In historical climate-model transfer experiments using AMIP-present simulations:
 - However, this option is entirely ignored by the actual Python source code implementing the `statsmodels` statistical fit. The call to `GLM.fit()` is structurally unpenalized.
 - Therefore, the retained GLM effectively used and evaluated in the manuscript is an **unregularized GLM**.
 
-## 12. Consistency with Manuscript
-This documentation confirms the following methodological points for manuscript drafting:
-- [x] Pixel-wise two-part GLM.
-- [x] Binomial–Logit occurrence model.
-- [x] Gamma–Log conditional amount model.
-- [x] Wet-day threshold = 1 mm/day.
-- [x] 20 collocated atmospheric predictors.
-- [x] Bilinear mapping to the target grid.
-- [x] Grid-cell/channel-wise standardization over 1979–2005.
-- [x] No feature selection.
-- [x] No regularization (Note: Clarify discrepancy with file naming if necessary).
-- [x] Fitting over 1979–2005.
-- [x] Independent evaluation over 2006–2020.
-- [x] No internal GLM validation split.
