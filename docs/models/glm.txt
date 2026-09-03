@@ -1,0 +1,100 @@
+<!-- Author: M. El Aabaribaoune (@um6p) -->
+# Retained GLM Baseline Documentation
+
+## 1. Purpose and Overview
+The Generalized Linear Model (GLM) serves as the classical statistical baseline for the precipitation downscaling experiments. It operates as a purely pixel-wise model utilizing a two-part precipitation formulation to handle zero-inflation. By mapping local predictors independently to local precipitation without spatial weight sharing, it provides a transparent, local statistical baseline against which spatial deep-learning models are compared.
+
+## 2. Predictor and Target Data
+- **Predictors:** 5 atmospheric variables (geopotential, temperature, specific humidity, zonal wind, meridional wind) extracted at 4 pressure levels (1000, 850, 700, 500 hPa), resulting in **20 predictor channels**.
+- **Predictor Resolution:** Original ERA5 data (0.25°) is harmonized to a **2° predictor grid**.
+- **Target Resolution:** Precipitation targets are defined on the **MSWEP 0.1° target grid**.
+- **Temporal Periods:** Model estimation uses the 1979–2005 training period, while evaluation utilizes the independent 2006–2020 period.
+
+## 3. Spatial Mapping and Data Flow
+The complete pipeline structure is as follows:
+1. **Coarse predictors:** ERA5 predictors mapped to the 2° grid: `[time, 20, 9, 10]`.
+2. **Gridbox Standardization:** Temporal standardization applied at the 2° predictor grid level.
+3. **Internal Interpolation:** Bilinear interpolation within the GLM wrapper maps the standardized 2° predictors directly to the 0.1° target grid: `[time, 20, 160, 180]`.
+4. **Pixel-Wise Extraction:** Extraction of one local predictor vector `[time, 20]` per target pixel.
+5. **Intercept Addition:** A constant term is added, yielding `[time, 21]` per pixel.
+6. **Model Fitting:** Two-part GLM fitting on the local target.
+
+*Note: While the spatial deep-learning models use the entire coarse predictor field `[time, 20, 9, 10]` to extract spatial context, the GLM uses strictly collocated predictor information derived from bilinear interpolation.*
+
+## 4. Predictor Standardization
+- **Method:** `gridbox` normalization is applied, centering to a mean of 0 and scaling to a standard deviation of 1.
+- **Scope:** The scaling is strictly channel-wise and grid-cell-wise.
+- **Reference Period:** Mean and standard deviation are estimated exclusively from the 1979–2005 training period.
+- **Target:** There is an explicit absence of target normalization; the DeepESD modification (-0.99 mm thresholding) is intentionally disabled.
+
+## 5. Statistical Formulation
+The model relies on a two-part Hurdle framework:
+
+### 5.1 Precipitation occurrence
+- **Family:** Binomial family.
+- **Link:** Logit link function.
+- **Wet-Day Definition:** A strict threshold of $P \ge 1.0$ mm/day is used to binarize occurrence.
+
+### 5.2 Conditional precipitation amount
+- **Family:** Gamma family.
+- **Link:** Log link function.
+- **Condition:** The model is fitted exclusively on wet days ($P \ge 1.0$ mm/day).
+
+### 5.3 Deterministic precipitation estimate
+The final deterministic precipitation is obtained by calculating the expected value:
+$$ \text{Prediction} = \text{Probability(Wet Day)} \times \text{Expected Amount(Wet Day)} $$
+
+## 6. Model Fitting
+- **Strategy:** Pixel-wise fitting resulting in 17,458 independent pixel-wise two-part models across the 17,458 valid land target grid cells.
+- **Features:** 20 meteorological predictors + 1 intercept.
+- **Feature Selection:** No feature selection is applied.
+- **Regularization:** No regularization is applied during fitting.
+- **Optimization:** Utilizes `statsmodels.GLM.fit()` with the default Iteratively Reweighted Least Squares (IRLS) solver (statsmodels version not explicitly recorded).
+- **Compute:** CPU parallelization over land pixels using `joblib`.
+- **Implementation Safeguards:** The code contains safeguards skipping models with < 5 or < 15 wet days. However, analysis confirms that all 17,458 valid land pixels contain at least 15 wet days over the 1979–2005 training period, ensuring these limits are never triggered.
+
+## 7. Training and Independent Evaluation
+- **Fitting Period:** 1979–2005.
+- **Validation Split:** There is no internal GLM validation split (early stopping mechanics are bypassed).
+- **Test Period:** 2006–2020.
+- **Leakage:** The test period is completely excluded from fitting and standardization. No train/test leakage is detected.
+
+## 8. Inference and Numerical Safeguards
+To guarantee numerical stability, software safeguards act distinctly from the scientific formulation:
+- **Latent Predictor Clipping:** Before inverse link application, the Binomial linear predictors (logits) are clipped to `[-20, 20]` and the Gamma log-amounts to `[-10, 10]`.
+- **Inverse Links & Product:** The clipped values undergo `sigmoid` and `exp` inverse links, followed by the probability $\times$ amount multiplication.
+- **Constraints:** Due to the mathematical formulation (sigmoid $\times$ exponential), negative precipitation values are structurally impossible.
+- **Masking:** Ocean pixels are explicitly masked with `NaN`.
+
+## 9. Regional Evaluation
+Regional retraining is unnecessary for a fully pixel-wise model because individual pixel coefficients do not depend on neighboring target pixels. Unified GLM predictions over the entire domain are therefore simply spatially subset to fulfill regional evaluation metrics.
+
+## 10. LMDZ Transfer
+In historical climate-model transfer experiments using AMIP-present simulations:
+- **Predictor Variables:** Uses LMDZ simulations mapped to geopotential, specific humidity, temperature, and horizontal/vertical winds.
+- **Bias Correction:** Employs `scaling_delta_mapping` (Baño-Medina et al., 2022). Correction is performed separately by variable, by month, and by grid cell on the 2° predictor grid prior to regridding to 0.1°.
+- **Correction Period:** 1979–2005 historical period.
+- **Normalization Procedure:** Recomputes and reuses exactly the ERA5 1979–2005 reference statistics (mean and standard deviation) via `standardize_predictors`.
+- **Regridding:** Standardized 2° LMDZ anomalies are bilinearly regridded to the 0.1° target grid.
+- **Inference:** Direct application of the ERA5-trained GLM coefficients; there is an absolute absence of retraining.
+
+## 11. Implementation Notes and Known Configuration Discrepancy
+- The historical configuration file name contains `glm_precip_l2`.
+- The `config.yaml` formally declares an L2 weight decay of 0.01.
+- However, this option is entirely ignored by the actual Python source code implementing the `statsmodels` statistical fit. The call to `GLM.fit()` is structurally unpenalized.
+- Therefore, the retained GLM effectively used and evaluated in the manuscript is an **unregularized GLM**.
+
+## 12. Consistency with Manuscript
+This documentation confirms the following methodological points for manuscript drafting:
+- [x] Pixel-wise two-part GLM.
+- [x] Binomial–Logit occurrence model.
+- [x] Gamma–Log conditional amount model.
+- [x] Wet-day threshold = 1 mm/day.
+- [x] 20 collocated atmospheric predictors.
+- [x] Bilinear mapping to the target grid.
+- [x] Grid-cell/channel-wise standardization over 1979–2005.
+- [x] No feature selection.
+- [x] No regularization (Note: Clarify discrepancy with file naming if necessary).
+- [x] Fitting over 1979–2005.
+- [x] Independent evaluation over 2006–2020.
+- [x] No internal GLM validation split.
